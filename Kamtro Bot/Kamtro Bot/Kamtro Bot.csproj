@@ -141,7 +141,6 @@
     <Compile Include="Handlers\CommandHandler.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Managers\FileManeger.cs" />
-    <Compile Include="PrivateData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
