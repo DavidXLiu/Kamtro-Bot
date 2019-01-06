@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Discord;
 using Discord.WebSocket;
+
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot
 {
@@ -28,7 +31,7 @@ namespace Kamtro_Bot
         private CommandHandler _commands;
         private LogHandler _logs;
 
-       
+        private FileManager fileManager;
 
         static void Main(string[] args)
         {
@@ -48,16 +51,24 @@ namespace Kamtro_Bot
         }
 
         public async Task StarAsync() {
-            config = new DiscordSocketConfig() { MessageCacheSize = 1000000 };
-            client = new DiscordSocketClient(config);
+            config = new DiscordSocketConfig() { MessageCacheSize = 1000000 }; // initialize the config for the client, and set the message cache size
+            client = new DiscordSocketClient(config); // get the client with the configurations we want
 
+            // Initialize 
+            fileManager = new FileManager();  // initialize the file manager
+
+            // Initialize Handlers
             _commands = new CommandHandler();
             _logs = new LogHandler();
 
-            await client.LoginAsync(TokenType.Bot, PrivateData.Token);
+            await client.LoginAsync(TokenType.Bot, GetToken());
             await client.StartAsync();
 
             await Task.Delay(-1);
+        }
+
+        private string GetToken() {
+            return fileManager.ReadFullFile("token.txt");
         }
     }
 }
