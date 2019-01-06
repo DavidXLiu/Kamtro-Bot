@@ -18,6 +18,7 @@ namespace Kamtro_Bot
     class Program
     {
         public const string Version = "0.0.1";  // We could manually change this, or do it differently. I'm going to leave it as it is for this test commit. -C
+        private const string TokenFile = "token.txt";
 
         private static string Token; // not currently initialized
 
@@ -53,16 +54,10 @@ namespace Kamtro_Bot
             _commands = new CommandHandler();
             _logs = new LogHandler();
 
-            // TODO: Client Login
-            // Maybe use the ReadBotToken method to read it from a file
-            // or use a class that's ignored from commits.
-            // -C
+            await client.LoginAsync(TokenType.Bot, PrivateData.Token);
+            await client.StartAsync();
 
             await Task.Delay(-1);
-        }
-
-        private static void ReadBotToken() {
-            
         }
     }
 }
