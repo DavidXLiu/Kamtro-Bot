@@ -23,6 +23,7 @@ namespace Kamtro_Bot
         public const string Version = "0.0.1";  // We could manually change this, or do it differently. I'm going to leave it as it is for this test commit. -C
         private const string TokenFile = "token.txt";
 
+        public static BotSettings Settings;
         private static string Token; // not currently initialized
 
         private DiscordSocketClient client;
@@ -56,6 +57,7 @@ namespace Kamtro_Bot
 
             // Initialize 
             fileManager = new FileManager();  // initialize the file manager
+            Settings = BotSettings.LoadJson();  // load the config from the file
 
             // Initialize Handlers
             _commands = new CommandHandler();
@@ -67,6 +69,10 @@ namespace Kamtro_Bot
             await Task.Delay(-1);
         }
 
+        /// <summary>
+        /// This method reads the token from the file named token.txt
+        /// </summary>
+        /// <returns>the token as a string</returns>
         private string GetToken() {
             return fileManager.ReadFullFile("token.txt");
         }
