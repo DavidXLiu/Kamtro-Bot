@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,8 @@ namespace Kamtro_Bot.Handlers
 {
     /// <summary>
     /// This is the class that processes the commands.
+    /// 
+    /// Authors: Carbon
     /// </summary>
     public class CommandHandler
     {
@@ -21,8 +24,17 @@ namespace Kamtro_Bot.Handlers
         private IServiceProvider _provider;
         
         public CommandHandler() {
-            _provider = new ServiceCollection().AddSingleton(_client).AddSingleton(this).BuildServiceProvider();  // WARNING: MAY BE BROKEN
+            _service = new CommandService();
+            _provider = new ServiceCollection().AddSingleton(_client).AddSingleton(_service).BuildServiceProvider();
+            
             instance = this;
+        }
+
+        public async Task InstallCommandsAsync() {
+            _client.MessageReceived += HandleCommandAsync;
+
+            await _service.AddModulesAsync(Assembly.GetEntryAssembly(), null); // this is what searches the program for module classes. 
+                                                                               // null is passed because the new API is dumb and we aren't using a DI container -C
         }
 
         public async Task HandleCommandAsync(SocketMessage m) {
@@ -33,7 +45,7 @@ namespace Kamtro_Bot.Handlers
             if (message == null) return; // more null checking (You can never be too careful) -C
             if (message.Source != Discord.MessageSource.User) return;  // No bots allowed. #robophobia  -C
 
-            int argPos = 0;  // I never really knew what this did, but it's necessary or everything dies -C
+            int argPos = 0;  // This is the position of the command character, it should usually be 0. -C
             if(message.HasStringPrefix(Program.Settings.prefix, ref argPos)) {
                 // if it's a command  -C
                 SocketCommandContext context = new SocketCommandContext(_client, message);
