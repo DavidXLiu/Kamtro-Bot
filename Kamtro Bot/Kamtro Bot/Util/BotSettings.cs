@@ -18,7 +18,11 @@ namespace Kamtro_Bot
     /// </summary>
     public class BotSettings
     {
-        public string prefix;
+        public string Prefix;
+
+        public BotSettings(string prefix) {
+            Prefix = prefix;
+        }
 
         /// <summary>
         /// This is a static method that loads the settings.json file and 

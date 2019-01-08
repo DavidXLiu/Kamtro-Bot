@@ -38,7 +38,7 @@ namespace Kamtro_Bot.Handlers
         }
 
         public async Task HandleCommandAsync(SocketMessage m) {
-            if (Program.Settings.prefix == null) return;  // if there is no prefix, also prevents null errors  -C
+            if (Program.Settings.Prefix == null) return;  // if there is no prefix, also prevents null errors  -C
             if (!(m is SocketUserMessage)) return;  // make sure the message is the appropriate type before casting  -C
 
             SocketUserMessage message = m as SocketUserMessage; // cast the message -C
@@ -46,7 +46,7 @@ namespace Kamtro_Bot.Handlers
             if (message.Source != Discord.MessageSource.User) return;  // No bots allowed. #robophobia  -C
 
             int argPos = 0;  // This is the position of the command character, it should usually be 0. -C
-            if(message.HasStringPrefix(Program.Settings.prefix, ref argPos)) {
+            if(message.HasStringPrefix(Program.Settings.Prefix, ref argPos)) {
                 // if it's a command  -C
                 SocketCommandContext context = new SocketCommandContext(_client, message);
                 IResult result = await _service.ExecuteAsync(context, argPos, _provider);
