@@ -23,11 +23,15 @@ namespace Kamtro_Bot.Handlers
         private CommandService _service;
         private IServiceProvider _provider;
         
-        public CommandHandler() {
+        public CommandHandler(DiscordSocketClient c) {
+            _client = c;
+
             _service = new CommandService();
             _provider = new ServiceCollection().AddSingleton(_client).AddSingleton(_service).BuildServiceProvider();
             
             instance = this;
+
+            InstallCommandsAsync();
         }
 
         public async Task InstallCommandsAsync() {
@@ -55,6 +59,66 @@ namespace Kamtro_Bot.Handlers
                     // if there was an error with the valid command  -C
                     await message.Channel.SendMessageAsync($"An error occured! {result.ErrorReason}");
                 }
+            }
+            else
+            {
+                // Check for other prefixless commands/features - Arcy
+
+                /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
+                // Check if directed at Kamtro - Arcy
+                if (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().Contains("kamtro"))
+                {
+                    // Check for similar ping command strings - Arcy
+                    string[] pingStrings = { "you there", "you up", "you running", "you ok", "you good", };
+
+                    foreach (string s in pingStrings)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                        {
+                            // Check latency and make string - Arcy
+                            double localLatency = (DateTime.Now - message.Timestamp.LocalDateTime).Milliseconds;
+                            string latencyString = "(Server: " + _client.Latency + " ms | Local: " + localLatency + " ms)";
+
+                            // Respond based on latency - Arcy
+                            if (_client.Latency > 500)
+                            {
+                                await message.Channel.SendMessageAsync("Not always. I'm breaking up. " + latencyString);
+                                return;
+                            }
+
+                            switch (localLatency)
+                            {
+                                case double x when (x >= 1000):
+                                    await message.Channel.SendMessageAsync("No. I'm not feeling well. I may not respond at times. " + latencyString);
+                                    return;
+                                case double x when (x >= 500):
+                                    await message.Channel.SendMessageAsync("Not really. I'm suffering quite a bit. " + latencyString);
+                                    return;
+                                case double x when (x >= 300):
+                                    await message.Channel.SendMessageAsync("Kinda. I'm being slow. " + latencyString);
+                                    return;
+                                case double x when (x >= 200):
+                                    await message.Channel.SendMessageAsync("Mostly! I'll be a bit slow. " + latencyString);
+                                    return;
+                                case double x when (x >= 100):
+                                    await message.Channel.SendMessageAsync("Yes! I'm doing well! " + latencyString);
+                                    return;
+                                case double x when (x >= 50):
+                                    await message.Channel.SendMessageAsync("Yes! I'm doing great! " + latencyString);
+                                    return;
+                                case double x when (x >= 10):
+                                    await message.Channel.SendMessageAsync("Yeah! I'm perfect right now! " + latencyString);
+                                    return;
+                                default:
+                                    await message.Channel.SendMessageAsync("I don't know... (Error: Latency)");
+                                    return;
+                            }
+
+                            // Code execution should not continue past this point. - Arcy
+                        }
+                    }
+                }
+                /// END
             }
         }
     }

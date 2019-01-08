@@ -20,7 +20,8 @@ namespace Kamtro_Bot.Modules
         [Name("Ping")]
         [Summary("Simple ping command, bot responds with pong.")]
         public async Task PingAsync() {
-            await ReplyAsync("Pong!");
+            double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
+            await ReplyAsync("Pong! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
         }
     }
 }

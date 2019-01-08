@@ -63,7 +63,7 @@ namespace Kamtro_Bot
             SetupFiles();  // This is to keep the StartAsync method more readable
 
             // Initialize Handlers
-            _commands = new CommandHandler();
+            _commands = new CommandHandler(client);
             _logs = new LogHandler();
 
             await client.LoginAsync(TokenType.Bot, GetToken());
