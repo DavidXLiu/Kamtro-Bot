@@ -88,14 +88,7 @@ namespace Kamtro_Bot
                 StreamWriter sw = File.CreateText(DataFileNames.CommandSettingsFile);  // Create the file  -C
                 sw.Close(); // Close file after creating text - Arcy.
 
-                // I just copy-pasted this from the BotSettings.SaveJson method  -C
-                JsonSerializer serializer = new JsonSerializer();
-                using (sw = new StreamWriter(DataFileNames.CommandSettingsFile)) {
-                    using (JsonWriter writer = new JsonTextWriter(sw)) {
-                        writer.Formatting = Formatting.Indented; // make it so that the entire file isn't on one line  -C
-                        serializer.Serialize(writer, this);  // serialize the settings object and save it to the file  -C
-                    }
-                }
+                Settings.SaveJson();  // save to the file
             }
         }
 
