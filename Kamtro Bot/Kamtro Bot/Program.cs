@@ -80,11 +80,17 @@ namespace Kamtro_Bot
                 Console.WriteLine("There was no settings file!\nGenerating a default one...");  // Console message  -C
 
                 Settings = new BotSettings("!"); // default prefix is ! -C
-                File.CreateText(DataFileNames.CommandSettingsFile);  // Create the file  -C
+                if (!Directory.Exists("Commands"))
+                {
+                    // Create directory if the directory to the file does not exist. - Arcy
+                    Directory.CreateDirectory("Commands");
+                }
+                StreamWriter sw = File.CreateText(DataFileNames.CommandSettingsFile);  // Create the file  -C
+                sw.Close(); // Close file after creating text - Arcy.
 
                 // I just copy-pasted this from the BotSettings.SaveJson method  -C
                 JsonSerializer serializer = new JsonSerializer();
-                using (StreamWriter sw = new StreamWriter(DataFileNames.CommandSettingsFile)) {
+                using (sw = new StreamWriter(DataFileNames.CommandSettingsFile)) {
                     using (JsonWriter writer = new JsonTextWriter(sw)) {
                         writer.Formatting = Formatting.Indented; // make it so that the entire file isn't on one line  -C
                         serializer.Serialize(writer, this);  // serialize the settings object and save it to the file  -C
