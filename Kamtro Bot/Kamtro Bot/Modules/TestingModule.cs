@@ -14,7 +14,7 @@ namespace Kamtro_Bot.Modules
     /// This module will contain some testing commands
     /// </summary>
     [Name("Testing")]
-    class TestingModule : ModuleBase<SocketCommandContext>
+    public class TestingModule : ModuleBase<SocketCommandContext>
     {
         [Command("ping")]
         [Name("Ping")]
