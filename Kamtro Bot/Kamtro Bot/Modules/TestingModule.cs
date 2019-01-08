@@ -16,12 +16,40 @@ namespace Kamtro_Bot.Modules
     [Name("Testing")]
     public class TestingModule : ModuleBase<SocketCommandContext>
     {
+        #region Ping Commands
         [Command("ping")]
         [Name("Ping")]
-        [Summary("Simple ping command, bot responds with pong.")]
+        [Summary("Simple ping command, bot responds with pong and latency.")]
         public async Task PingAsync() {
             double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
             await ReplyAsync("Pong! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
         }
+
+        [Command("pong")]
+        [Name("Pong")]
+        [Summary("Fun alternative to the ping command. Bot responds with ping and latency.")]
+        public async Task PongAsync()
+        {
+            double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
+            await ReplyAsync("Ping? (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
+        }
+
+        [Command("marco")]
+        [Name("Marco")]
+        [Summary("Another fun alternative to the ping command. Bot responds with ping and latency.")]
+        public async Task MarcoAsync()
+        {
+            double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
+            await ReplyAsync("Polo! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
+        }
+
+        [Command("polo")]
+        [Name("Polo")]
+        [Summary("Fun and silly response in a user's expectations for a Polo command.")]
+        public async Task PoloAsync()
+        {
+            await ReplyAsync("But nobody came.");
+        }
+        #endregion
     }
 }

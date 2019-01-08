@@ -138,6 +138,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
     <Compile Include="Util\BotSettings.cs" />
     <Compile Include="Util\DataFileNames.cs" />

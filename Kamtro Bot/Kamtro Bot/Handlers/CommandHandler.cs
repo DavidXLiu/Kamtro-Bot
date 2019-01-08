@@ -69,7 +69,7 @@ namespace Kamtro_Bot.Handlers
                 if (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().Contains("kamtro"))
                 {
                     // Check for similar ping command strings - Arcy
-                    string[] pingStrings = { "you there", "you up", "you running", "you ok", "you good", };
+                    string[] pingStrings = { "you there", "you up", "you running", "you ok", "you good", "you doing ok" };
 
                     foreach (string s in pingStrings)
                     {
