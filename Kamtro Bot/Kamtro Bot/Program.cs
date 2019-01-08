@@ -75,7 +75,7 @@ namespace Kamtro_Bot
         private void SetupFiles() {
             try {
                 Settings = BotSettings.LoadJson();  // load the config from the file  -C
-            } catch(FileNotFoundException e) {
+            } catch(IOException e) {
                 // the files aren't there, so create defaults. -C
                 Console.WriteLine("There was no settings file!\nGenerating a default one...");  // Console message  -C
 
