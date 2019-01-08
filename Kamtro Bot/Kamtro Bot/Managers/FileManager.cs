@@ -14,7 +14,9 @@ namespace Kamtro_Bot.Managers
 
         public string ReadFullFile(string file) {
             reader = new StreamReader(file);
-            return reader.ReadToEnd();
+            string s = reader.ReadToEnd();
+            reader.Close();
+            return s;
         }
     }
 }
