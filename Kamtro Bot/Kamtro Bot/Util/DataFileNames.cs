@@ -8,6 +8,6 @@ namespace Kamtro_Bot
 {
     public class DataFileNames
     {
-        public const string CommandSettingsFile = "Commands/settings.json";
+        public const string CommandSettingsFile = @"Commands\settings.json";
     }
 }
