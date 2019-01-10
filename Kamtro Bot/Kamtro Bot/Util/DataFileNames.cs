@@ -12,10 +12,10 @@ namespace Kamtro_Bot
         public const string GeneralConfigFile = @"Config\settings.json";
         public const string TitleListFile = @"Config\Titles.json";
 
-        // User Data
-        // To Be Added
+        // User Data  -C
+        public const string UserDataFile = @"User Data\UserData.json";
 
-        // Server Data
+        // Server Data  -C
         // To Be Added
     }
 }
