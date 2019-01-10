@@ -29,7 +29,7 @@ namespace Kamtro_Bot
         /// </summary>
         /// <returns></returns>
         public static BotSettings LoadJson() {
-            string fileTxt = new FileManager().ReadFullFile(DataFileNames.CommandSettingsFile); // read the config file
+            string fileTxt = new FileManager().ReadFullFile(DataFileNames.GeneralConfigFile); // read the config file
             BotSettings loaded = JsonConvert.DeserializeObject<BotSettings>(fileTxt);  // deserialize the json into an object
 
             return loaded;
@@ -41,7 +41,7 @@ namespace Kamtro_Bot
         /// </summary>
         public void SaveJson() {
             JsonSerializer serializer = new JsonSerializer();
-            using(StreamWriter sw = new StreamWriter(DataFileNames.CommandSettingsFile)) {
+            using(StreamWriter sw = new StreamWriter(DataFileNames.GeneralConfigFile)) {
                 using (JsonWriter writer = new JsonTextWriter(sw)) {
                     writer.Formatting = Formatting.Indented; // make it so that the entire file isn't on one line
                     serializer.Serialize(writer, this);  // serialize the settings object and save it to the file
