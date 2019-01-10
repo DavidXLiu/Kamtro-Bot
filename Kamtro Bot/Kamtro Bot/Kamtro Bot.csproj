@@ -140,6 +140,9 @@
   <ItemGroup>
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
+    <Compile Include="Nodes\ColorNode.cs" />
+    <Compile Include="Nodes\TitleNode.cs" />
+    <Compile Include="Nodes\UserData.cs" />
     <Compile Include="Util\BotSettings.cs" />
     <Compile Include="Util\DataFileNames.cs" />
     <Compile Include="Handlers\CommandHandler.cs" />
