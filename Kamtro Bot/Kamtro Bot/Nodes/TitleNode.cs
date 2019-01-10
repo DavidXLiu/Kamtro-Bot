@@ -42,14 +42,7 @@ namespace Kamtro_Bot.Nodes
         }
 
         public static void SaveNodeMap() {
-            JsonSerializer serializer = new JsonSerializer();
-
-            using(StreamWriter sw = new StreamWriter(DataFileNames.TitleListFile)) {
-                using(JsonWriter writer = new JsonTextWriter(sw)) {
-                    writer.Formatting = Formatting.Indented;  // set the formatting  -C
-                    serializer.Serialize(writer, NodeMap);  // Serealize and save the Titles.  -C
-                }
-            }
+            BotUtils.WriteToJson(NodeMap, DataFileNames.TitleListFile);  // Save the file
         }
     }
 }

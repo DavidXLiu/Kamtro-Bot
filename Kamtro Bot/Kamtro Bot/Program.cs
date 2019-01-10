@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 using Discord;
 using Discord.WebSocket;
@@ -27,7 +28,6 @@ namespace Kamtro_Bot
         private const string TokenFile = "token.txt";
 
         public static BotSettings Settings;
-        private static string Token; // not currently initialized
 
         private DiscordSocketClient client;
         private DiscordSocketConfig config;
@@ -73,22 +73,25 @@ namespace Kamtro_Bot
         }
 
         private void SetupFiles() {
-            try {
-                Settings = BotSettings.LoadJson();  // load the config from the file  -C
-            } catch(IOException e) {
-                // the files aren't there, so create defaults. -C
-                Console.WriteLine("There was no settings file!\nGenerating a default one...");  // Console message  -C
+            // Check for the appropriate directories.
+            foreach(string dir in DataFileNames.Folders) {  // Check through all the necessary directories
+                if(!Directory.Exists(dir)) {  // If the directory does not exist
+                    Directory.CreateDirectory(dir);  // Then create it
+                } 
+            }
 
-                Settings = new BotSettings("!"); // default prefix is ! -C
-                if (!Directory.Exists("Commands"))
-                {
-                    // Create directory if the directory to the file does not exist. - Arcy
-                    Directory.CreateDirectory("Commands");
-                }
-                StreamWriter sw = File.CreateText(DataFileNames.CommandSettingsFile);  // Create the file  -C
-                sw.Close(); // Close file after creating text - Arcy.
+            // We need a special case for the config
+            if(!File.Exists(DataFileNames.GeneralConfigFile)) {  // If there isn't a config
+                Settings = new BotSettings("!");  // Create a default one
+                Settings.SaveJson();  // Save it
+            }
 
-                Settings.SaveJson();  // save to the file
+            // Now for the files
+            // This loop uses Reflection to iterate through all of the file paths and create any missing files
+            // The settings.json file is the only one that needs a default template generated for it, and was handled above.
+            foreach (FieldInfo fieldInfo in typeof(DataFileNames).GetFields(BindingFlags.Static | BindingFlags.Public)) {
+                string file = fieldInfo.GetValue(null) as string;
+                File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
             }
         }
 

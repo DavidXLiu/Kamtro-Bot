@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Kamtro_Bot
 {
-    public class DataFileNames
+    public static class DataFileNames
     {
+        /// <summary>
+        /// This is an array of all the directories for the files the bot needs
+        /// If you add a folder name to this list then the bot will create the dir on startup
+        /// Make sure any necessary folders are in this list.
+        /// </summary>
+        public static readonly string[] Folders = {"Config", "User Data"};
+
         // Config Files  -C
         public const string GeneralConfigFile = @"Config\settings.json";
         public const string TitleListFile = @"Config\Titles.json";

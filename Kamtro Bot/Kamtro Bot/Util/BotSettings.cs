@@ -40,13 +40,7 @@ namespace Kamtro_Bot
         /// Not static because it is to be called on the newest instance.
         /// </summary>
         public void SaveJson() {
-            JsonSerializer serializer = new JsonSerializer();
-            using(StreamWriter sw = new StreamWriter(DataFileNames.GeneralConfigFile)) {
-                using (JsonWriter writer = new JsonTextWriter(sw)) {
-                    writer.Formatting = Formatting.Indented; // make it so that the entire file isn't on one line
-                    serializer.Serialize(writer, this);  // serialize the settings object and save it to the file
-                }
-            }
+            BotUtils.WriteToJson(this, DataFileNames.GeneralConfigFile);
         }
     }
 }
