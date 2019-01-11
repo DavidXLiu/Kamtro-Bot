@@ -12,6 +12,7 @@ using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Kamtro_Bot
 {
@@ -28,6 +29,7 @@ namespace Kamtro_Bot
         private const string TokenFile = "token.txt";
 
         public static BotSettings Settings;
+        public static Thread Autosave;
 
         private DiscordSocketClient client;
         private DiscordSocketConfig config;
@@ -35,7 +37,8 @@ namespace Kamtro_Bot
         private CommandHandler _commands;
         private LogHandler _logs;
 
-        private FileManager fileManager;
+        public static FileManager fileManager;
+        public static UserDataManager userDataManager;
 
         static void Main(string[] args)
         {
@@ -51,6 +54,8 @@ namespace Kamtro_Bot
             Console.WriteLine("╚════════════════╝");
             Console.WriteLine("\n------------------\n");
 
+            Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
+
             new Program().StartAsync().GetAwaiter().GetResult();
         }
 
@@ -59,12 +64,18 @@ namespace Kamtro_Bot
             client = new DiscordSocketClient(config); // get the client with the configurations we want
 
             // Initialize 
-            fileManager = new FileManager();  // initialize the file manager
             SetupFiles();  // This is to keep the StartAsync method more readable
+
+            // Managers
+            userDataManager = new UserDataManager(); // This sets up the user data files and loads them into memory
+            fileManager = new FileManager();  // initialize the file manager
 
             // Initialize Handlers
             _commands = new CommandHandler(client);
             _logs = new LogHandler();
+
+            BotUtils.SaveReady = true; // tell the class that the autosave loop should start
+            Autosave.Start();  // Start the autosave loop
 
             await client.LoginAsync(TokenType.Bot, GetToken());
             await client.StartAsync();
@@ -91,6 +102,7 @@ namespace Kamtro_Bot
             // The settings.json file is the only one that needs a default template generated for it, and was handled above.
             foreach (FieldInfo fieldInfo in typeof(DataFileNames).GetFields(BindingFlags.Static | BindingFlags.Public)) {
                 string file = fieldInfo.GetValue(null) as string;
+                Console.WriteLine($"Generated {file}");
                 File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
             }
         }
