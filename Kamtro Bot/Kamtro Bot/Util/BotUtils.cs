@@ -25,7 +25,7 @@ namespace Kamtro_Bot
         /// <param name="message">The message you want to put into kamtro-formatting</param>
         /// <returns>The message in kamtro-formatting</returns>
         public static string KamtroText(string message) {
-            return $"```INI\n{message}\n```";
+            return $"```INI\n[{message}]\n```";
         }
 
         /// <summary>
