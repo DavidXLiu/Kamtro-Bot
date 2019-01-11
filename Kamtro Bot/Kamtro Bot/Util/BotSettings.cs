@@ -19,6 +19,8 @@ namespace Kamtro_Bot
     public class BotSettings
     {
         public string Prefix;
+        public ulong KamtroID;  // The server ID
+        public ulong BotChannelID;  // The ID of the bot channel
 
         public BotSettings(string prefix) {
             Prefix = prefix;

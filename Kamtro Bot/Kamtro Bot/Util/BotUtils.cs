@@ -62,7 +62,8 @@ namespace Kamtro_Bot
         }
 
         public static void StopAutosaveLoop() {
-            SaveLoop = false;  // Stop the loop. The method will resolve, and the thread will end.
+            SaveLoop = false;  // Stop the loop.
+            Program.Autosave.Abort();  // Stop the thread here, just in case
         }
     }
 }
