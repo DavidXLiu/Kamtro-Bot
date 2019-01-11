@@ -8,6 +8,8 @@ using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 
+using Kamtro_Bot.Util;
+
 namespace Kamtro_Bot.Modules
 {
     /// <summary>
@@ -25,7 +27,7 @@ namespace Kamtro_Bot.Modules
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             // Find if user entered a role
-            if (String.IsNullOrWhiteSpace(message))
+            if (!String.IsNullOrWhiteSpace(message))
             {
                 /// TO DO
                 /// When nothing is entered, make a prompt for selecting a role to add
