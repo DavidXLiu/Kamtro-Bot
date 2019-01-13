@@ -9,7 +9,7 @@ namespace Kamtro_Bot.Util
     /// <summary>
     /// All methods in this class are static methods that are used to compare two strings. - Arcy
     /// </summary>
-    public static class StringComparison
+    public static class UtilStringComparison
     {
         /// <summary>
         /// Compares how close the second string is to the first string. Returns a float with a maximum of 1, where 1 is a perfect match. - Arcy

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Discord.Commands;
 using Kamtro_Bot.Managers;
 using System.IO;
+using Discord.WebSocket;
 
 namespace Kamtro_Bot
 {
@@ -18,12 +19,29 @@ namespace Kamtro_Bot
     /// </summary>
     public class BotSettings
     {
+        public static List<SocketRole>
+
         public string Prefix;
         public ulong KamtroID;  // The server ID
         public ulong BotChannelID;  // The ID of the bot channel
 
-        public BotSettings(string prefix) {
+        // Roles
+        public List<ulong> ModifiableRoles;
+        public List<ulong> ModeratorRoles;
+
+        public ulong NSFWRole;
+
+        /// <summary>
+        /// Constructor for the BotSettings Class. 
+        /// </summary>
+        /// -C
+        /// <param name="prefix">The prefix for bot commands.</param>
+        /// <param name="kamtro_id">The ID of the Kamtro Server.</param>
+        /// <param name="bot_channel_id">The ID of the bot channel</param>
+        public BotSettings(string prefix, ulong kamtro_id = 390720675486367744, ulong bot_channel_id = 390982003455164426) {
             Prefix = prefix;
+            KamtroID = kamtro_id;
+            BotChannelID = bot_channel_id;
         }
 
         /// <summary>
