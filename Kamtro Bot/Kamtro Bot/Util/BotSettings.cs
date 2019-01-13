@@ -19,8 +19,6 @@ namespace Kamtro_Bot
     /// </summary>
     public class BotSettings
     {
-        public static List<SocketRole>
-
         public string Prefix;
         public ulong KamtroID;  // The server ID
         public ulong BotChannelID;  // The ID of the bot channel
