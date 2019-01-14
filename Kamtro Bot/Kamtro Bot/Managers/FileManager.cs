@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kamtro_Bot.Managers
 {
-    class FileManager
+    public class FileManager
     {
         private StreamReader reader;
         private StreamWriter writer;

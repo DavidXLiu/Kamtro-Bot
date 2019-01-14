@@ -138,11 +138,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\BasicEmbed.cs" />
+    <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
     <Compile Include="Nodes\ColorNode.cs" />
+    <Compile Include="Nodes\MenuOptionNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
     <Compile Include="Util\BotSettings.cs" />
