@@ -31,7 +31,7 @@ namespace Kamtro_Bot
         public static BotSettings Settings;
         public static Thread Autosave;
 
-        private DiscordSocketClient client;
+        public static DiscordSocketClient Client;
         private DiscordSocketConfig config;
 
         private CommandHandler _commands;
@@ -61,7 +61,7 @@ namespace Kamtro_Bot
 
         public async Task StartAsync() {
             config = new DiscordSocketConfig() { MessageCacheSize = 1000000 }; // initialize the config for the client, and set the message cache size
-            client = new DiscordSocketClient(config); // get the client with the configurations we want
+            Client = new DiscordSocketClient(config); // get the client with the configurations we want
 
             // Initialize 
             SetupFiles();  // This is to keep the StartAsync method more readable
@@ -71,14 +71,14 @@ namespace Kamtro_Bot
             fileManager = new FileManager();  // initialize the file manager
 
             // Initialize Handlers
-            _commands = new CommandHandler(client);
+            _commands = new CommandHandler(Client);
             _logs = new LogHandler();
 
             BotUtils.SaveReady = true; // tell the class that the autosave loop should start
             Autosave.Start();  // Start the autosave loop
 
-            await client.LoginAsync(TokenType.Bot, GetToken());
-            await client.StartAsync();
+            await Client.LoginAsync(TokenType.Bot, GetToken());
+            await Client.StartAsync();
 
             await Task.Delay(-1);
         }
