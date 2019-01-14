@@ -31,14 +31,14 @@ namespace Kamtro_Bot.Interfaces
         // This method returns the interface as an embed object.
         public abstract Embed GetEmbed();
 
-        public void AddReactions(SocketUserMessage message) {
+        public async Task AddReactions(SocketUserMessage message) {
             List<Emoji> reactions = new List<Emoji>();  // make a new List for the reactions
             
             foreach (MenuOptionNode node in MenuOptions) {  // For each menu option
                 reactions.Add(new Emoji(node.Icon));  // Store the reactions in the list
             }
 
-            message.AddReactionsAsync(reactions.ToArray());  // And add them.
+            await message.AddReactionsAsync(reactions.ToArray());  // And add them.
         }
     }
 }
