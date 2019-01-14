@@ -23,15 +23,17 @@ namespace Kamtro_Bot
     /// Completed I think.
     /// -C
     /// </remarks>
-    class Program
+    public class Program
     {
+        public static Program Instance;  // This is to make the bot client globally accessible
+
         public const string Version = "0.0.1";  // We could manually change this, or do it differently. I'm going to leave it as it is for this test commit. -C
         private const string TokenFile = "token.txt";
 
         public static BotSettings Settings;
         public static Thread Autosave;
 
-        private DiscordSocketClient client;
+        public DiscordSocketClient client;
         private DiscordSocketConfig config;
 
         private CommandHandler _commands;
@@ -76,6 +78,8 @@ namespace Kamtro_Bot
 
             BotUtils.SaveReady = true; // tell the class that the autosave loop should start
             Autosave.Start();  // Start the autosave loop
+
+            Instance = this;  // Set the instance variable
 
             await client.LoginAsync(TokenType.Bot, GetToken());
             await client.StartAsync();
