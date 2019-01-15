@@ -58,6 +58,8 @@ namespace Kamtro_Bot
 
             Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
 
+            SetupFiles();  // This is to keep the Main method more readable
+
             new Program().StartAsync().GetAwaiter().GetResult();
         }
 
@@ -66,7 +68,6 @@ namespace Kamtro_Bot
             client = new DiscordSocketClient(config); // get the client with the configurations we want
 
             // Initialize 
-            SetupFiles();  // This is to keep the StartAsync method more readable
 
             // Managers
             userDataManager = new UserDataManager(); // This sets up the user data files and loads them into memory
@@ -84,10 +85,10 @@ namespace Kamtro_Bot
             await client.LoginAsync(TokenType.Bot, GetToken());
             await client.StartAsync();
 
-            await Task.Delay(-1);
+            await Task.Delay(-1);  // Stop this method from exiting.
         }
 
-        private void SetupFiles() {
+        private static void SetupFiles() {
             // Check for the appropriate directories.
             foreach(string dir in DataFileNames.Folders) {  // Check through all the necessary directories
                 if(!Directory.Exists(dir)) {  // If the directory does not exist
@@ -104,7 +105,13 @@ namespace Kamtro_Bot
             // Now for the files
             // This loop uses Reflection to iterate through all of the file paths and create any missing files
             // The settings.json file is the only one that needs a default template generated for it, and was handled above.
+            // The passedFolders variable is so that it skips the folder array.
+            bool passedFolders = false;
             foreach (FieldInfo fieldInfo in typeof(DataFileNames).GetFields(BindingFlags.Static | BindingFlags.Public)) {
+                if(!passedFolders) {
+                    passedFolders = true;
+                    continue;
+                }
                 string file = fieldInfo.GetValue(null) as string;
                 Console.WriteLine($"Generated {file}");
                 File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
@@ -113,10 +120,18 @@ namespace Kamtro_Bot
 
         /// <summary>
         /// This method reads the token from the file named token.txt
-        /// -C
         /// </summary>
+        /// -C
         /// <returns>the token as a string</returns>
         private string GetToken() {
+            if (!File.Exists("token.txt")) {
+                // if there is no token file  -C
+                Console.WriteLine("\nNo token.txt file found!\nPress any key to exit...");  // notify the user  -C
+                Console.ReadKey();  // wait for the keypress  -C
+                Environment.Exit(0);  // then exit  -C
+            }
+
+            // If the token file exists, then read it and return the token
             return fileManager.ReadFullFile("token.txt");
         }
     }
