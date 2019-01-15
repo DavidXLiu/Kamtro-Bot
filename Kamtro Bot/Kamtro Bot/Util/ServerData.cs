@@ -24,7 +24,7 @@ namespace Kamtro_Bot.Util
         /// <param name="bs"></param>
         public ServerData(BotSettings bs)
         {
-            DiscordSocketClient client = Program.Instance.client;
+            DiscordSocketClient client = Program.Instance.Client;
             SocketGuild server = client.GetGuild(bs.KamtroID);
 
             #region AllRoles
