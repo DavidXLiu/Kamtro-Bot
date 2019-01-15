@@ -145,6 +145,7 @@
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
     <Compile Include="Nodes\ColorNode.cs" />
+    <Compile Include="Nodes\EventQueueNode.cs" />
     <Compile Include="Nodes\MenuOptionNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
