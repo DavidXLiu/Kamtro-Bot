@@ -20,6 +20,9 @@ namespace Kamtro_Bot
     public class BotSettings
     {
         public string Prefix;
+        /// <summary>
+        /// Discord ID for the Kamtro Server.
+        /// </summary>
         public ulong KamtroID;  // The server ID
         public ulong BotChannelID;  // The ID of the bot channel
 
