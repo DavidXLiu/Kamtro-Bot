@@ -14,9 +14,15 @@ namespace Kamtro_Bot.Util
     /// </summary>
     class ServerData
     {
+        // Roles
         public static List<SocketRole> AllRoles;
         public static List<SocketRole> ModifiableRoles;
         public static List<SocketRole> ModeratorRoles;
+
+        public static SocketRole KamtroBotRole;
+
+        // Users
+        public static SocketGuildUser PrimaryContactUser;
 
         /// <summary>
         /// Goes through the process of initializing and populating all data collections with the passed in data.
@@ -24,7 +30,7 @@ namespace Kamtro_Bot.Util
         /// <param name="bs"></param>
         public ServerData(BotSettings bs)
         {
-            DiscordSocketClient client = Program.Instance.Client;
+            DiscordSocketClient client = Program.Client;
             SocketGuild server = client.GetGuild(bs.KamtroID);
 
             #region AllRoles
@@ -58,6 +64,14 @@ namespace Kamtro_Bot.Util
                     }
                 }
             }
+            #endregion
+
+            #region Individual Roles
+            KamtroBotRole = server.GetRole(bs.KamtroBotRoleId);
+            #endregion
+
+            #region Users
+            PrimaryContactUser = server.GetUser(bs.PrimaryContactUserId);
             #endregion
         }
     }

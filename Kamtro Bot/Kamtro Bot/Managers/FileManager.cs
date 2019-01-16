@@ -5,15 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kamtro_Bot.Managers
+namespace Kamtro_Bot
 {
     public class FileManager
     {
-        private StreamReader reader;
-        private StreamWriter writer;
-
-        public string ReadFullFile(string file) {
-            reader = new StreamReader(file);
+        public static string ReadFullFile(string file) {
+            StreamReader reader = new StreamReader(file);
             string s = reader.ReadToEnd();
             reader.Close();
             return s;

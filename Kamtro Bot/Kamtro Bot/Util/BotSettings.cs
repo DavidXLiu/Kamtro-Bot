@@ -30,7 +30,11 @@ namespace Kamtro_Bot
         public List<ulong> ModifiableRoles;
         public List<ulong> ModeratorRoles;
 
+        public ulong KamtroBotRoleId;
         public ulong NSFWRole;
+
+        // Users
+        public ulong PrimaryContactUserId; // Should always be Arcy, but made it just in case it needs to be changed - Arcy
 
         /// <summary>
         /// Constructor for the BotSettings Class. 
@@ -50,7 +54,7 @@ namespace Kamtro_Bot
         /// </summary>
         /// <returns></returns>
         public static BotSettings LoadJson() {
-            string fileTxt = new FileManager().ReadFullFile(DataFileNames.GeneralConfigFile); // read the config file
+            string fileTxt = FileManager.ReadFullFile(DataFileNames.GeneralConfigFile); // read the config file
             BotSettings loaded = JsonConvert.DeserializeObject<BotSettings>(fileTxt);  // deserialize the json into an object
 
             return loaded;

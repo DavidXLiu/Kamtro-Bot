@@ -25,8 +25,6 @@ namespace Kamtro_Bot
     /// </remarks>
     public class Program
     {
-        public static Program Instance;  // This is to make the bot client globally accessible
-
         public const string Version = "0.0.1";  // We could manually change this, or do it differently. I'm going to leave it as it is for this test commit. -C
         private const string TokenFile = "token.txt";
 
@@ -80,8 +78,6 @@ namespace Kamtro_Bot
             BotUtils.SaveReady = true; // tell the class that the autosave loop should start
             Autosave.Start();  // Start the autosave loop
 
-            Instance = this;  // Set the instance variable
-
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();
 
@@ -132,7 +128,7 @@ namespace Kamtro_Bot
             }
 
             // If the token file exists, then read it and return the token
-            return fileManager.ReadFullFile("token.txt");
+            return FileManager.ReadFullFile("token.txt");
         }
     }
 }
