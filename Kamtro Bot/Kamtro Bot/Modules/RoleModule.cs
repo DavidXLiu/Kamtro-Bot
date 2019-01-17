@@ -10,6 +10,9 @@ using Discord.WebSocket;
 using Discord.Commands;
 
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Interfaces;
+using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Modules
 {
@@ -30,17 +33,30 @@ namespace Kamtro_Bot.Modules
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             // Find if user entered a role
-            if (string.IsNullOrWhiteSpace(message))
-            {
+            if (string.IsNullOrWhiteSpace(message)) {
                 /// TO DO 
                 /// When nothing is entered, make a prompt for selecting a role to add
                 /// [DONE] When a role cannot be added, notify the user that it is not a modifiable role
                 /// [DONE] When the user already has the role, notify the user that they already have the role
                 /// [DONE] Give the role to the user if they do not have the role
-                /// [DONE] Notify the user if the role doesn't exist        
-            }
-            else
-            {
+                /// [DONE] Notify the user if the role doesn't exist    
+                /// 
+                /// Current issue: This doesn't work over DM, I'll try to fix it tomorrow
+                
+                RoleSelectionEmbed embed = new RoleSelectionEmbed(Context.Message.Author as SocketGuildUser);
+                await embed.Display(Context.Channel);
+                await embed.AddReactions();
+
+                ulong id = Context.Message.Author.Id;
+                if (ReactionHandler.EventQueue.ContainsKey(id)) {
+                    // If the user is in the queue
+                    ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // Add the action to their list
+                } else {
+                    // otherwise
+                    ReactionHandler.EventQueue.Add(id, new List<EventQueueNode>());  // Create the list
+                    ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // And add the action to their list
+                }
+            } else {
                 // Check all roles - Arcy
                 foreach (SocketRole role in ServerData.AllRoles)
                 {

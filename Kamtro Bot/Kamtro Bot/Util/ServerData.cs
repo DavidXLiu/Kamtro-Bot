@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Discord.WebSocket;
+using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Util
 {
@@ -18,6 +19,8 @@ namespace Kamtro_Bot.Util
         public static List<SocketRole> AllRoles;
         public static List<SocketRole> ModifiableRoles;
         public static List<SocketRole> ModeratorRoles;
+
+        public static Dictionary<SocketRole, RoleInfoNode> RoleInfo;
 
         public static SocketRole KamtroBotRole;
 

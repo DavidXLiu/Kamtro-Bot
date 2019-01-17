@@ -10,6 +10,7 @@ using Discord.Commands;
 using Kamtro_Bot.Managers;
 using System.IO;
 using Discord.WebSocket;
+using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot
 {
@@ -30,6 +31,8 @@ namespace Kamtro_Bot
         public List<ulong> ModifiableRoles;
         public List<ulong> ModeratorRoles;
 
+        public Dictionary<ulong, RoleInfoNode> RoleDescriptions;
+
         public ulong KamtroBotRoleId;
         public ulong NSFWRole;
 
@@ -43,10 +46,20 @@ namespace Kamtro_Bot
         /// <param name="prefix">The prefix for bot commands.</param>
         /// <param name="kamtro_id">The ID of the Kamtro Server.</param>
         /// <param name="bot_channel_id">The ID of the bot channel</param>
-        public BotSettings(string prefix, ulong kamtro_id = 390720675486367744, ulong bot_channel_id = 390982003455164426) {
+        /// <param name="roleInfo">Custom role descriptions for the menus</param>
+        public BotSettings(string prefix, ulong kamtro_id = 390720675486367744, ulong bot_channel_id = 390982003455164426, Dictionary<ulong, RoleInfoNode> roleInfo = null) {
             Prefix = prefix;
             KamtroID = kamtro_id;
             BotChannelID = bot_channel_id;
+
+            if (roleInfo == null) {
+                RoleDescriptions = new Dictionary<ulong, RoleInfoNode>();
+
+                RoleDescriptions.Add(1234, new RoleInfoNode("exampleRole", "Change Me"));
+                RoleDescriptions.Add(1221234, new RoleInfoNode("Other ROle ", "Change Me as well please"));
+            } else {
+                RoleDescriptions = roleInfo;
+            }
         }
 
         /// <summary>

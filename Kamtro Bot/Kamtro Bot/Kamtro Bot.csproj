@@ -138,8 +138,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\BasicEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
+    <Compile Include="Interfaces\RoleSelectionEmbed.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />
@@ -147,10 +149,12 @@
     <Compile Include="Nodes\ColorNode.cs" />
     <Compile Include="Nodes\EventQueueNode.cs" />
     <Compile Include="Nodes\MenuOptionNode.cs" />
+    <Compile Include="Nodes\RoleInfoNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
     <Compile Include="Util\BotSettings.cs" />
     <Compile Include="Util\BotUtils.cs" />
+    <Compile Include="Util\CustomEmotes.cs" />
     <Compile Include="Util\DataFileNames.cs" />
     <Compile Include="Handlers\CommandHandler.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
