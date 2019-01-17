@@ -42,7 +42,7 @@ namespace Kamtro_Bot.Modules
                 /// 
                 /// Current issue: This doesn't work over DM, I'll try to fix it tomorrow
 
-                RoleSelectionEmbed embed = new RoleSelectionEmbed(Context.Message.Author as SocketGuildUser);
+                RoleAdditionEmbed embed = new RoleAdditionEmbed(Context.Message.Author as SocketGuildUser);
                 await embed.Display(Context.Channel);
                 await embed.AddReactions();
 

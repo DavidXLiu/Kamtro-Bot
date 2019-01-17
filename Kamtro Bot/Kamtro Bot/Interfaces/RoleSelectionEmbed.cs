@@ -11,7 +11,7 @@ using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces
 {
-    public class RoleSelectionEmbed : KamtroEmbedBase
+    public class RoleAdditionEmbed : KamtroEmbedBase
     {
         private const string UP = "⬆️";
         private const string DOWN = "⬇️";
@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Interfaces
         private SocketGuildUser sender;  // The person who the embed is for
 
 
-        public RoleSelectionEmbed(SocketGuildUser user, bool remove) {
+        public RoleAdditionEmbed(SocketGuildUser user, bool remove) {
             // This method call adds all of the menu options to the array (Located in the base class)
             // Each option is added as a new MenuOptionNode object.
             // The last node passed in this specific call is one that's located in the ReactionHandler class
@@ -70,7 +70,7 @@ namespace Kamtro_Bot.Interfaces
             return builder.Build();  // Build the embed and return it
         }
 
-        public override void PerformAction(SocketReaction option) {
+        public new async Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
                 case UP:
                     cursorPos++;
@@ -81,7 +81,7 @@ namespace Kamtro_Bot.Interfaces
                     break;
 
                 case SELECT:
-                    sender.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
+                    await sender.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
                     break;
 
                 default:
@@ -95,7 +95,7 @@ namespace Kamtro_Bot.Interfaces
                 cursorPos = 0;
             }
 
-            Message.ModifyAsync(msg => msg.Embed = GetEmbed());  // Edit the message
+            await Message.ModifyAsync(msg => msg.Embed = GetEmbed());  // Edit the message
         }
 
         /// <summary>

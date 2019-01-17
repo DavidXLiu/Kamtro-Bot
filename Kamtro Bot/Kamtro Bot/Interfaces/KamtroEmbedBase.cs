@@ -37,7 +37,9 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// -C
         /// <param name="option"></param>
-        public abstract void PerformAction(SocketReaction option);
+        public async Task PerformAction(SocketReaction option) {
+            // Leave this empty
+        }
 
         /// <summary>
         /// Builds and returns the Interface as an Embed
