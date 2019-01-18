@@ -95,8 +95,10 @@ namespace Kamtro_Bot
 
             // We need a special case for the config
             if(!File.Exists(DataFileNames.GeneralConfigFile)) {  // If there isn't a config
+                File.CreateText(DataFileNames.GeneralConfigFile).Close();
                 Settings = new BotSettings("!");  // Create a default one
                 Settings.SaveJson();  // Save it
+                Console.Write(Settings.RoleDescriptions.ToString());
             }
 
             // Now for the files
@@ -104,14 +106,20 @@ namespace Kamtro_Bot
             // The settings.json file is the only one that needs a default template generated for it, and was handled above.
             // The passedFolders variable is so that it skips the folder array.
             bool passedFolders = false;
+            string file;
+
             foreach (FieldInfo fieldInfo in typeof(DataFileNames).GetFields(BindingFlags.Static | BindingFlags.Public)) {
                 if(!passedFolders) {
                     passedFolders = true;
                     continue;
                 }
-                string file = fieldInfo.GetValue(null) as string;
-                Console.WriteLine($"Generated {file}");
-                File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
+
+                file = fieldInfo.GetValue(null) as string;
+
+                if(!File.Exists(file)) {
+                    Console.WriteLine($"Generated {file}");
+                    File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
+                }
             }
         }
 

@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Interfaces
         private SocketGuildUser sender;  // The person who the embed is for
 
 
-        public RoleAdditionEmbed(SocketGuildUser user, bool remove) {
+        public RoleAdditionEmbed(SocketGuildUser user) {
             // This method call adds all of the menu options to the array (Located in the base class)
             // Each option is added as a new MenuOptionNode object.
             // The last node passed in this specific call is one that's located in the ReactionHandler class
