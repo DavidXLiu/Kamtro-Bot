@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Kamtro_Bot.Interfaces
         protected bool HasActions = true;  // default is true, more interfaces have input than don't.
         protected List<MenuOptionNode> MenuOptions;  // This should stay uninitialized. If there are no options, then it's value doesn't matter.
                                                  // This should be initialized in the constructor of the class.
-        public RestUserMessage Message;  // The message that the embed is in. This isn't a SocketUserMessage because that's what the SendMessageAsync method returns.
+        public ulong Message;  // The message that the embed is in. This isn't a SocketUserMessage because that's what the SendMessageAsync method returns.
                                             // Both types can do the same things.
 
         /// <summary>
@@ -70,13 +71,13 @@ namespace Kamtro_Bot.Interfaces
 
             for(int i = 0; i < MenuOptions.Count(); i++) {
                 option = MenuOptions[i];
-                footerText += $"{option.Icon} {option.Description} {((i == MenuOptions.Count-1) ? "| ":"")}";  // There are 3 variables in this line, 
+                footerText += $"{option.Icon} {option.Description} {((i != MenuOptions.Count-1) ? "| ":"")}";  // There are 3 variables in this line, 
                                                                                                                // The first two are self-explanitory, but the last one is
                                                                                                                // A turnary operator that only places the | splitter char 
                                                                                                                // If it's not at the last element .
             }
 
-            embedBuilder.Footer.WithText(footerText);
+            embedBuilder.WithFooter(footerText);
 
             return embedBuilder;
         }
@@ -90,14 +91,11 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// <param name="message">The me</param>
         /// <returns></returns>
-        public async Task AddReactions() {
-            List<Emoji> reactions = new List<Emoji>();  // make a new List for the reactions
-            
+        public async Task AddReactions() {            
             foreach (MenuOptionNode node in MenuOptions) {  // For each menu option
-                reactions.Add(new Emoji(node.Icon));  // Store the reactions in the list
+                await Message.AddReactionAsync(new Emoji(node.Icon));  // Add the emoji as a reaction
             }
-
-            await Message.AddReactionsAsync(reactions.ToArray());  // And add them.
+        
         }
 
         /// <summary>
@@ -108,7 +106,7 @@ namespace Kamtro_Bot.Interfaces
         public async Task Display(ISocketMessageChannel channel) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
-            Message = await channel.SendMessageAsync(null, false, kamtroEmbed);  // send the embed in the message
+            Message = await channel.SendMessageAsync(null, false, kamtroEmbed).Id;  // send the embed in the message
 
             await AddReactions();  // Add the reactions
         }

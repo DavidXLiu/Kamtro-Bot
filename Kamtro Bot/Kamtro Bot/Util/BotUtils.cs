@@ -36,7 +36,7 @@ namespace Kamtro_Bot
         public static void WriteToJson(object toWrite, string location) {
             JsonSerializer serializer = new JsonSerializer();
             using (StreamWriter sw = new StreamWriter(location)) {
-                using (JsonWriter writer = new JsonTextWriter(sw)) {
+                using (JsonTextWriter writer = new JsonTextWriter(sw)) {
                     writer.Formatting = Formatting.Indented; // make it so that the entire file isn't on one line
                     serializer.Serialize(writer, toWrite);  // serialize the settings object and save it to the file
                 }
