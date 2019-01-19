@@ -17,7 +17,7 @@ namespace Kamtro_Bot.Interfaces
         private const string DOWN = "⬇️";
         private const string SELECT = "🔷";
 
-        private static readonly int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go
+        private int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go
         private int cursorPos = 0;  // How many spaces down the cursor is
         private SocketGuildUser sender;  // The person who the embed is for
 
@@ -48,12 +48,15 @@ namespace Kamtro_Bot.Interfaces
             for(int i = 0; i < ServerData.ModifiableRoles.Count; i++) {
                 if(cursorPos == i) {
                     // If the cursor is on this line
-                    cursor = CustomEmotes.CursorAnimated; // Show it
+                    //cursor = CustomEmotes.CursorAnimated; // Show it
+                    cursor = ">";
                 } else {
                     // otherwise
-                    cursor = CustomEmotes.CursorBlankSpace;  // Don't 
+                    //cursor = CustomEmotes.CursorBlankSpace;  // Don't 
+                    cursor = " ";
                 }
 
+                var x = ServerData.ModifiableRoles;
 
                 shouldBeBold = sender.Roles.Contains(ServerData.ModifiableRoles[i]);  // if the user has the role, make it bold.
                 roleList += MakeBold($"{((i == 0) ? "":"\n")}{cursor} {ServerData.ModifiableRoles[i].Name}", shouldBeBold);

@@ -14,6 +14,7 @@ using Kamtro_Bot.Managers;
 using Newtonsoft.Json;
 using System.Threading;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot
 {
@@ -37,6 +38,7 @@ namespace Kamtro_Bot
 
         private CommandHandler _commands;
         private LogHandler _logs;
+        private ReactionHandler _reaction;
 
         public static FileManager fileManager;
         public static UserDataManager userDataManager;
@@ -62,6 +64,7 @@ namespace Kamtro_Bot
             new Program().StartAsync().GetAwaiter().GetResult();
         }
 
+
         public async Task StartAsync() {
             config = new DiscordSocketConfig() { MessageCacheSize = 1000000 }; // initialize the config for the client, and set the message cache size
             Client = new DiscordSocketClient(config); // get the client with the configurations we want
@@ -75,6 +78,9 @@ namespace Kamtro_Bot
             // Initialize Handlers
             _commands = new CommandHandler(Client);
             _logs = new LogHandler();
+            _reaction = new ReactionHandler(Client);
+
+            Client.Ready += OnReady;  // Add the OnReady event
 
             BotUtils.SaveReady = true; // tell the class that the autosave loop should start
             Autosave.Start();  // Start the autosave loop
@@ -82,7 +88,14 @@ namespace Kamtro_Bot
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();
 
+            Console.WriteLine("Logged in!");
+
             await Task.Delay(-1);  // Stop this method from exiting.
+        }
+
+        public async Task OnReady() {
+            SetupGeneral();
+            Console.WriteLine("Ready!");
         }
 
         private static void SetupFiles() {
@@ -99,6 +112,8 @@ namespace Kamtro_Bot
                 Settings = new BotSettings("!");  // Create a default one
                 Settings.SaveJson();  // Save it
                 Console.Write(Settings.RoleDescriptions.ToString());
+            } else {
+                Settings = JsonConvert.DeserializeObject<BotSettings>(FileManager.ReadFullFile(DataFileNames.GeneralConfigFile));  // Load from the file
             }
 
             // Now for the files
@@ -121,6 +136,10 @@ namespace Kamtro_Bot
                     File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
                 }
             }
+        }
+
+        private static void SetupGeneral() {
+            ServerData.SetupServerData(Settings);
         }
 
         /// <summary>
