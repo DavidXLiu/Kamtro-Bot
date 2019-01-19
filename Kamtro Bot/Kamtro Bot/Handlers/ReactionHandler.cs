@@ -27,6 +27,8 @@ namespace Kamtro_Bot.Handlers
         public ReactionHandler(DiscordSocketClient client) {
             client.ReactionAdded += HandleReactionAsync;
             client.ReactionRemoved += HandleReactionAsync;
+
+            EventQueue = new Dictionary<ulong, List<EventQueueNode>>();
         }
 
         private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> cacheableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
@@ -44,7 +46,7 @@ namespace Kamtro_Bot.Handlers
                         return;  // Also exit the method
                     }
 
-                    action.EventAction.PerformAction(reaction);  // Do the action with the reaction specified
+                    await action.EventAction.PerformAction(reaction);  // Do the action with the reaction specified
                 }
             }
         }

@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Interfaces
             throw new NotImplementedException();
         }
 
-        public new async Task PerformAction(SocketReaction option) {
+        public override async Task PerformAction(SocketReaction option) {
             throw new NotImplementedException();
         }
     }

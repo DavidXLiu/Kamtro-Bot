@@ -48,7 +48,7 @@ namespace Kamtro_Bot.Modules
                 await embed.Display(Context.Channel);
                 //await embed.AddReactions();
 
-                await embed.Message.AddReactionAsync(new Emoji("\U0001f537"));
+                //await embed.Message.AddReactionAsync(new Emoji("\U0001f537"));
 
                 ulong id = Context.Message.Author.Id;
                 if (ReactionHandler.EventQueue.ContainsKey(id)) {

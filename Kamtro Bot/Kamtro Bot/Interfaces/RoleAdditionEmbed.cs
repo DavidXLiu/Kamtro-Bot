@@ -13,23 +13,25 @@ namespace Kamtro_Bot.Interfaces
 {
     public class RoleAdditionEmbed : KamtroEmbedBase
     {
-        private const string UP = "⬆️";
-        private const string DOWN = "⬇️";
-        private const string SELECT = "🔷";
+        private const string UP = "\u2b06";
+        private const string DOWN = "\u2b07";
+        private const string SELECT = "\U0001f537";
 
         private int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go
         private int cursorPos = 0;  // How many spaces down the cursor is
         private SocketGuildUser sender;  // The person who the embed is for
 
+        private bool boldOverride = false;  // This is for 
+        private ulong boldId = 0;
 
         public RoleAdditionEmbed(SocketGuildUser user) {
             // This method call adds all of the menu options to the array (Located in the base class)
             // Each option is added as a new MenuOptionNode object.
             // The last node passed in this specific call is one that's located in the ReactionHandler class
             // It's for the Done button.
-            AddMenuOptions(new MenuOptionNode("⬆️", "Cursor up"),
-                new MenuOptionNode("⬇️", "Cursor down"),
-                new MenuOptionNode("🔷", "Select"),
+            AddMenuOptions(new MenuOptionNode(UP, "Cursor up"),
+                new MenuOptionNode(DOWN, "Cursor down"),
+                new MenuOptionNode(SELECT, "Select"),
                 ReactionHandler.DONE_NODE);
 
             sender = user;  // Set the sender variable
@@ -56,10 +58,14 @@ namespace Kamtro_Bot.Interfaces
                     cursor = " ";
                 }
 
-                var x = ServerData.ModifiableRoles;
+                shouldBeBold = sender.Roles.Contains(ServerData.ModifiableRoles[i]) || (boldOverride && ServerData.ModifiableRoles[i].Id == boldId);  // if the user has the role, make it bold.
 
-                shouldBeBold = sender.Roles.Contains(ServerData.ModifiableRoles[i]);  // if the user has the role, make it bold.
-                roleList += MakeBold($"{((i == 0) ? "":"\n")}{cursor} {ServerData.ModifiableRoles[i].Name}", shouldBeBold);
+                if(boldOverride) {
+                    boldOverride = false; 
+                    boldId = 0;
+                }
+
+                roleList += ((i == 0) ? "" : "\n") + cursor + MakeBold(ServerData.ModifiableRoles[i].Name, shouldBeBold);
             }
 
             builder.AddField("Roles", roleList);
@@ -73,31 +79,35 @@ namespace Kamtro_Bot.Interfaces
             return builder.Build();  // Build the embed and return it
         }
 
-        public new async Task PerformAction(SocketReaction option) {
+        public override async Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
                 case UP:
-                    cursorPos++;
+                    cursorPos--;
                     break;
 
                 case DOWN:
-                    cursorPos--;
+                    cursorPos++;
                     break;
 
                 case SELECT:
                     await sender.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
+                    boldOverride = true;
+                    boldId = ServerData.ModifiableRoles[cursorPos].Id;
                     break;
 
                 default:
                     break;
             }
 
+            Console.WriteLine($"Cursor Position: {cursorPos}");
+
             // Wrap the cursor if it goes past the top
             if(cursorPos < 0) {
-                cursorPos = maxCursorPos;
+                cursorPos = maxCursorPos-1;
             } else if(cursorPos >= maxCursorPos) {
                 cursorPos = 0;
             }
-
+            Console.WriteLine($"New Cursor Position: {cursorPos}");
             await Message.ModifyAsync(msg => msg.Embed = GetEmbed());  // Edit the message
         }
 
