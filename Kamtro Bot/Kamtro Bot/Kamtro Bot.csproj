@@ -144,6 +144,7 @@
     <Compile Include="Interfaces\RoleSelectionEmbed.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\MessagingModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
     <Compile Include="Nodes\ColorNode.cs" />

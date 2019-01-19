@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+
+using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -42,6 +45,30 @@ namespace Kamtro_Bot.Handlers
         }
 
         public async Task HandleCommandAsync(SocketMessage m) {
+
+            #region Message Relay
+            if (m.Channel is SocketDMChannel && !m.Author.IsBot)
+            {
+                // Relay to each user
+                foreach (SocketGuildUser user in ServerData.RelayUsers)
+                {
+                    // Make sure bot is able to send to user
+                    if (!user.GetOrCreateDMChannelAsync().IsFaulted)
+                    {
+                        // Check for attachments
+                        if (m.Attachments.Count > 0)
+                        {
+                            await user.SendMessageAsync($"{m.Attachments.ToList()[0].Url}\n{m.Content}");
+                        }
+                        else
+                        {
+                            await user.SendMessageAsync(m.Content);
+                        }
+                    }
+                }
+            }
+            #endregion
+
             if (Program.Settings.Prefix == null) return;  // if there is no prefix, also prevents null errors  -C
             if (!(m is SocketUserMessage)) return;  // make sure the message is the appropriate type before casting  -C
 
