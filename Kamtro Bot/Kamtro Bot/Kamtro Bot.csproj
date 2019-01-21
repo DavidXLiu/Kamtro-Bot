@@ -141,7 +141,7 @@
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\BasicEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
-    <Compile Include="Interfaces\RoleAdditionEmbed.cs" />
+    <Compile Include="Interfaces\RoleEmbed.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />

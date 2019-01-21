@@ -18,12 +18,22 @@ namespace Kamtro_Bot.Interfaces
     /// -C
     public class BasicEmbed : KamtroEmbedBase
     {
+        public string Title;
+
+        public BasicEmbed() {
+            HasActions = false;
+        }
+
         public override Embed GetEmbed() {
-            throw new NotImplementedException();
+            EmbedBuilder builder = new EmbedBuilder();
+
+            builder.WithTitle(Title);
+
+            return builder.Build();
         }
 
         public override async Task PerformAction(SocketReaction option) {
-            throw new NotImplementedException();
+            // NO-OP
         }
     }
 }

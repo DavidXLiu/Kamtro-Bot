@@ -111,7 +111,9 @@ namespace Kamtro_Bot.Interfaces
 
             Message = await channel.SendMessageAsync(null, false, kamtroEmbed);  // send the embed in the message
 
-            await AddReactions();  // Add the reactions
+            if(HasActions) {
+                await AddReactions();  // Add the reactions
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces
 {
-    public class RoleAdditionEmbed : KamtroEmbedBase
+    public class RoleEmbed : KamtroEmbedBase
     {
         private const string UP = "\u2b06";
         private const string DOWN = "\u2b07";
@@ -21,10 +21,11 @@ namespace Kamtro_Bot.Interfaces
         private int cursorPos = 0;  // How many spaces down the cursor is
         private SocketGuildUser sender;  // The person who the embed is for
 
-        private bool boldOverride = false;  // This is for 
+        private bool boldOverride = false;
+        private bool boldNoverride = false;
         private ulong boldId = 0;
 
-        public RoleAdditionEmbed(SocketGuildUser user) {
+        public RoleEmbed(SocketGuildUser user) {
             // This method call adds all of the menu options to the array (Located in the base class)
             // Each option is added as a new MenuOptionNode object.
             // The last node passed in this specific call is one that's located in the ReactionHandler class
@@ -58,7 +59,8 @@ namespace Kamtro_Bot.Interfaces
                     cursor = " ";
                 }
 
-                shouldBeBold = sender.Roles.Contains(ServerData.ModifiableRoles[i]) || (boldOverride && ServerData.ModifiableRoles[i].Id == boldId);  // if the user has the role, make it bold.
+                shouldBeBold = (sender.Roles.Contains(ServerData.ModifiableRoles[i]) && !boldNoverride) || 
+                    (boldOverride && ServerData.ModifiableRoles[i].Id == boldId);  // if the user has the role, make it bold.
 
                 if(boldOverride) {
                     boldOverride = false; 
@@ -82,16 +84,23 @@ namespace Kamtro_Bot.Interfaces
         public override async Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
                 case UP:
-                    cursorPos--;
+                    cursorPos--;  // Move the cursor up a space
                     break;
 
                 case DOWN:
-                    cursorPos++;
+                    cursorPos++;  // Move the cirsor down a space
                     break;
 
                 case SELECT:
-                    await sender.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
-                    boldOverride = true;
+                    if (!sender.Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
+                        // If the user doesn't have the role
+                        await sender.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
+                        boldOverride = true;
+                    } else {
+                        // If the user does have the role
+                        await sender.RemoveRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Remove it
+                        boldNoverride = true;
+                    }
                     boldId = ServerData.ModifiableRoles[cursorPos].Id;
                     break;
 
