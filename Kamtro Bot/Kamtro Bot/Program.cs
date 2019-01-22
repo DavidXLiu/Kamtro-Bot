@@ -111,7 +111,6 @@ namespace Kamtro_Bot
                 File.CreateText(DataFileNames.GeneralConfigFile).Close();
                 Settings = new BotSettings("!");  // Create a default one
                 Settings.SaveJson();  // Save it
-                Console.Write(Settings.RoleDescriptions.ToString());
             } else {
                 Settings = JsonConvert.DeserializeObject<BotSettings>(FileManager.ReadFullFile(DataFileNames.GeneralConfigFile));  // Load from the file
             }

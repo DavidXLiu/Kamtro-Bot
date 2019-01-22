@@ -41,12 +41,17 @@ namespace Kamtro_Bot.Interfaces
         public override Embed GetEmbed() {
             EmbedBuilder builder = new EmbedBuilder();
 
+            builder.WithTitle("Kamtro Roles");
+
             builder.WithAuthor("Role List");
             builder.WithDescription($"Hover over a role to see it's description\nRoles in **Bold** are ones you already have");
 
             string roleList = "";
             string cursor;  // The type of cursor
             bool shouldBeBold;  // If the line should be bold, as in if the user already has the role
+            bool onId;
+
+
 
             for(int i = 0; i < ServerData.ModifiableRoles.Count; i++) {
                 if(cursorPos == i) {
@@ -59,16 +64,28 @@ namespace Kamtro_Bot.Interfaces
                     cursor = " ";
                 }
 
-                shouldBeBold = (sender.Roles.Contains(ServerData.ModifiableRoles[i]) && !boldNoverride) || 
-                    (boldOverride && ServerData.ModifiableRoles[i].Id == boldId);  // if the user has the role, make it bold.
+                onId = ServerData.ModifiableRoles[i].Id == boldId;
+                shouldBeBold = sender.Roles.Contains(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
+                shouldBeBold = shouldBeBold || (boldOverride && onId);
+                shouldBeBold = shouldBeBold && (!boldNoverride || !onId);
 
-                if(boldOverride) {
+
+            if (boldOverride && ServerData.ModifiableRoles[i].Id == boldId) {
                     boldOverride = false; 
+                    boldId = 0;
+                }
+
+                if(boldNoverride && ServerData.ModifiableRoles[i].Id == boldId) {
+                    boldNoverride = false;
                     boldId = 0;
                 }
 
                 roleList += ((i == 0) ? "" : "\n") + cursor + MakeBold(ServerData.ModifiableRoles[i].Name, shouldBeBold);
             }
+
+            uint colorHex = Convert.ToUInt32(Program.Settings.RoleDescriptions[ServerData.ModifiableRoles[cursorPos].Id].Color, 16);
+            Color embedColor = new Color(colorHex);
+            builder.WithColor(embedColor);
 
             builder.AddField("Roles", roleList);
 
