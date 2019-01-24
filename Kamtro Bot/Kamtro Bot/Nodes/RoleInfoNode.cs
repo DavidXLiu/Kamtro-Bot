@@ -16,10 +16,12 @@ namespace Kamtro_Bot.Nodes
     {
         public string Name;
         public string Description;
+        public string Color;
 
-        public RoleInfoNode(string name, string desc) {
+        public RoleInfoNode(string name, string desc, string color) {
             Name = name;
             Description = desc;
+            Color = color;
         }
     }
 }

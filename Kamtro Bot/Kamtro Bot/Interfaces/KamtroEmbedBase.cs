@@ -30,17 +30,15 @@ namespace Kamtro_Bot.Interfaces
         protected bool HasActions = true;  // default is true, more interfaces have input than don't.
         protected List<MenuOptionNode> MenuOptions;  // This should stay uninitialized. If there are no options, then it's value doesn't matter.
                                                  // This should be initialized in the constructor of the class.
-        public ulong Message;  // The message that the embed is in. This isn't a SocketUserMessage because that's what the SendMessageAsync method returns.
-                                            // Both types can do the same things.
+        public RestUserMessage Message;  // The message that the embed is in. This isn't a SocketUserMessage because that's what the SendMessageAsync method returns.
+                                         // Both types can do the same things.
 
         /// <summary>
         /// This method performs the interface's action for the option chosen by the user.
         /// </summary>
         /// -C
         /// <param name="option"></param>
-        public async Task PerformAction(SocketReaction option) {
-            // Leave this empty
-        }
+        public abstract Task PerformAction(SocketReaction option);
 
         /// <summary>
         /// Builds and returns the Interface as an Embed
@@ -93,7 +91,12 @@ namespace Kamtro_Bot.Interfaces
         /// <returns></returns>
         public async Task AddReactions() {            
             foreach (MenuOptionNode node in MenuOptions) {  // For each menu option
-                await Message.AddReactionAsync(new Emoji(node.Icon));  // Add the emoji as a reaction
+
+                Emoji x = new Emoji(node.Icon);
+                
+                await Message.AddReactionAsync(x);  // Add the emoji as a reaction
+
+                await Task.Delay(100);
             }
         
         }
@@ -106,9 +109,11 @@ namespace Kamtro_Bot.Interfaces
         public async Task Display(ISocketMessageChannel channel) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
-            Message = await channel.SendMessageAsync(null, false, kamtroEmbed).Id;  // send the embed in the message
+            Message = await channel.SendMessageAsync(null, false, kamtroEmbed);  // send the embed in the message
 
-            await AddReactions();  // Add the reactions
+            if(HasActions) {
+                await AddReactions();  // Add the reactions
+            }
         }
     }
 }

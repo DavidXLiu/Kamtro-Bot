@@ -59,8 +59,8 @@ namespace Kamtro_Bot
             if (roleInfo == null) {
                 RoleDescriptions = new Dictionary<ulong, RoleInfoNode>();
 
-                RoleDescriptions.Add(1234, new RoleInfoNode("exampleRole", "Change Me"));
-                RoleDescriptions.Add(1221234, new RoleInfoNode("Other ROle ", "Change Me as well please"));
+                RoleDescriptions.Add(1234, new RoleInfoNode("exampleRole", "Change Me", "0xFFF000"));
+                RoleDescriptions.Add(1221234, new RoleInfoNode("Other ROle ", "Change Me as well please", "0xCAFE87"));
             } else {
                 RoleDescriptions = roleInfo;
             }

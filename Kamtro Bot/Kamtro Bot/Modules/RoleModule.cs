@@ -43,12 +43,12 @@ namespace Kamtro_Bot.Modules
                 /// Current issue: This doesn't work over DM, I'll try to fix it tomorrow
 
                 SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
-                RoleAdditionEmbed embed = new RoleAdditionEmbed(_user);
+                RoleEmbed embed = new RoleEmbed(_user);
 
                 await embed.Display(Context.Channel);
                 //await embed.AddReactions();
 
-                await embed.Message.AddReactionAsync(new Emoji("\U0001f537"));
+                //await embed.Message.AddReactionAsync(new Emoji("\U0001f537"));
 
                 ulong id = Context.Message.Author.Id;
                 if (ReactionHandler.EventQueue.ContainsKey(id)) {
