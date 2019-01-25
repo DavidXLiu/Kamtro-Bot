@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Nodes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,8 +17,12 @@ namespace Kamtro_Bot
     /// </summary>
     public class BotUtils
     {
+        public static readonly TimeSpan Timeout = new TimeSpan(0, 10, 0);
+
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.
+        public static bool GCReady = false;
+        public static bool GCLoop = true;
 
         /// <summary>
         /// Formats the message so the text is blue (AKA Kamtro speak)
@@ -52,7 +58,7 @@ namespace Kamtro_Bot
         public static void AutoSave() {
             while(SaveReady && SaveLoop) {
                 Program.userDataManager.SaveUserData();  // Save the user data.
-                Thread.Sleep(new TimeSpan(0, 1, 0));  // Pause for 1 minute
+                Thread.Sleep(new TimeSpan(0, 10, 0));  // Pause for 10 minutes
             }
         }
 
@@ -64,6 +70,40 @@ namespace Kamtro_Bot
         public static void StopAutosaveLoop() {
             SaveLoop = false;  // Stop the loop.
             Program.Autosave.Abort();  // Stop the thread here, just in case
+        }
+
+
+        /// <summary>
+        /// Garbage collection thread method.
+        /// This stops kamtro from waiting for interfaces that are going to be unused.
+        /// </summary>
+        /// <remarks>
+        /// VERY IMPORTANT: This method has teh potential to cause a race condition with the autosave thread. This is why the two should NEVER
+        /// access the same variables.
+        /// 
+        /// -C
+        /// </remarks>
+        public static void GarbageCollection() {
+            DateTime now;
+            TimeSpan span;
+            List<EventQueueNode> toRemove = new List<EventQueueNode>();
+            while (GCReady && GCLoop) {
+                now = DateTime.Now;
+                foreach(KeyValuePair<ulong, List<EventQueueNode>> action in ReactionHandler.EventQueue.AsEnumerable()) {
+                    foreach(EventQueueNode node in action.Value) {
+                        span = now - node.TimeCreated;
+                        if (span > Timeout) {
+                            toRemove.Add(node);
+                        }
+                    }
+
+                    foreach (EventQueueNode node in toRemove) {
+                        action.Value.Remove(node);
+                    }
+                }
+
+                Thread.Sleep(new TimeSpan(0, 10, 0));
+            }
         }
     }
 }

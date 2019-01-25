@@ -19,6 +19,7 @@ namespace Kamtro_Bot.Nodes
 
         public EventQueueNode(KamtroEmbedBase action) {
             EventAction = action;
+            TimeCreated = DateTime.Now;
         }
     }
 }
