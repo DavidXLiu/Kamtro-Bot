@@ -33,22 +33,11 @@ namespace Kamtro_Bot.Modules
 
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
-                /// TO DO 
-                /// When nothing is entered, make a prompt for selecting a role to add
-                /// [DONE] When a role cannot be added, notify the user that it is not a modifiable role
-                /// [DONE] When the user already has the role, notify the user that they already have the role
-                /// [DONE] Give the role to the user if they do not have the role
-                /// [DONE] Notify the user if the role doesn't exist    
-                /// 
-                /// Current issue: This doesn't work over DM, I'll try to fix it tomorrow
-
                 SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
                 RoleEmbed embed = new RoleEmbed(_user);
 
                 await embed.Display(Context.Channel);
-                //await embed.AddReactions();
 
-                //await embed.Message.AddReactionAsync(new Emoji("\U0001f537"));
 
                 ulong id = Context.Message.Author.Id;
                 if (ReactionHandler.EventQueue.ContainsKey(id)) {
@@ -170,18 +159,26 @@ namespace Kamtro_Bot.Modules
 
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
-                /// TO DO 
-                /// When nothing is entered, make a prompt for selecting a role to remove
-                /// [DONE] When a role cannot be removed, notify the user that it is not a modifiable role
-                /// [DONE] When the user already doesn't have the role, notify the user that they don't have the role
-                /// [DONE] Remove the role to the user if they do not have the role
-                /// [DONE] Notify the user if the role doesn't exist
+                SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
+                RoleEmbed embed = new RoleEmbed(_user);
+
+                await embed.Display(Context.Channel);
+
+                ulong id = Context.Message.Author.Id;
+                if (ReactionHandler.EventQueue.ContainsKey(id)) {
+                    // If the user is in the queue
+                    ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // Add the action to their list
+                } else {
+                    // otherwise
+                    ReactionHandler.EventQueue.Add(id, new List<EventQueueNode>());  // Create the list
+                    ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // And add the action to their list
+                }
             } else {
                 // Check all roles - Arcy
                 foreach (SocketRole role in ServerData.AllRoles) {
                     // Find if the message matches the role closely enough - Arcy
                     if (UtilStringComparison.CompareWordScore(message, role.Name) >= 0.66) {
-                        /// ALREADY DOESN'T HAVE ROLE
+                        // ALREADY DOESN'T HAVE ROLE
                         // Check if user already doesn't have the role - Arcy
                         if (!user.Roles.Contains(role)) {
                             // First person response if DMs - Arcy
@@ -276,11 +273,21 @@ namespace Kamtro_Bot.Modules
         [Name("Roles")]
         [Summary("Displays an embed showing the modifiable roles that can be added/removed by users.")]
         public async Task RolesAsync() {
-            /// TO DO
-            /// 
-            /// Make an embed that contains all modifiable roles
-            /// Show which roles the user currently has on the embed
-            /// Display embed
+            SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
+            RoleEmbed embed = new RoleEmbed(_user);
+
+            await embed.Display(Context.Channel);
+
+
+            ulong id = Context.Message.Author.Id;
+            if (ReactionHandler.EventQueue.ContainsKey(id)) {
+                // If the user is in the queue
+                ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // Add the action to their list
+            } else {
+                // otherwise
+                ReactionHandler.EventQueue.Add(id, new List<EventQueueNode>());  // Create the list
+                ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // And add the action to their list
+            }
         }
     }
 }

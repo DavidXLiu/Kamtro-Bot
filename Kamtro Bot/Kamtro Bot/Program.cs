@@ -31,7 +31,9 @@ namespace Kamtro_Bot
         private const string TokenFile = "token.txt";
 
         public static BotSettings Settings;
+
         public static Thread Autosave;
+        public static Thread GarbageCollection;
 
         public static DiscordSocketClient Client;
         private DiscordSocketConfig config;
@@ -58,6 +60,7 @@ namespace Kamtro_Bot
             Console.WriteLine("\n------------------\n");
 
             Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
+            GarbageCollection = new Thread(new ThreadStart(BotUtils.GarbageCollection));
 
             SetupFiles();  // This is to keep the Main method more readable
 
@@ -83,7 +86,9 @@ namespace Kamtro_Bot
             Client.Ready += OnReady;  // Add the OnReady event
 
             BotUtils.SaveReady = true; // tell the class that the autosave loop should start
+            BotUtils.GCReady = true;
             Autosave.Start();  // Start the autosave loop
+            GarbageCollection.Start();
 
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();
