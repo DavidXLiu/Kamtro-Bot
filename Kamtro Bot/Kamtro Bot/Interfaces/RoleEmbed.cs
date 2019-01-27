@@ -138,11 +138,11 @@ namespace Kamtro_Bot.Interfaces
         }
 
         /// <summary>
-        /// 
+        /// Makes the input either bold, or does not change it.
         /// </summary>
-        /// <param name="inp"></param>
-        /// <param name="bold"></param>
-        /// <returns></returns>
+        /// <param name="inp">The text to be bolded</param>
+        /// <param name="bold">Whether it should be bold.</param>
+        /// <returns>The bolded or not bolded text.</returns>
         private string MakeBold(string inp, bool bold) {
             if(bold) {
                 return $"**{inp}**";

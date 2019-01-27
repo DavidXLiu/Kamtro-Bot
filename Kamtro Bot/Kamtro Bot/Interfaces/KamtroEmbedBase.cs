@@ -33,6 +33,7 @@ namespace Kamtro_Bot.Interfaces
         public RestUserMessage Message;  // The message that the embed is in. This isn't a SocketUserMessage because that's what the SendMessageAsync method returns.
                                          // Both types can do the same things.
 
+
         /// <summary>
         /// This method performs the interface's action for the option chosen by the user.
         /// </summary>
@@ -46,6 +47,20 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <returns>The Embed object</returns>
         public abstract Embed GetEmbed();
+
+        /// <summary>
+        /// This is the method that will be called when the user sends a message in the bot channel if the interface is waiting on a message.
+        /// </summary>
+        /// <remarks>
+        /// This method is marked as virtual because not all interfaces will be waiting on a message, and therefore
+        /// not all interfaces actually need this method. 
+        /// -C
+        /// </remarks>
+        /// <param name="message">The message that was sent by the user</param>
+        public virtual void PerformMessageAction(SocketUserMessage message) {
+            // THIS IS EMPTY BY DEFAULT.
+        }
+
 
         /// <summary>
         /// Initializes the list of Menu options and fills it
@@ -95,8 +110,6 @@ namespace Kamtro_Bot.Interfaces
                 Emoji x = new Emoji(node.Icon);
                 
                 await Message.AddReactionAsync(x);  // Add the emoji as a reaction
-
-                await Task.Delay(100);
             }
         
         }
