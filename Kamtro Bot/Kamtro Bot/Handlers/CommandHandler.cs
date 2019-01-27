@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Kamtro_Bot.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Kamtro_Bot.Handlers
     public class CommandHandler
     {
         public static CommandHandler instance;
+        public static Dictionary<ulong, KamtroEmbedBase> MessageEventQueue = new Dictionary<ulong, KamtroEmbedBase>();
 
         private DiscordSocketClient _client;
         private CommandService _service;
@@ -61,9 +63,18 @@ namespace Kamtro_Bot.Handlers
                     //Console.WriteLine(result.Error);
                 }
             }
-            else
-            {
+            else {
                 // Check for other prefixless commands/features - Arcy
+
+                // Check if the user is responding to an interface. -C
+                // If the user has an entry in the dict, and their entry isn't null. -C
+                if(MessageEventQueue.ContainsKey(m.Author.Id) && MessageEventQueue[m.Author.Id] != null) {
+                    SocketUserMessage sm = m as SocketUserMessage;
+                    if(sm != null) {
+                        MessageEventQueue[m.Author.Id].PerformMessageAction(sm);
+                    }
+                }
+
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
@@ -74,21 +85,18 @@ namespace Kamtro_Bot.Handlers
 
                     foreach (string s in pingStrings)
                     {
-                        if (message.Content.ToLower().Contains(s))
-                        {
+                        if (message.Content.ToLower().Contains(s)) {
                             // Check latency and make string - Arcy
                             double localLatency = (DateTime.Now - message.Timestamp.LocalDateTime).Milliseconds;
                             string latencyString = "(Server: " + _client.Latency + " ms | Local: " + localLatency + " ms)";
 
                             // Respond based on latency - Arcy
-                            if (_client.Latency > 500)
-                            {
+                            if (_client.Latency > 500) {
                                 await message.Channel.SendMessageAsync("Not always. I'm breaking up. " + latencyString);
                                 return;
                             }
 
-                            switch (localLatency)
-                            {
+                            switch (localLatency) {
                                 case double x when (x >= 1000):
                                     await message.Channel.SendMessageAsync("No. I'm not feeling well. I may not respond at times. " + latencyString);
                                     return;

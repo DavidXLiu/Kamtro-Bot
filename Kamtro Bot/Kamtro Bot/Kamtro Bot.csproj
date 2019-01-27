@@ -144,11 +144,13 @@
     <Compile Include="Interfaces\RoleEmbed.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\MatureModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
     <Compile Include="Nodes\ColorNode.cs" />
     <Compile Include="Nodes\EventQueueNode.cs" />
     <Compile Include="Nodes\MenuOptionNode.cs" />
+    <Compile Include="Nodes\MessageEventNode.cs" />
     <Compile Include="Nodes\RoleInfoNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
