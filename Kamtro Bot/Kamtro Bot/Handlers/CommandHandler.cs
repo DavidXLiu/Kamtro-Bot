@@ -58,11 +58,11 @@ namespace Kamtro_Bot.Handlers
                         // Check for attachments
                         if (m.Attachments.Count > 0)
                         {
-                            await user.SendMessageAsync($"{m.Attachments.ToList()[0].Url}\n{m.Content}");
+                            await user.SendMessageAsync($"{m.Author.Username}#{m.Author.Discriminator}: {m.Attachments.ToList()[0].Url}\n{m.Content}");
                         }
                         else
                         {
-                            await user.SendMessageAsync(m.Content);
+                            await user.SendMessageAsync($"{m.Author.Username}#{m.Author.Discriminator}: {m.Content}");
                         }
                     }
                 }
@@ -110,35 +110,35 @@ namespace Kamtro_Bot.Handlers
                             // Respond based on latency - Arcy
                             if (_client.Latency > 500)
                             {
-                                await message.Channel.SendMessageAsync("Not always. I'm breaking up. " + latencyString);
+                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Not always. I'm breaking up. " + latencyString));
                                 return;
                             }
 
                             switch (localLatency)
                             {
                                 case double x when (x >= 1000):
-                                    await message.Channel.SendMessageAsync("No. I'm not feeling well. I may not respond at times. " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"No. I'm not feeling well. I may not respond at times. " + latencyString));
                                     return;
                                 case double x when (x >= 500):
-                                    await message.Channel.SendMessageAsync("Not really. I'm suffering quite a bit. " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Not really. I'm suffering quite a bit. " + latencyString));
                                     return;
                                 case double x when (x >= 300):
-                                    await message.Channel.SendMessageAsync("Kinda. I'm being slow. " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Kinda. I'm being slow. " + latencyString));
                                     return;
                                 case double x when (x >= 200):
-                                    await message.Channel.SendMessageAsync("Mostly! I'll be a bit slow. " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Mostly! I'll be a bit slow. " + latencyString));
                                     return;
                                 case double x when (x >= 100):
-                                    await message.Channel.SendMessageAsync("Yes! I'm doing well! " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yes! I'm doing well! " + latencyString));
                                     return;
                                 case double x when (x >= 50):
-                                    await message.Channel.SendMessageAsync("Yes! I'm doing great! " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yes! I'm doing great! " + latencyString));
                                     return;
                                 case double x when (x >= 10):
-                                    await message.Channel.SendMessageAsync("Yeah! I'm perfect right now! " + latencyString);
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yeah! I'm perfect right now! " + latencyString));
                                     return;
                                 default:
-                                    await message.Channel.SendMessageAsync("I don't know... (Error: Latency)");
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"I don't know... (Error: Latency)"));
                                     return;
                             }
 

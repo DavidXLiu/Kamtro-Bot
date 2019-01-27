@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Modules
         [Summary("Simple ping command, bot responds with pong and latency.")]
         public async Task PingAsync() {
             double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
-            await ReplyAsync("Pong! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
+            await ReplyAsync(BotUtils.KamtroText($"Pong! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)"));
         }
 
         [Command("pong")]
@@ -31,7 +31,7 @@ namespace Kamtro_Bot.Modules
         public async Task PongAsync()
         {
             double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
-            await ReplyAsync("Ping? (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
+            await ReplyAsync(BotUtils.KamtroText($"Ping? (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)"));
         }
 
         [Command("marco")]
@@ -40,7 +40,7 @@ namespace Kamtro_Bot.Modules
         public async Task MarcoAsync()
         {
             double localLatency = (DateTime.Now - Context.Message.Timestamp.LocalDateTime).Milliseconds;
-            await ReplyAsync("Polo! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)");
+            await ReplyAsync(BotUtils.KamtroText($"Polo! (Server: " + Context.Client.Latency + " ms | Local: " + localLatency + " ms)"));
         }
 
         [Command("polo")]
@@ -48,7 +48,7 @@ namespace Kamtro_Bot.Modules
         [Summary("Fun and silly response in a user's expectations for a Polo command.")]
         public async Task PoloAsync()
         {
-            await ReplyAsync("But nobody came.");
+            await ReplyAsync(BotUtils.KamtroText($"But nobody came."));
         }
         #endregion
     }
