@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
+using Kamtro_Bot.Nodes;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Kamtro_Bot.Handlers
     public class CommandHandler
     {
         public static CommandHandler instance;
-        public static Dictionary<ulong, KamtroEmbedBase> MessageEventQueue = new Dictionary<ulong, KamtroEmbedBase>();
+        public static Dictionary<ulong, MessageEventNode> MessageEventQueue = new Dictionary<ulong, MessageEventNode>();
 
         private DiscordSocketClient _client;
         private CommandService _service;
@@ -62,8 +63,7 @@ namespace Kamtro_Bot.Handlers
                     await message.Channel.SendMessageAsync($"An error occured! {result.ErrorReason}");
                     //Console.WriteLine(result.Error);
                 }
-            }
-            else {
+            } else {
                 // Check for other prefixless commands/features - Arcy
 
                 // Check if the user is responding to an interface. -C
@@ -71,7 +71,7 @@ namespace Kamtro_Bot.Handlers
                 if(MessageEventQueue.ContainsKey(m.Author.Id) && MessageEventQueue[m.Author.Id] != null) {
                     SocketUserMessage sm = m as SocketUserMessage;
                     if(sm != null) {
-                        MessageEventQueue[m.Author.Id].PerformMessageAction(sm);
+                        MessageEventQueue[m.Author.Id].Interface.PerformMessageAction(sm);
                     }
                 }
 
