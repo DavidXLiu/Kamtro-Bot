@@ -37,6 +37,10 @@ namespace Kamtro_Bot
         public ulong NSFWRole;
 
         // Users
+        public List<ulong> AdminUsers;
+
+        public List<ulong> RelayUsers;
+
         public ulong PrimaryContactUserId; // Should always be Arcy, but made it just in case it needs to be changed - Arcy
 
         /// <summary>

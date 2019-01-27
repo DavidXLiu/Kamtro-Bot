@@ -25,6 +25,10 @@ namespace Kamtro_Bot.Util
         public static SocketRole KamtroBotRole;
 
         // Users
+        public static List<SocketGuildUser> AdminUsers;
+
+        public static List<SocketGuildUser> RelayUsers;
+
         public static SocketGuildUser PrimaryContactUser;
 
         /// <summary>
@@ -69,7 +73,32 @@ namespace Kamtro_Bot.Util
             KamtroBotRole = server.GetRole(bs.KamtroBotRoleId);
             #endregion
 
-            #region Users
+            #region Admin Users
+            AdminUsers = new List<SocketGuildUser>();
+            // Read in all recorded ids
+            foreach (ulong userId in bs.AdminUsers)
+            {
+                SocketGuildUser user = server.GetUser(userId);
+                // Check if user is in server
+                if (user != null)
+                {
+                    // Add to collection if in server
+                    AdminUsers.Add(user);
+                }
+            }
+            #endregion
+
+            #region Relay Users
+            RelayUsers = new List<SocketGuildUser>();
+            // Read in all recorded ids
+            foreach (ulong userId in bs.RelayUsers)
+            {
+                SocketGuildUser user = server.GetUser(userId);
+                RelayUsers.Add(user);
+            }
+            #endregion
+
+            #region Individual Users
             PrimaryContactUser = server.GetUser(bs.PrimaryContactUserId);
             #endregion
         }
