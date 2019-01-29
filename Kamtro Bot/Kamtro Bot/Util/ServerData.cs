@@ -26,6 +26,7 @@ namespace Kamtro_Bot.Util
         public static Dictionary<SocketRole, RoleInfoNode> RoleInfo;
 
         public static SocketRole KamtroBotRole;
+        public static SocketRole NSFWRole;
 
         // Users
         public static List<SocketGuildUser> AdminUsers;
@@ -75,6 +76,7 @@ namespace Kamtro_Bot.Util
 
             #region Individual Roles
             KamtroBotRole = Server.GetRole(bs.KamtroBotRoleId);
+            NSFWRole = Server.GetRole(bs.NSFWRole);
             #endregion
 
             #region Admin Users

@@ -26,6 +26,22 @@ namespace Kamtro_Bot.Managers
 
         public UserDataManager() {
             UserData = LoadUserData();
+            
+        }
+
+        /// <summary>
+        /// Adds a user to the Database.
+        /// </summary>
+        /// <remarks>
+        /// This method saves every time because there aren't going to be too many new users past a certain point
+        /// </remarks>
+        /// <param name="user">The User to add</param>
+        /// <returns>The data node that was added</returns>
+        public static UserDataNode AddUser(SocketUser user) {
+            UserDataNode node = new UserDataNode($"{user.Username}#{user.Discriminator}");
+            UserData.Add(user.Id, node);
+            SaveUserData();
+            return node;
         }
 
         /// <summary>
@@ -41,7 +57,7 @@ namespace Kamtro_Bot.Managers
         /// <summary>
         /// Saves the user data to it's file.
         /// </summary>
-        public void SaveUserData() {
+        public static void SaveUserData() {
             BotUtils.WriteToJson(UserData, DataFileNames.UserDataFile);
         }
 
@@ -52,7 +68,7 @@ namespace Kamtro_Bot.Managers
         /// <returns>A dict with the user data in it</returns>
         public Dictionary<ulong, UserDataNode> LoadUserData() {
             string data = FileManager.ReadFullFile(DataFileNames.UserDataFile);
-            return JsonConvert.DeserializeObject<Dictionary<ulong, UserDataNode>>(data);
+            return JsonConvert.DeserializeObject<Dictionary<ulong, UserDataNode>>(data) ?? new Dictionary<ulong, UserDataNode>();
         }
 
         /// <summary>
@@ -64,7 +80,7 @@ namespace Kamtro_Bot.Managers
         public void AddScore(SocketGuildUser user, int score) {
             if(!UserData.ContainsKey(user.Id)) {
                 // It's a user that doesn't have an entry  -C
-                UserData.Add(user.Id, new UserDataNode());  // Add the entry  -C
+                AddUser(user);
             }
 
             UserData[user.Id].Score += score;  // Add to the score

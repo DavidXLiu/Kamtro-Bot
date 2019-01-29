@@ -122,9 +122,31 @@ namespace Kamtro_Bot.Interfaces
         public async Task Display(ISocketMessageChannel channel) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
-            Message = await channel.SendMessageAsync(null, false, kamtroEmbed);  // send the embed in the message
-
+            Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
+           
             if(HasActions) {
+                await AddReactions();  // Add the reactions
+            }
+        }
+
+        /// <summary>
+        /// Displays the embed and sets the Message variable.
+        /// </summary>
+        /// <remarks>
+        /// As you may have noticed, this is literally just a copy-paste overload of the above method.
+        /// Why would I do this? Because there is no common interface that you get for a Text Channel and a DM. There are common classes sure,
+        /// but no useful methods return those so  ;( i cri
+        /// 
+        /// -C
+        /// </remarks>
+        /// <param name="channel">The channel to send the message in</param>
+        /// <returns></returns>
+        public async Task Display(IDMChannel channel) {
+            Embed kamtroEmbed = GetEmbed();  // The embed to send
+
+            Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
+
+            if (HasActions) {
                 await AddReactions();  // Add the reactions
             }
         }

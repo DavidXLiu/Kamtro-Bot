@@ -1,4 +1,5 @@
 ﻿using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 
@@ -62,7 +63,7 @@ namespace Kamtro_Bot
         /// </summary>
         public static void AutoSave() {
             while(SaveReady && SaveLoop) {
-                Program.userDataManager.SaveUserData();  // Save the user data.
+                UserDataManager.SaveUserData();  // Save the user data.
                 Thread.Sleep(new TimeSpan(0, 10, 0));  // Pause for 10 minutes
             }
         }

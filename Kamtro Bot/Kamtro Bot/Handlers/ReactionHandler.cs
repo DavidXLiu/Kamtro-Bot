@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Nodes;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,40 @@ namespace Kamtro_Bot.Handlers
                     }
 
                     await action.EventAction.PerformAction(reaction);  // Do the action with the reaction specified
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds an interface to the event queue
+        /// </summary>
+        /// -C
+        /// <param name="embed">The interface to add</param>
+        /// <param name="id">The ID of the user it's being added to</param>
+        public static void AddEvent(KamtroEmbedBase embed, ulong id) {
+            if (EventQueue.ContainsKey(id)) {
+                // If the user is in the queue
+                EventQueue[id].Add(new EventQueueNode(embed));  // Add the action to their list
+            } else {
+                // otherwise
+                EventQueue.Add(id, new List<EventQueueNode>());  // Create the list
+                EventQueue[id].Add(new EventQueueNode(embed));  // And add the action to their list
+            }
+        }
+
+        /// <summary>
+        /// Removes an event from the queue given it's embed
+        /// </summary>
+        /// <remarks>
+        /// -C
+        /// </remarks>
+        /// <param name="id">The ID of the user who has the event</param>
+        /// <param name="node">The node to remove</param>
+        public static void RemoveEvent(KamtroEmbedBase node, ulong id) {
+            foreach(EventQueueNode e in EventQueue[id]) {
+                if(e.EventAction == node) {
+                    EventQueue[id].Remove(e);
+                    break;
                 }
             }
         }

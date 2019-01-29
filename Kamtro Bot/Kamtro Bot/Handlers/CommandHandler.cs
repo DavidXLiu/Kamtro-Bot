@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -72,12 +73,17 @@ namespace Kamtro_Bot.Handlers
             }
             #endregion
 
-            if (Program.Settings.Prefix == null) return;  // if there is no prefix, also prevents null errors  -C
             if (!(m is SocketUserMessage)) return;  // make sure the message is the appropriate type before casting  -C
 
             SocketUserMessage message = m as SocketUserMessage; // cast the message -C
             if (message == null) return; // more null checking (You can never be too careful) -C
-            if (message.Source != Discord.MessageSource.User) return;  // No bots allowed. #robophobia  -C
+
+            if(!UserDataManager.UserData.ContainsKey(m.Author.Id)) {
+                UserDataManager.AddUser(m.Author);
+            }
+
+            if (Program.Settings.Prefix == null) return;  // if there is no prefix, also prevents null errors  -C
+            if (message.Source != MessageSource.User) return;  // No bots allowed. #robophobia  -C
 
             int argPos = 0;  // This is the position of the command character, it should usually be 0. -C
             if(message.HasStringPrefix(Program.Settings.Prefix, ref argPos)) {
