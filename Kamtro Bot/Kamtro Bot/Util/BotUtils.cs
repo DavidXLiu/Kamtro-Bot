@@ -22,6 +22,7 @@ namespace Kamtro_Bot
     public class BotUtils
     {
         public static readonly TimeSpan Timeout = new TimeSpan(0, 10, 0);
+        public static readonly TimeSpan MessageTimeout = new TimeSpan(0, 1, 0);
 
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.
@@ -91,11 +92,26 @@ namespace Kamtro_Bot
             DateTime now;
             TimeSpan span;
             List<EventQueueNode> toRemove = new List<EventQueueNode>();
+            List<ulong> toRemoveMsg = new List<ulong>();
             while (GCReady && GCLoop) {
                 now = DateTime.Now;
-                foreach(KeyValuePair<ulong, List<EventQueueNode>> action in ReactionHandler.EventQueue.AsEnumerable()) {
+
+                foreach(KeyValuePair<ulong, MessageEventNode> action in CommandHandler.MessageEventQueue.AsEnumerable()) {
+                    span = now - action.Value.TimeCreated;
+
+                    if(span > MessageTimeout) {
+                        toRemoveMsg.Add(action.Key);
+                    }
+                }
+
+                foreach (ulong node in toRemoveMsg) {
+                    CommandHandler.MessageEventQueue[node] = null;
+                }
+
+                foreach (KeyValuePair<ulong, List<EventQueueNode>> action in ReactionHandler.EventQueue.AsEnumerable()) {
                     foreach(EventQueueNode node in action.Value) {
                         span = now - node.TimeCreated;
+
                         if (span > Timeout) {
                             toRemove.Add(node);
                         }
@@ -106,7 +122,7 @@ namespace Kamtro_Bot
                     }
                 }
 
-                Thread.Sleep(new TimeSpan(0, 10, 0));
+                Thread.Sleep(new TimeSpan(0, 1, 0));
             }
         }
 
