@@ -125,15 +125,13 @@ namespace Kamtro_Bot.Interfaces
                     break;
             }
 
-            Console.WriteLine($"Cursor Position: {cursorPos}");
-
             // Wrap the cursor if it goes past the top
             if(cursorPos < 0) {
                 cursorPos = maxCursorPos-1;
             } else if(cursorPos >= maxCursorPos) {
                 cursorPos = 0;
             }
-            Console.WriteLine($"New Cursor Position: {cursorPos}");
+
             await Message.ModifyAsync(msg => msg.Embed = GetEmbed());  // Edit the message
         }
 

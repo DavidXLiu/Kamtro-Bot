@@ -19,21 +19,30 @@ namespace Kamtro_Bot.Interfaces
     public class BasicEmbed : KamtroEmbedBase
     {
         public string Title;
+        public string Text;
+        public string FieldName;
+        public Color Col;
 
-        public BasicEmbed() {
+        public BasicEmbed(string title, string text, string fieldName, Color col) {
             HasActions = false;
+
+            Title = title;
+            Text = text;
+            FieldName = fieldName;
+            Col = col;
         }
 
         public override Embed GetEmbed() {
             EmbedBuilder builder = new EmbedBuilder();
 
             builder.WithTitle(Title);
+            builder.WithColor(Col);
+            builder.AddField(FieldName, Text);
 
             return builder.Build();
         }
 
-        public override async Task PerformAction(SocketReaction option) {
-            // NO-OP
+        public async override Task PerformAction(SocketReaction option) {
         }
     }
 }

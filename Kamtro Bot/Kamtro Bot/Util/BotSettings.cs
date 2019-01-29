@@ -64,6 +64,11 @@ namespace Kamtro_Bot
             } else {
                 RoleDescriptions = roleInfo;
             }
+
+            ModifiableRoles = new List<ulong>();
+            ModeratorRoles = new List<ulong>();
+            RelayUsers = new List<ulong>();
+            AdminUsers = new List<ulong>();
         }
 
         /// <summary>
