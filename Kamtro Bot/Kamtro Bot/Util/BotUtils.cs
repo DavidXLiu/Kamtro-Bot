@@ -1,5 +1,7 @@
 ﻿using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Util;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Discord.WebSocket;
 
 namespace Kamtro_Bot
 {
@@ -104,6 +108,49 @@ namespace Kamtro_Bot
 
                 Thread.Sleep(new TimeSpan(0, 10, 0));
             }
+        }
+
+        /// <summary>
+        /// Finds the <see cref="SocketGuildUser"/> in the given message and returns it in the list. If a user cannot be distinguished by the given message, a list of users are put out containing the possible users.
+        /// <para></para>
+        /// The <see cref="string"/> command finds and removes that <see cref="string"/> out of the <see cref="SocketMessage"/> content.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>User found from the message.</returns>
+        /// Arcy
+        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "")
+        {
+            List<SocketGuildUser> users = new List<SocketGuildUser>();
+            string remainder = message.Content.Substring(Program.Settings.Prefix.Length + command.Length);
+
+            // Find mentions
+            if (message.MentionedUsers.Count > 0)
+            {
+                foreach (SocketUser user in message.MentionedUsers.ToList())
+                {
+                    users.Add(ServerData.Server.GetUser(user.Id));
+                    remainder.Remove(remainder.IndexOf($"<{user.Id}>"), user.Id.ToString().Length + 2); // Remove mention from remainder
+                }
+            }
+
+            foreach (SocketGuildUser user in ServerData.Server.Users)
+            {
+                // Add to list if username or nickname contains the name, or if it contains user ID
+                if (user.Username.Contains(remainder))
+                {
+                    users.Add(user);
+                }
+                else if (user.Nickname != null && user.Nickname.Contains(remainder))
+                {
+                    users.Add(user);
+                }
+                else if (remainder.Contains(user.Id.ToString()))
+                {
+                    users.Add(user);
+                }
+            }
+
+            return users;
         }
     }
 }
