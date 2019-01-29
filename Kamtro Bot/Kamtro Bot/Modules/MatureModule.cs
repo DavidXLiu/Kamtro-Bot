@@ -18,6 +18,8 @@ namespace Kamtro_Bot.Modules
     [Name("Mature")]
     public class MatureModule : ModuleBase<SocketCommandContext>
     {
+        private const string USER_ID_REGEX = "\\d+";
+
         [Command("mature")]
         [Alias("nsfw", "lewd")]
         public async Task NSFWCommandAsync() {
@@ -28,6 +30,12 @@ namespace Kamtro_Bot.Modules
             } else {
                 await ReplyAsync(BotUtils.KamtroText("Nice try ( ͡° ͜ʖ ͡°)"));
             }
+        }
+        
+        [Command("matureblacklist")]
+        [Alias("mbl", "nsfwbl", "nonsfw")]
+        public async Task BlacklistNSFWAsync([Remainder] string args) {
+            
         }
     }
 }
