@@ -98,5 +98,23 @@ namespace Kamtro_Bot.Util
 
             return totalScore;
         }
+
+        /// <summary>
+        /// Used for finding what alias was used for a command. Checks for what <see cref="string"/> was used in the list of strings provided and returns it.
+        /// </summary>
+        /// <returns></returns>
+        public static string FindAlias(string message, string[] aliases)
+        {
+            foreach (string s in aliases)
+            {
+                if (message.ToLower().StartsWith(Program.Settings.Prefix + s.ToLower()))
+                {
+                    return s;
+                }
+            }
+
+            // No alias found
+            return null;
+        }
     }
 }

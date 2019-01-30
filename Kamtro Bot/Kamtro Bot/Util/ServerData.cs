@@ -15,6 +15,9 @@ namespace Kamtro_Bot.Util
     /// </summary>
     public class ServerData
     {
+        // Server
+        public static SocketGuild Server;
+
         // Roles
         public static List<SocketRole> AllRoles;
         public static List<SocketRole> ModifiableRoles;
@@ -38,18 +41,19 @@ namespace Kamtro_Bot.Util
         /// <param name="bs"></param>
         public static void SetupServerData(BotSettings bs) {
             DiscordSocketClient client = Program.Client;
-            SocketGuild server = client.GetGuild(bs.KamtroID);
+            Server = client.GetGuild(bs.KamtroID);
 
             #region AllRoles
             // Add all server roles to the AllRoles collection. - Arcy
-            AllRoles = server.Roles.ToList();
+            AllRoles = Server.Roles.ToList();
             #endregion
+
             #region ModifiableRoles & ModeratorRoles
             ModifiableRoles = new List<SocketRole>();
             ModeratorRoles = new List<SocketRole>();
 
             // Loop through each role id and add the SocketRole to the collection it is in. - Arcy
-            foreach (SocketRole role in server.Roles) {
+            foreach (SocketRole role in Server.Roles) {
                 // Modifiable Roles
                 foreach (ulong roleId in bs.ModifiableRoles) {
                     // When finding a match, add to the collection. - Arcy
@@ -71,8 +75,8 @@ namespace Kamtro_Bot.Util
             #endregion
 
             #region Individual Roles
-            KamtroBotRole = server.GetRole(bs.KamtroBotRoleId);
-            NSFWRole = server.GetRole(bs.NSFWRole);
+            KamtroBotRole = Server.GetRole(bs.KamtroBotRoleId);
+            NSFWRole = Server.GetRole(bs.NSFWRole);
             #endregion
 
             #region Admin Users
@@ -80,7 +84,7 @@ namespace Kamtro_Bot.Util
             // Read in all recorded ids
             foreach (ulong userId in bs.AdminUsers)
             {
-                SocketGuildUser user = server.GetUser(userId);
+                SocketGuildUser user = Server.GetUser(userId);
                 // Check if user is in server
                 if (user != null)
                 {
@@ -95,13 +99,13 @@ namespace Kamtro_Bot.Util
             // Read in all recorded ids
             foreach (ulong userId in bs.RelayUsers)
             {
-                SocketGuildUser user = server.GetUser(userId);
+                SocketGuildUser user = Server.GetUser(userId);
                 RelayUsers.Add(user);
             }
             #endregion
 
             #region Individual Users
-            PrimaryContactUser = server.GetUser(bs.PrimaryContactUserId);
+            PrimaryContactUser = Server.GetUser(bs.PrimaryContactUserId);
             #endregion
         }
     }
