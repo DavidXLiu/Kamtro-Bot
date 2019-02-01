@@ -61,6 +61,16 @@ namespace Kamtro_Bot.Managers
             BotUtils.WriteToJson(UserData, DataFileNames.UserDataFile);
         }
 
+        /// <summary>
+        /// Adds a user to the dict if it doesn't exist
+        /// </summary>
+        /// <param name="user">The user to add</param>
+        /// -C
+        public static void AddUserIfNotExists(SocketGuildUser user) {
+            if(!UserData.ContainsKey(user.Id)) {
+                AddUser(user);
+            }
+        }
 
         /// <summary>
         /// This method Deserializes the user data from the file and loads it into memory

@@ -143,6 +143,7 @@
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\NSFWInterafce.cs" />
     <Compile Include="Interfaces\RoleEmbed.cs" />
+    <Compile Include="Interfaces\UserSelectionEmbed.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\MatureModule.cs" />

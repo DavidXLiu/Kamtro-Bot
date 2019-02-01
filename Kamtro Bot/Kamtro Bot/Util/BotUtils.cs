@@ -62,7 +62,7 @@ namespace Kamtro_Bot
         /// This is not meant to be awaited.
         /// </summary>
         public static void AutoSave() {
-            while(SaveReady && SaveLoop) {
+            while (SaveReady && SaveLoop) {
                 UserDataManager.SaveUserData();  // Save the user data.
                 Thread.Sleep(new TimeSpan(0, 10, 0));  // Pause for 10 minutes
             }
@@ -97,10 +97,10 @@ namespace Kamtro_Bot
             while (GCReady && GCLoop) {
                 now = DateTime.Now;
 
-                foreach(KeyValuePair<ulong, MessageEventNode> action in CommandHandler.MessageEventQueue.AsEnumerable()) {
+                foreach (KeyValuePair<ulong, MessageEventNode> action in CommandHandler.MessageEventQueue.AsEnumerable()) {
                     span = now - action.Value.TimeCreated;
 
-                    if(span > MessageTimeout) {
+                    if (span > MessageTimeout) {
                         toRemoveMsg.Add(action.Key);
                     }
                 }
@@ -110,7 +110,7 @@ namespace Kamtro_Bot
                 }
 
                 foreach (KeyValuePair<ulong, List<EventQueueNode>> action in ReactionHandler.EventQueue.AsEnumerable()) {
-                    foreach(EventQueueNode node in action.Value) {
+                    foreach (EventQueueNode node in action.Value) {
                         span = now - node.TimeCreated;
 
                         if (span > Timeout) {
@@ -135,34 +135,27 @@ namespace Kamtro_Bot
         /// <param name="message"></param>
         /// <returns>User found from the message.</returns>
         /// Arcy
-        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "")
-        {
+        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "") {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
-            string remainder = message.Content.Substring(Program.Settings.Prefix.Length + command.Length);
 
             // Find mentions
-            if (message.MentionedUsers.Count > 0)
-            {
-                foreach (SocketUser user in message.MentionedUsers.ToList())
-                {
+            if (message.MentionedUsers.Count > 0) {
+                foreach (SocketUser user in message.MentionedUsers.ToList()) {
                     users.Add(ServerData.Server.GetUser(user.Id));
-                    remainder.Remove(remainder.IndexOf($"<{user.Id}>"), user.Id.ToString().Length + 2); // Remove mention from remainder
                 }
+
+                return users;
             }
 
-            foreach (SocketGuildUser user in ServerData.Server.Users)
-            {
+            string remainder = message.Content.Substring(message.Content.IndexOf(' '));  // Gets everything after the 
+
+            foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
-                if (user.Username.Contains(remainder))
-                {
+                if (user.Username.Contains(remainder)) {
                     users.Add(user);
-                }
-                else if (user.Nickname != null && user.Nickname.Contains(remainder))
-                {
+                } else if (user.Nickname != null && user.Nickname.Contains(remainder)) {
                     users.Add(user);
-                }
-                else if (remainder.Contains(user.Id.ToString()))
-                {
+                } else if (remainder.Contains(user.Id.ToString())) {
                     users.Add(user);
                 }
             }
