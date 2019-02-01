@@ -12,6 +12,12 @@ using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Managers
 {
+    /// <summary>
+    /// User data manager.
+    /// </summary>
+    /// <remarks>
+    /// This class is what should contain all the required utility methods for interacting with the user data.
+    /// </remarks>
     public class UserDataManager
     {
         /// <summary>
