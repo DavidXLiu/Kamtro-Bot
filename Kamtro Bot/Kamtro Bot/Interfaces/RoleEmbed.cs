@@ -11,7 +11,7 @@ using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces
 {
-    public class RoleEmbed : KamtroEmbedBase
+    public class RoleEmbed : ActionEmbed
     {
         private const string UP = "\u2b06";
         private const string DOWN = "\u2b07";

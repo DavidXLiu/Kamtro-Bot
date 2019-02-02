@@ -13,7 +13,7 @@ using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces
 {
-    public class NSFWEmbed : KamtroEmbedBase
+    public class NSFWEmbed : ActionEmbed
     {
         public const string CHECK = "\u2705";
         public const string DECLINE = "\u274C";

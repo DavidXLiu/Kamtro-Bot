@@ -99,6 +99,7 @@ namespace Kamtro_Bot
         }
 
         public async Task OnReady() {
+            Console.WriteLine("Start of Ready");
             SetupGeneral();
             Console.WriteLine("Ready!");
         }
@@ -143,6 +144,7 @@ namespace Kamtro_Bot
         }
 
         private static void SetupGeneral() {
+            System.Diagnostics.Debugger.Break();
             ServerData.SetupServerData(Settings);
         }
 

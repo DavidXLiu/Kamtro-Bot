@@ -102,7 +102,6 @@ namespace Kamtro_Bot.Interfaces
         /// This method is pretty much identical for all of the embeds that require reactions,
         /// so that's why it's defined here.
         /// </remarks>
-        /// <param name="message">The me</param>
         /// <returns></returns>
         public async Task AddReactions() {            
             foreach (MenuOptionNode node in MenuOptions) {  // For each menu option
@@ -119,7 +118,7 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// <param name="channel">The channel to send the message in</param>
         /// <returns></returns>
-        public async Task Display(ISocketMessageChannel channel) {
+        public async virtual Task Display(ISocketMessageChannel channel) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
             Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
@@ -141,7 +140,7 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// <param name="channel">The channel to send the message in</param>
         /// <returns></returns>
-        public async Task Display(IDMChannel channel) {
+        public async virtual Task Display(IDMChannel channel) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
             Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
