@@ -22,6 +22,7 @@ namespace Kamtro_Bot.Util
         public static List<SocketRole> AllRoles;
         public static List<SocketRole> ModifiableRoles;
         public static List<SocketRole> ModeratorRoles;
+        public static List<SocketRole> TrustedRoles;
 
         public static Dictionary<SocketRole, RoleInfoNode> RoleInfo;
 
@@ -48,9 +49,10 @@ namespace Kamtro_Bot.Util
             AllRoles = Server.Roles.ToList();
             #endregion
 
-            #region ModifiableRoles & ModeratorRoles
+            #region ModifiableRoles, TrustedRoles & ModeratorRoles
             ModifiableRoles = new List<SocketRole>();
             ModeratorRoles = new List<SocketRole>();
+            TrustedRoles = new List<SocketRole>();
 
             // Loop through each role id and add the SocketRole to the collection it is in. - Arcy
             foreach (SocketRole role in Server.Roles) {
@@ -69,6 +71,13 @@ namespace Kamtro_Bot.Util
                     if (role.Id == roleId) {
                         ModeratorRoles.Add(role);
                         break;
+                    }
+                }
+
+                // Trusted roles (Member, Veteran)
+                foreach (ulong roleId in bs.TrustedRoles) {
+                    if(role.Id == roleId) {
+                        TrustedRoles.Add(role);
                     }
                 }
             }

@@ -78,6 +78,8 @@ namespace Kamtro_Bot.Handlers
             SocketUserMessage message = m as SocketUserMessage; // cast the message -C
             if (message == null) return; // more null checking (You can never be too careful) -C
 
+            SecurityManager.CheckMessage(message);  // Security Clearance -C
+
             if(!UserDataManager.UserData.ContainsKey(m.Author.Id)) {
                 UserDataManager.AddUser(m.Author);
             }

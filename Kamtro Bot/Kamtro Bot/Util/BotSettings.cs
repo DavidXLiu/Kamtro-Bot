@@ -30,6 +30,7 @@ namespace Kamtro_Bot
         // Roles
         public List<ulong> ModifiableRoles;
         public List<ulong> ModeratorRoles;
+        public List<ulong> TrustedRoles;
 
         public Dictionary<ulong, RoleInfoNode> RoleDescriptions;
 
@@ -40,6 +41,7 @@ namespace Kamtro_Bot
         public List<ulong> AdminUsers;
 
         public List<ulong> RelayUsers;
+
 
         public ulong PrimaryContactUserId; // Should always be Arcy, but made it just in case it needs to be changed - Arcy
 
@@ -61,12 +63,15 @@ namespace Kamtro_Bot
 
                 RoleDescriptions.Add(1234, new RoleInfoNode("exampleRole", "Change Me", "0xFFF000"));
                 RoleDescriptions.Add(1221234, new RoleInfoNode("Other ROle ", "Change Me as well please", "0xCAFE87"));
+                RoleDescriptions.Add(71294710938741928, new RoleInfoNode("MemberOrSomethin", "Change Me the 3rd", "0xAFEx897"));
             } else {
                 RoleDescriptions = roleInfo;
             }
 
             ModifiableRoles = new List<ulong>();
             ModeratorRoles = new List<ulong>();
+            TrustedRoles = new List<ulong>();
+
             RelayUsers = new List<ulong>();
             AdminUsers = new List<ulong>();
         }

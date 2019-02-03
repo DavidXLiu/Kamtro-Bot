@@ -169,6 +169,8 @@
     <Compile Include="Util\ServerData.cs" />
     <Compile Include="Util\StringComparison.cs" />
     <Compile Include="Interfaces\ActionEmbed.cs" />
+    <Compile Include="Managers\SecurityManager.cs" />
+    <Compile Include="Util\SecurityMessageNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
