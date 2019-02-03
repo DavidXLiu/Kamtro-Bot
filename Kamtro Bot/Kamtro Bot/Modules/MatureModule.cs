@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Managers;
@@ -48,7 +50,13 @@ namespace Kamtro_Bot.Modules
                 UserDataManager.UserData[users[0].Id].Nsfw = false;  // Set it so that they can't use NSFW
             } else {
                 // More than one user mentioned, or ambiguous user
+                UserSelectionEmbed use = new UserSelectionEmbed(users, NoNSFWAsync);
             }
+        }
+
+        public async Task NoNSFWAsync(SocketGuildUser user) {
+            UserDataManager.UserData[user.Id].Nsfw = false;
+            await ReplyAsync(BotUtils.KamtroText($"User {user.Username} is now blacklisted from #mature"));
         }
     }
 }
