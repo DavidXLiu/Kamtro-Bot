@@ -38,7 +38,6 @@ namespace Kamtro_Bot.Modules
 
                 await embed.Display(Context.Channel);
 
-
                 ulong id = Context.Message.Author.Id;
 
                 ReactionHandler.AddEvent(embed, id);
@@ -271,17 +270,6 @@ namespace Kamtro_Bot.Modules
             RoleEmbed embed = new RoleEmbed(_user);
 
             await embed.Display(Context.Channel);
-
-
-            ulong id = Context.Message.Author.Id;
-            if (ReactionHandler.EventQueue.ContainsKey(id)) {
-                // If the user is in the queue
-                ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // Add the action to their list
-            } else {
-                // otherwise
-                ReactionHandler.EventQueue.Add(id, new List<EventQueueNode>());  // Create the list
-                ReactionHandler.EventQueue[id].Add(new EventQueueNode(embed));  // And add the action to their list
-            }
         }
     }
 }

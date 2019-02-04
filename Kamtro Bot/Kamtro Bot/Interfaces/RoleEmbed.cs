@@ -36,6 +36,7 @@ namespace Kamtro_Bot.Interfaces
                 ReactionHandler.DONE_NODE);
 
             sender = user;  // Set the sender variable
+            CommandCaller = sender;
         }
 
         public override Embed GetEmbed() {
