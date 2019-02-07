@@ -147,11 +147,11 @@ namespace Kamtro_Bot
                 return users;
             }
 
-            string remainder = message.Content.Substring(message.Content.IndexOf(' '));  // Gets everything after the 
+            string remainder = message.Content.Substring(message.Content.IndexOf(' ')  + 1);  // Gets everything after the 
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
-                if (user.Username.Contains(remainder)) {
+                if (user.Username.ToLower().Contains(remainder)) {
                     users.Add(user);
                 } else if (user.Nickname != null && user.Nickname.Contains(remainder)) {
                     users.Add(user);

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Interfaces
@@ -13,15 +15,15 @@ namespace Kamtro_Bot.Interfaces
     {
         // This seems like a bad way to do this but it's the only way I could
         // get a switch statement to work.
-        private const string ONE = "\u0031\ufe0f\u20e3";
-        private const string TWO = "\u0032\ufe0f\u20e3";
-        private const string THREE = "\u0033️️\ufe0f\u20e3";
-        private const string FOUR = "\u0034\ufe0f\u20e3";
-        private const string FIVE = "\u0035\ufe0f\u20e3";
-        private const string SIX = "\u0036\ufe0f\u20e3";
-        private const string SEVEN = "\u0037\ufe0f\u20e3";
-        private const string EIGHT = "\u0038\ufe0f\u20e3";
-        private const string NINE = "\u0039\ufe0f\u20e3";
+        private const string ONE = "1⃣";
+        private const string TWO = "2⃣";
+        private const string THREE = "3⃣";
+        private const string FOUR = "4⃣";
+        private const string FIVE = "5⃣";
+        private const string SIX = "6⃣";
+        private const string SEVEN = "7⃣";
+        private const string EIGHT = "8⃣";
+        private const string NINE = "9⃣";
         private const string TEN = "\U0001f51f";
 
         private static readonly string[] NUMBERS = { ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN };
@@ -30,15 +32,22 @@ namespace Kamtro_Bot.Interfaces
 
         private Func<SocketGuildUser, Task> selectedAction;
 
+        private Func<SocketGuildUser, SocketCommandContext, Task> selectedActionWithContext;
+        private SocketCommandContext Context;
+        private bool hasContext;
+
         private List<SocketGuildUser> UserOptions;
         private string EmbedMessage;
 
-        public UserSelectionEmbed(List<SocketGuildUser> users, Func<SocketGuildUser, Task> action, string message = "There were multiple users with that name!") {
+        public UserSelectionEmbed(List<SocketGuildUser> users, Func<SocketGuildUser, Task> action, SocketGuildUser caller, string message = "There were multiple users with that name!") {
             Numbers = new List<string>();
             UserOptions = users;
             EmbedMessage = message;
+            CommandCaller = caller;
 
             selectedAction = action;
+
+            hasContext = false;
 
             List<MenuOptionNode> nodes = new List<MenuOptionNode>();
 
@@ -48,10 +57,32 @@ namespace Kamtro_Bot.Interfaces
                     nodes.Add(new MenuOptionNode(NUMBERS[i], $"Select user {i+1}"));  // Add the menu node
                 }
 
-                AddMenuOptions(nodes.ToArray());  // Add the menu options
+                AddMenuOptions(nodes.GetRange(0, UserOptions.Count).ToArray());  // Add the menu options
             }
         }
-        
+
+        public UserSelectionEmbed(List<SocketGuildUser> users, Func<SocketGuildUser, SocketCommandContext, Task> action, SocketCommandContext context, string message = "There were multiple users with that name!") {
+            Numbers = new List<string>();
+            UserOptions = users;
+            EmbedMessage = message;
+            CommandCaller = context.User as SocketGuildUser;
+            Context = context;
+
+            selectedActionWithContext = action;
+
+            hasContext = true;
+
+            List<MenuOptionNode> nodes = new List<MenuOptionNode>();
+
+            if (UserOptions.Count <= 10) {
+                for (int i = 0; i < UserOptions.Count; i++) {
+                    Numbers.Add(NUMBERS[i]);  // Add to the reaction options
+                    nodes.Add(new MenuOptionNode(NUMBERS[i], $"Select user {i + 1}"));  // Add the menu node
+                }
+
+                AddMenuOptions(nodes.GetRange(0, UserOptions.Count).ToArray());  // Add the menu options
+            }
+        }
 
         public override Embed GetEmbed() {
             EmbedBuilder builder = new EmbedBuilder();
@@ -75,7 +106,7 @@ namespace Kamtro_Bot.Interfaces
         }
 
         public override async Task PerformAction(SocketReaction option) {
-            string number = option.ToString();
+            string number = option.Emote.ToString();
 
             if(NUMBERS.Contains(number)) {
                 int chosenIndex = Numbers.IndexOf(number);
@@ -84,7 +115,14 @@ namespace Kamtro_Bot.Interfaces
                     // if the index is valid
                     SocketGuildUser su = UserOptions[chosenIndex];
 
-                    await selectedAction(su); // Call the method passed in.
+                    if(hasContext) {
+                        // If this is the type of embed that needs context
+                        await selectedActionWithContext(su, Context); // Call the context method
+                    } else {
+                        await selectedAction(su); // Call the method passed in.
+                    }
+
+                    ReactionHandler.RemoveEvent(this, Context.User.Id); // Remove it from the queue
                 }
             }
         }

@@ -11,7 +11,7 @@ namespace Kamtro_Bot.Managers
     /// -C
     public class SecurityManager
     {
-        private static Dictionary<ulong, SecurityMessageNode> MessageCount;
+        private static Dictionary<ulong, SecurityMessageNode> MessageCount = new Dictionary<ulong, SecurityMessageNode>();
 
         /// <summary>
         /// Checks the message.

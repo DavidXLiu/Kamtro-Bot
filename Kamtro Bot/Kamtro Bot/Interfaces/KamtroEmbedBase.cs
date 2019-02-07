@@ -110,7 +110,6 @@ namespace Kamtro_Bot.Interfaces
                 
                 await Message.AddReactionAsync(x);  // Add the emoji as a reaction
             }
-        
         }
 
         /// <summary>

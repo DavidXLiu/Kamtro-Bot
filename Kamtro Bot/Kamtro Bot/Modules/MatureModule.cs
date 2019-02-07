@@ -47,16 +47,22 @@ namespace Kamtro_Bot.Modules
             } else if(users.Count == 1) {
                 // If a user is mentioned
                 UserDataManager.AddUserIfNotExists(users[0]);  // Make sure the user has a node
-                UserDataManager.UserData[users[0].Id].Nsfw = false;  // Set it so that they can't use NSFW
+                await NoNSFWAsync(users[0]);
             } else {
                 // More than one user mentioned, or ambiguous user
-                UserSelectionEmbed use = new UserSelectionEmbed(users, NoNSFWAsync);
+                UserSelectionEmbed use = new UserSelectionEmbed(users, NoNSFWAsync, Context);
+                await use.Display(Context.Channel);
             }
         }
 
         public async Task NoNSFWAsync(SocketGuildUser user) {
             UserDataManager.UserData[user.Id].Nsfw = false;
             await ReplyAsync(BotUtils.KamtroText($"User {user.Username} is now blacklisted from #mature"));
+        }
+
+        public async Task NoNSFWAsync(SocketGuildUser user, SocketCommandContext ctx) {
+            UserDataManager.UserData[user.Id].Nsfw = false;
+            await ctx.Channel.SendMessageAsync(BotUtils.KamtroText($"User {user.Username} is now blacklisted from #mature"));
         }
     }
 }
