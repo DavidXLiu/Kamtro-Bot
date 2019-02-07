@@ -19,7 +19,6 @@ namespace Kamtro_Bot.Interfaces
 
         private int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go
         private int cursorPos = 0;  // How many spaces down the cursor is
-        private SocketGuildUser sender;  // The person who the embed is for
 
         private bool boldOverride = false;
         private bool boldNoverride = false;
@@ -35,8 +34,7 @@ namespace Kamtro_Bot.Interfaces
                 new MenuOptionNode(SELECT, "Select"),
                 ReactionHandler.DONE_NODE);
 
-            sender = user;  // Set the sender variable
-            CommandCaller = sender;
+            CommandCaller = user;
         }
 
         public override Embed GetEmbed() {
@@ -66,7 +64,7 @@ namespace Kamtro_Bot.Interfaces
                 }
 
                 onId = ServerData.ModifiableRoles[i].Id == boldId;
-                shouldBeBold = sender.Roles.Contains(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
+                shouldBeBold = CommandCaller.Roles.Contains(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
                 shouldBeBold = shouldBeBold || (boldOverride && onId);
                 shouldBeBold = shouldBeBold && (!boldNoverride || !onId);
 
@@ -110,13 +108,13 @@ namespace Kamtro_Bot.Interfaces
                     break;
 
                 case SELECT:
-                    if (!sender.Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
+                    if (!CommandCaller.Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
                         // If the user doesn't have the role
-                        await sender.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
+                        await CommandCaller.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
                         boldOverride = true;
                     } else {
                         // If the user does have the role
-                        await sender.RemoveRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Remove it
+                        await CommandCaller.RemoveRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Remove it
                         boldNoverride = true;
                     }
                     boldId = ServerData.ModifiableRoles[cursorPos].Id;

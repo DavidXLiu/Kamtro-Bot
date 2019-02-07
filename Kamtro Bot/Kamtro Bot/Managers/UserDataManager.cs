@@ -88,12 +88,25 @@ namespace Kamtro_Bot.Managers
         }
 
         /// <summary>
+        /// Sets the NSFW blacklist status of the user.
+        /// </summary>
+        /// -C
+        /// <param name="user">The user to edit</param>
+        /// <param name="blacklisted">True if they are blacklisted from NSFW, false otherwise</param>
+        public static void SetNSFW(SocketGuildUser user, bool blacklisted) {
+            AddUserIfNotExists(user);
+
+            UserData[user.Id].Nsfw = blacklisted;
+            SaveUserData();
+        }
+
+        /// <summary>
         /// Adds to the score of the specified user.
         /// -C
         /// </summary>
         /// <param name="user">The user who will have their score added to</param>
         /// <param name="score">The score that will be added to the user</param>
-        public void AddScore(SocketGuildUser user, int score) {
+        public static void AddScore(SocketGuildUser user, int score) {
             if(!UserData.ContainsKey(user.Id)) {
                 // It's a user that doesn't have an entry  -C
                 AddUser(user);
@@ -103,5 +116,7 @@ namespace Kamtro_Bot.Managers
 
             SaveUserData();  // Save the updated data.
         }
+
+        
     }
 }

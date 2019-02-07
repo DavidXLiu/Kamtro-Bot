@@ -11,7 +11,7 @@ namespace Kamtro_Bot.Interfaces
 {
     public abstract class ActionEmbed : KamtroEmbedBase
     {
-        public SocketUser CommandCaller;
+        public SocketGuildUser CommandCaller;
 
         public override async Task Display(ISocketMessageChannel channel) {
             await base.Display(channel);

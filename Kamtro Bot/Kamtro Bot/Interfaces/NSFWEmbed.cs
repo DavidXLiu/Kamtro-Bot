@@ -18,13 +18,12 @@ namespace Kamtro_Bot.Interfaces
         public const string CHECK = "\u2705";
         public const string DECLINE = "\u274C";
 
-        private SocketGuildUser CommandSender;
 
         public NSFWEmbed(SocketGuildUser sender) {
             AddMenuOptions(new MenuOptionNode(CHECK, "Accept"),
                 new MenuOptionNode(DECLINE, "Decline"));
 
-            CommandSender = sender;
+            CommandCaller = sender;
         }
 
         public override Embed GetEmbed() {
@@ -52,7 +51,7 @@ namespace Kamtro_Bot.Interfaces
                     await option.Channel.SendMessageAsync(BotUtils.KamtroText("You can now see the lewd owo"));
                     ReactionHandler.RemoveEvent(this, option.UserId);
 
-                    await CommandSender.AddRoleAsync(ServerData.NSFWRole);
+                    await CommandCaller.AddRoleAsync(ServerData.NSFWRole);
                     break;
                 case DECLINE:
                     await option.Channel.SendMessageAsync(BotUtils.KamtroText("Understood."));

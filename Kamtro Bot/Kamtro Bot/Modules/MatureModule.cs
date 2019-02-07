@@ -30,7 +30,6 @@ namespace Kamtro_Bot.Modules
             if(UserDataManager.UserData[Context.Message.Author.Id].Nsfw) {
                 NSFWEmbed nsfw = new NSFWEmbed(Context.User as SocketGuildUser);
                 await nsfw.Display(await Context.User.GetOrCreateDMChannelAsync());
-                ReactionHandler.AddEvent(nsfw, Context.Message.Author.Id);
             } else {
                 await ReplyAsync(BotUtils.KamtroText("Nice try ( ͡° ͜ʖ ͡°)"));
             }
@@ -46,7 +45,6 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(BotUtils.KamtroText("You need to specify a user!"));
             } else if(users.Count == 1) {
                 // If a user is mentioned
-                UserDataManager.AddUserIfNotExists(users[0]);  // Make sure the user has a node
                 await NoNSFWAsync(users[0]);
             } else {
                 // More than one user mentioned, or ambiguous user
@@ -55,14 +53,48 @@ namespace Kamtro_Bot.Modules
             }
         }
 
+        [Command("allowmature")]
+        [Alias("am", "unblacklist", "yesnsfw", "allownsfw")]
+        public async Task UnBlacklistNSFWAsync([Remainder] string args) {
+            List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
+
+            if (users.Count == 0) {
+                // if no users are mentioned
+                await ReplyAsync(BotUtils.KamtroText("You need to specify a user!"));
+            } else if (users.Count == 1) {
+                // If a user is mentioned
+                await NSFWAsync(users[0]);
+            } else {
+                // More than one user mentioned, or ambiguous user
+                UserSelectionEmbed use = new UserSelectionEmbed(users, NSFWAsync, Context);
+                await use.Display(Context.Channel);
+            }
+        }
+
+        #region Helper Methods
         public async Task NoNSFWAsync(SocketGuildUser user) {
-            UserDataManager.UserData[user.Id].Nsfw = false;
+            UserDataManager.SetNSFW(user, false);
+
             await ReplyAsync(BotUtils.KamtroText($"User {user.Username} is now blacklisted from #mature"));
         }
 
         public async Task NoNSFWAsync(SocketGuildUser user, SocketCommandContext ctx) {
-            UserDataManager.UserData[user.Id].Nsfw = false;
+            UserDataManager.SetNSFW(user, false);
+
             await ctx.Channel.SendMessageAsync(BotUtils.KamtroText($"User {user.Username} is now blacklisted from #mature"));
         }
+
+        public async Task NSFWAsync(SocketGuildUser user) {
+            UserDataManager.SetNSFW(user, true);
+
+            await ReplyAsync(BotUtils.KamtroText($"User {user.Username} is no longer blacklisted from #mature"));
+        }
+
+        public async Task NSFWAsync(SocketGuildUser user, SocketCommandContext ctx) {
+            UserDataManager.SetNSFW(user, true);
+
+            await ctx.Channel.SendMessageAsync(BotUtils.KamtroText($"User {user.Username} is no longer blacklisted from #mature"));
+        }
+        #endregion
     }
 }

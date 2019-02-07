@@ -28,15 +28,16 @@ namespace Kamtro_Bot.Interfaces
 
         private static readonly string[] NUMBERS = { ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN };
 
+        private Func<SocketGuildUser, Task> selectedAction;
+        private Func<SocketGuildUser, SocketCommandContext, Task> selectedActionWithContext;
+
+        private SocketCommandContext Context;
+        private List<SocketGuildUser> UserOptions;
         private List<string> Numbers;
 
-        private Func<SocketGuildUser, Task> selectedAction;
+        private Color EmbedColor = Color.Blue;
 
-        private Func<SocketGuildUser, SocketCommandContext, Task> selectedActionWithContext;
-        private SocketCommandContext Context;
         private bool hasContext;
-
-        private List<SocketGuildUser> UserOptions;
         private string EmbedMessage;
 
         public UserSelectionEmbed(List<SocketGuildUser> users, Func<SocketGuildUser, Task> action, SocketGuildUser caller, string message = "There were multiple users with that name!") {
@@ -80,7 +81,9 @@ namespace Kamtro_Bot.Interfaces
                     nodes.Add(new MenuOptionNode(NUMBERS[i], $"Select user {i + 1}"));  // Add the menu node
                 }
 
-                AddMenuOptions(nodes.GetRange(0, UserOptions.Count).ToArray());  // Add the menu options
+                nodes.Add(ReactionHandler.DONE_NODE);
+                
+                AddMenuOptions(nodes.GetRange(0, UserOptions.Count+1).ToArray());  // Add the menu options
             }
         }
 
@@ -88,7 +91,7 @@ namespace Kamtro_Bot.Interfaces
             EmbedBuilder builder = new EmbedBuilder();
 
             builder.WithTitle("Select a User");
-            builder.WithColor(Color.Blue);
+            builder.WithColor(EmbedColor);
 
             if (UserOptions.Count > 10) {
                 builder.WithDescription("That name is too vague! Try spelling it out more, or adding the tag at the end.");
@@ -122,9 +125,13 @@ namespace Kamtro_Bot.Interfaces
                         await selectedAction(su); // Call the method passed in.
                     }
 
-                    ReactionHandler.RemoveEvent(this, Context.User.Id); // Remove it from the queue
+                    // ReactionHandler.RemoveEvent(this, Context.User.Id); // Remove it from the queue
                 }
             }
+        }
+
+        public void SetColor(uint color) {
+            EmbedColor = new Color(color);
         }
     }
 }
