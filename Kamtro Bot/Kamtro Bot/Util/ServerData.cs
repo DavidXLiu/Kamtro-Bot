@@ -37,6 +37,18 @@ namespace Kamtro_Bot.Util
         public static SocketGuildUser PrimaryContactUser;
 
         /// <summary>
+        /// Permission level enum. For checking perms easily
+        /// </summary>
+        public enum PermissionLevel
+        {
+            MUTED,
+            USER,
+            TRUSTED,
+            MODERATOR,
+            ADMIN
+        }
+
+        /// <summary>
         /// Goes through the process of initializing and populating all data collections with the passed in data.
         /// </summary>
         /// <param name="bs"></param>
@@ -116,6 +128,63 @@ namespace Kamtro_Bot.Util
             #region Individual Users
             PrimaryContactUser = Server.GetUser(bs.PrimaryContactUserId);
             #endregion
+        }
+
+
+
+        public static bool HasPermissionLevel(SocketGuildUser user, PermissionLevel level) {
+            switch(level) {
+                case PermissionLevel.USER:
+                    return true;
+
+                case PermissionLevel.TRUSTED:
+                    if (IsTrusted(user)) return true;
+                    goto case PermissionLevel.MODERATOR;
+
+                case PermissionLevel.MODERATOR:
+                    if (IsModerator(user)) return true;
+                    goto case PermissionLevel.ADMIN;
+
+                case PermissionLevel.ADMIN:
+                    if (IsAdmin(user)) return true;
+                    return false;
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsAdmin(SocketGuildUser user) {
+            foreach(SocketGuildUser adminUser in AdminUsers) {
+                if(adminUser.Id == user.Id) {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        public static bool IsModerator(SocketGuildUser user) {
+            foreach (SocketRole mod_role in ModeratorRoles) {
+                foreach(SocketRole role in user.Roles) {
+                    if(mod_role.Id == role.Id) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsTrusted(SocketGuildUser user) {
+            foreach (SocketRole trustedRole in ServerData.TrustedRoles) {
+                foreach (SocketRole role in user.Roles) {
+                    if (trustedRole.Id == role.Id) return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -22,6 +22,9 @@ namespace Kamtro_Bot
     /// </summary>
     public class BotUtils
     {
+        public const string CHECK = "\u2705";
+        public const string DECLINE = "\u274C";
+
         public static readonly TimeSpan Timeout = new TimeSpan(0, 10, 0);
         public static readonly TimeSpan MessageTimeout = new TimeSpan(0, 1, 0);
 
