@@ -112,7 +112,7 @@ namespace Kamtro_Bot
                     CommandHandler.MessageEventQueue[node] = null;
                 }
 
-                foreach (KeyValuePair<ulong, List<EventQueueNode>> action in ReactionHandler.EventQueue.AsEnumerable()) {
+                foreach (KeyValuePair<ulong, List<EventQueueNode>> action in EventQueueManager.EventQueue.AsEnumerable()) {
                     foreach (EventQueueNode node in action.Value) {
                         span = now - node.TimeCreated;
 

@@ -6,6 +6,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Interfaces
 {
@@ -16,13 +17,13 @@ namespace Kamtro_Bot.Interfaces
         public override async Task Display(ISocketMessageChannel channel) {
             await base.Display(channel);
 
-            ReactionHandler.AddEvent(this, CommandCaller.Id);  // Add the embed to the event queue with the correct ID
+            EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
         }
 
         public override async Task Display(IDMChannel channel) {
             await base.Display(channel);
 
-            ReactionHandler.AddEvent(this, CommandCaller.Id);  // Add the embed to the event queue with the correct ID
+            EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
         }
     }
 }

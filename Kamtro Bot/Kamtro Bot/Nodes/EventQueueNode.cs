@@ -15,9 +15,9 @@ namespace Kamtro_Bot.Nodes
     public class EventQueueNode
     {
         public DateTime TimeCreated;  // This is for the timeout and garbage collection thread
-        public KamtroEmbedBase EventAction;  // This is the action that the node is for
+        public ActionEmbed EventAction;  // This is the action that the node is for
 
-        public EventQueueNode(KamtroEmbedBase action) {
+        public EventQueueNode(ActionEmbed action) {
             EventAction = action;
             TimeCreated = DateTime.Now;
         }
