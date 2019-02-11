@@ -125,7 +125,7 @@ namespace Kamtro_Bot.Interfaces
                         await selectedAction(su); // Call the method passed in.
                     }
 
-                    // ReactionHandler.RemoveEvent(this, Context.User.Id); // Remove it from the queue
+                    // EventQueueManager.RemoveEvent(this, Context.User.Id); // Remove it from the queue
                 }
             }
         }

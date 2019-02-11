@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Interfaces
@@ -36,7 +37,7 @@ namespace Kamtro_Bot.Interfaces
                 await Hacked();
             }
 
-            ReactionHandler.RemoveEvent(this, CommandCaller.Id);
+            EventQueueManager.RemoveEvent(this);
         }
 
         private async Task Hacked() {

@@ -8,6 +8,7 @@ using Discord;
 using Discord.WebSocket;
 
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 
@@ -49,13 +50,13 @@ namespace Kamtro_Bot.Interfaces
             switch(option.Emote.ToString()) {
                 case CHECK:
                     await option.Channel.SendMessageAsync(BotUtils.KamtroText("You can now see the lewd owo"));
-                    ReactionHandler.RemoveEvent(this, option.UserId);
+                    EventQueueManager.RemoveEvent(this);
 
                     await CommandCaller.AddRoleAsync(ServerData.NSFWRole);
                     break;
                 case DECLINE:
                     await option.Channel.SendMessageAsync(BotUtils.KamtroText("Understood."));
-                    ReactionHandler.RemoveEvent(this, option.UserId);
+                    EventQueueManager.RemoveEvent(this);
                     break;
             }
         }
