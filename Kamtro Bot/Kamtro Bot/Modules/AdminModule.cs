@@ -23,8 +23,7 @@ namespace Kamtro_Bot.Modules
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             if (user.GuildPermissions.Administrator || ServerData.IsAdmin(user) || ServerData.IsModerator(user)) {
-                HackedEmbed he = new HackedEmbed(user);
-                await he.Display(Context.Channel);
+                await Hacked();
             }
         }
 
@@ -35,7 +34,17 @@ namespace Kamtro_Bot.Modules
             if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR)) {
                 await ReplyAsync(BotUtils.KamtroText("Goodnight 💤"));
                 await Program.Client.LogoutAsync();
-                Environment.Exit(0);
+            }
+        }
+
+        private async Task Hacked() {
+            // leave all servers
+            Console.WriteLine("Bot has been hacked! Leaving all servers...");
+
+            foreach (SocketGuild server in Program.Client.Guilds) {
+                await server.LeaveAsync();
+
+                Console.WriteLine($"Left {server.Name} [ID: {server.Id}]");
             }
         }
     }
