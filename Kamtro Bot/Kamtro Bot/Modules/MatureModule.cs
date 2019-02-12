@@ -15,12 +15,14 @@ using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Modules
 {
+    
     /// <summary>
     /// This is the module that handels the Mature and NSFW commands
     /// </summary>  
     [Name("Mature")]
     public class MatureModule : ModuleBase<SocketCommandContext>
     {
+        /*
         private static Regex UserMention = new Regex(@"<!*\d+>");
         private static Regex FullUsername = new Regex(@".+#\d\d\d\d\s+$");
 
@@ -96,5 +98,6 @@ namespace Kamtro_Bot.Modules
             await ctx.Channel.SendMessageAsync(BotUtils.KamtroText($"User {user.Username} is no longer blacklisted from #mature"));
         }
         #endregion
+        */
     }
 }
