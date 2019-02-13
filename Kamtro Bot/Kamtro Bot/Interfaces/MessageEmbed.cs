@@ -29,6 +29,16 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="message">The message that was sent by the user</param>
         public abstract void PerformMessageAction(SocketUserMessage message);
 
+
+        public virtual async Task AddInputsAsync(EmbedBuilder builder) {
+
+        }
+
+        /// <summary>
+        /// Displays the embed.
+        /// </summary>
+        /// <param name="channel">The channel to display the embed in</param>
+        /// <returns></returns>
         public override async Task Display(IMessageChannel channel) {
             await base.Display(channel);
 

@@ -23,6 +23,10 @@ namespace Kamtro_Bot.Interfaces
     /// The embed does not automatically add itself to the pending action dictionary, and it should never do so.
     /// It's much safer and easier to manually add it when it is created, and in the context in which it is created,
     /// such as inside the command method.
+    /// 
+    /// 
+    /// TODO:
+    /// Change the display method to not require a channel as a parameter, and do the same for all classes in the inheritance chain.
     /// </remarks>
     /// -C
     public abstract class KamtroEmbedBase
