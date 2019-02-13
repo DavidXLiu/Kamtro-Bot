@@ -12,9 +12,6 @@ namespace Kamtro_Bot.Interfaces
     /// <summary>
     /// Basic embed. Only text, no menu options.
     /// </summary>
-    /// <remarks>
-    /// TODO: THIS
-    /// </remarks>
     /// -C
     public class BasicEmbed : KamtroEmbedBase
     {
@@ -25,8 +22,6 @@ namespace Kamtro_Bot.Interfaces
         public Color Col;
 
         public BasicEmbed(string title, string text, string fieldName, Color col) {
-            HasActions = false;
-
             Title = title;
             Text = text;
             FieldName = fieldName;
@@ -46,9 +41,6 @@ namespace Kamtro_Bot.Interfaces
             }
 
             return builder.Build();
-        }
-
-        public async override Task PerformAction(SocketReaction option) {
         }
     }
 }

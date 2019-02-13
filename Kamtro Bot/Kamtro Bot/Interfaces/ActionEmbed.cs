@@ -14,14 +14,17 @@ namespace Kamtro_Bot.Interfaces
     {
         public SocketGuildUser CommandCaller;
 
-        public override async Task Display(ISocketMessageChannel channel) {
+        /// <summary>
+        /// This method performs the interface's action for the option chosen by the user.
+        /// </summary>
+        /// -C
+        /// <param name="option"></param>
+        public abstract Task PerformAction(SocketReaction option);
+
+        public override async Task Display(IMessageChannel channel) {
             await base.Display(channel);
 
-            EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
-        }
-
-        public override async Task Display(IDMChannel channel) {
-            await base.Display(channel);
+            await AddReactions();  // Add the reactions
 
             EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
         }
