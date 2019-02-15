@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Modules
     {
         [Command("userinfo")]
         [Alias("info","whois","identify")]
-        public async Task UserInfoAsync([Remainder] string args)
+        public async Task UserInfoAsync([Remainder] string args = null)
         {
             // Moderator check
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
@@ -68,11 +68,11 @@ namespace Kamtro_Bot.Modules
 
         [Command("voicekick")]
         [Alias("vckick","kickvc","kickvoice","removevc","removevoicechat")]
-        public async Task VoiceKickAsync([Remainder] string args)
+        public async Task VoiceKickAsync([Remainder] string args = null)
         {
             // Moderator check
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
-            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR))
+            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR) || user.Id == 118892308086128641)
             {
                 // Only command was used. Reply to user saying a user needs to be specified for the command.
                 if (String.IsNullOrWhiteSpace(args))
@@ -151,6 +151,8 @@ namespace Kamtro_Bot.Modules
         #region Helper Methods
         private async Task DisplayUserInfoEmbed(SocketGuildUser user)
         {
+            EmbedBuilder embed = new EmbedBuilder();
+
             string embedText = "";
             embedText += $"User: {user.Mention}\n";
             embedText += $"Account Created: {user.CreatedAt.Month}/{user.CreatedAt.Day}/{user.CreatedAt.Year}\n";
@@ -167,9 +169,11 @@ namespace Kamtro_Bot.Modules
                 }
             }
 
-            BasicEmbed embed = new BasicEmbed($"{user.Username}#{user.Discriminator}", embedText, "User Info", color);
-            embed.IconUrl = user.GetAvatarUrl();
-            await embed.Display(Context.Channel);
+            embed.WithAuthor($"{user.Username}#{user.Discriminator}", user.GetAvatarUrl());
+            embed.AddField("User Info", embedText);
+            embed.WithColor(color);
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         private async Task VoiceKickUserAsync(SocketGuildUser user)

@@ -21,7 +21,6 @@ namespace Kamtro_Bot.Interfaces
         public string Title;
         public string Text;
         public string FieldName;
-        public string IconUrl;
         public Color Col;
 
         public BasicEmbed(string title, string text, string fieldName, Color col) {
@@ -39,11 +38,6 @@ namespace Kamtro_Bot.Interfaces
             builder.WithTitle(Title);
             builder.WithColor(Col);
             builder.AddField(FieldName, Text);
-
-            if (IconUrl != null)
-            {
-                builder.WithAuthor(Title, IconUrl);
-            }
 
             return builder.Build();
         }

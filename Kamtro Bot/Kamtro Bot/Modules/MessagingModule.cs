@@ -20,7 +20,7 @@ namespace Kamtro_Bot.Modules
         [Command("directmessage"), Alias("dm","pm","privatemessage","tell")]
         [Name("DirectMessage")]
         [Summary("Sends a direct message to the specified user.")]
-        public async Task DirectMessageAsync([Remainder]string message)
+        public async Task DirectMessageAsync([Remainder]string args = null)
         {
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
@@ -34,6 +34,56 @@ namespace Kamtro_Bot.Modules
                 /// Include attachments
                 /// Prompt should have a cancel and confirm button
                 /// Sends the message to the users when confirmed
+                
+                // Inform user to specify the user to DM
+                if (args == null)
+                {
+                    await ReplyAsync(BotUtils.KamtroText("You must specify the user to directly message."));
+                    return;
+                }
+                else
+                {
+                    // Split the message to get the corresponding parts
+                    string[] msgSplit = Context.Message.Content.Split(' ');
+                    SocketGuildUser target = BotUtils.GetUser(msgSplit[1]);
+
+                    if (target == null)
+                    {
+                        await ReplyAsync(BotUtils.KamtroText("I cannot find that user."));
+                        return;
+                    }
+                    else if (msgSplit.Length == 2)
+                    {
+                        /// To Do:
+                        /// Show embed for messaging the user
+                        /// Toggle on messaging that user
+                    }
+                    else
+                    {
+                        // Build the message back together
+                        string msgSend = "";
+                        for (int i = 2; i < msgSplit.Length; i++)
+                        {
+                            msgSend += msgSplit[i];
+                            if (i != msgSplit.Length - 1)
+                            {
+                                msgSend += " ";
+                            }
+                        }
+
+                        // Send message and notify user using the command
+                        try
+                        {
+                            await target.SendMessageAsync(msgSend);
+                            await ReplyAsync(BotUtils.KamtroText($"Message sent to {target.Username}#{user.Discriminator}."));
+                        }
+                        // Could not send to the user
+                        catch(Exception e)
+                        {
+                            await ReplyAsync(BotUtils.KamtroText($"Message could not be sent to the user. The user either has messages from only friends allowed or has blocked me."));
+                        }
+                    }
+                }
             }
         }
 
