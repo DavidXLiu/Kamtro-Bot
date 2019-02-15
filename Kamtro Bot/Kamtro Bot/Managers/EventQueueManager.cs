@@ -1,4 +1,5 @@
-﻿using Kamtro_Bot.Interfaces;
+﻿using Discord.WebSocket;
+using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Nodes;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,9 @@ namespace Kamtro_Bot.Managers
     public class EventQueueManager
     {
         public static Dictionary<ulong, List<EventQueueNode>> EventQueue = new Dictionary<ulong, List<EventQueueNode>>();
+        public static Dictionary<ulong, MessageEventNode> MessageEventQueue = new Dictionary<ulong, MessageEventNode>();
 
-
+        #region Event Queue
         /// <summary>
         /// Adds an interface to the event queue
         /// </summary>
@@ -51,5 +53,47 @@ namespace Kamtro_Bot.Managers
                 }
             }
         }
+        #endregion
+        #region Message Event Queue
+        /// <summary>
+        /// Adds a message embed to the queue.
+        /// </summary>
+        /// <remarks>
+        /// All methods relating to the Message Event Queue are O(1) constant time.
+        /// This is because there is no list of events as there can only be one at a time for a user.
+        /// </remarks>
+        /// <param name="embed">The embed to add</param>
+        public static void AddMessageEvent(MessageEmbed embed) {
+            ulong id = embed.CommandCaller.Id;
+
+            if (MessageEventQueue.ContainsKey(id)) {
+                // If the user is in the queue
+                MessageEventQueue[id] = new MessageEventNode(embed);  // Add the action to their list
+            } else {
+                // otherwise
+                MessageEventQueue.Add(id, null);  // Create the entry
+                MessageEventQueue[id] = new MessageEventNode(embed);  // And add the action to their list
+            }
+        }
+
+        /// <summary>
+        /// Removes a message event from the queue.
+        /// </summary>
+        /// <param name="node">The embed to remove.</param>
+        public static void RemoveMessageEvent(MessageEmbed node) {
+            ulong id = node.CommandCaller.Id;
+
+            MessageEventQueue[id] = null;
+        }
+
+        /// <summary>
+        /// Tests to see if a user has a pending event
+        /// </summary>
+        /// <param name="user">The user to test</param>
+        /// <returns>true if the user has an event waiting on them, false otherwise</returns>
+        public static bool HasMessageEvent(SocketUser user) {
+            return MessageEventQueue[user.Id] != null;
+        }
+        #endregion
     }
 }

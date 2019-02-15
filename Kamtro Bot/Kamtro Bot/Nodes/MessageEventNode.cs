@@ -16,10 +16,10 @@ namespace Kamtro_Bot.Nodes
     /// </remarks>
     public class MessageEventNode
     {
-        public KamtroEmbedBase Interface;
+        public MessageEmbed Interface;
         public DateTime TimeCreated;
 
-        public MessageEventNode(KamtroEmbedBase iface) {
+        public MessageEventNode(MessageEmbed iface) {
             Interface = iface;
             TimeCreated = DateTime.Now;
         }

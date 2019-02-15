@@ -23,23 +23,18 @@ namespace Kamtro_Bot.Interfaces
     /// The embed does not automatically add itself to the pending action dictionary, and it should never do so.
     /// It's much safer and easier to manually add it when it is created, and in the context in which it is created,
     /// such as inside the command method.
+    /// 
+    /// 
+    /// TODO:
+    /// Change the display method to not require a channel as a parameter, and do the same for all classes in the inheritance chain.
     /// </remarks>
     /// -C
     public abstract class KamtroEmbedBase
     {
-        protected bool HasActions = true;  // default is true, more interfaces have input than don't.
         protected List<MenuOptionNode> MenuOptions;  // This should stay uninitialized. If there are no options, then it's value doesn't matter.
                                                  // This should be initialized in the constructor of the class.
         public RestUserMessage Message;  // The message that the embed is in. This isn't a SocketUserMessage because that's what the SendMessageAsync method returns.
                                          // Both types can do the same things.
-
-
-        /// <summary>
-        /// This method performs the interface's action for the option chosen by the user.
-        /// </summary>
-        /// -C
-        /// <param name="option"></param>
-        public abstract Task PerformAction(SocketReaction option);
 
         /// <summary>
         /// Builds and returns the Interface as an Embed
@@ -47,19 +42,6 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <returns>The Embed object</returns>
         public abstract Embed GetEmbed();
-
-        /// <summary>
-        /// This is the method that will be called when the user sends a message in the bot channel if the interface is waiting on a message.
-        /// </summary>
-        /// <remarks>
-        /// This method is marked as virtual because not all interfaces will be waiting on a message, and therefore
-        /// not all interfaces actually need this method. 
-        /// -C
-        /// </remarks>
-        /// <param name="message">The message that was sent by the user</param>
-        public virtual void PerformMessageAction(SocketUserMessage message) {
-            // THIS IS EMPTY BY DEFAULT.
-        }
 
 
         /// <summary>
@@ -87,7 +69,7 @@ namespace Kamtro_Bot.Interfaces
                 footerText += $"{option.Icon} {option.Description} {((i != MenuOptions.Count-1) ? "| ":"")}";  // There are 3 variables in this line, 
                                                                                                                // The first two are self-explanitory, but the last one is
                                                                                                                // A turnary operator that only places the | splitter char 
-                                                                                                               // If it's not at the last element .
+                                                                                                               // If it's not at the last element.
             }
 
             embedBuilder.WithFooter(footerText);
@@ -115,38 +97,17 @@ namespace Kamtro_Bot.Interfaces
         /// <summary>
         /// Displays the embed and sets the Message variable.
         /// </summary>
-        /// <param name="channel">The channel to send the message in</param>
-        /// <returns></returns>
-        public async virtual Task Display(ISocketMessageChannel channel) {
-            Embed kamtroEmbed = GetEmbed();  // The embed to send
-
-            Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
-           
-            if(HasActions) {
-                await AddReactions();  // Add the reactions
-            }
-        }
-
-        /// <summary>
-        /// Displays the embed and sets the Message variable.
-        /// </summary>
         /// <remarks>
-        /// As you may have noticed, this is literally just a copy-paste overload of the above method.
-        /// Why would I do this? Because there is no common interface that you get for a Text Channel and a DM. There are common classes sure,
-        /// but no useful methods return those so  ;( i cri
-        /// 
-        /// -C
+        /// Woo turns out there was a common interface!
+        /// No more duplicate methods!
         /// </remarks>
         /// <param name="channel">The channel to send the message in</param>
         /// <returns></returns>
-        public async virtual Task Display(IDMChannel channel) {
+        public async virtual Task Display(IMessageChannel channel) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
             Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
-
-            if (HasActions) {
-                await AddReactions();  // Add the reactions
-            }
+          
         }
     }
 }
