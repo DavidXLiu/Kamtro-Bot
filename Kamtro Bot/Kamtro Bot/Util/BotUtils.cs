@@ -150,7 +150,7 @@ namespace Kamtro_Bot
                 return users;
             }
 
-            string remainder = message.Content.Substring(message.Content.IndexOf(' ')  + 1);  // Gets everything after the 
+            string remainder = message.Content.Substring(message.Content.IndexOf(' ')  + 1).ToLower();  // Gets everything after the command separated by a space
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
@@ -164,6 +164,61 @@ namespace Kamtro_Bot
             }
 
             return users;
+        }
+
+        /// <summary>
+        /// Finds the <see cref="SocketGuildUser"/> in the given <see cref="string"/> text and returns it in the list.
+        /// <para></para>
+        /// This method returns the best available option that has a word score of above .66. Otherwise, the method returns <see cref="null"/>.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>User found from the message.</returns>
+        /// Arcy
+        public static SocketGuildUser GetUser(string text)
+        {
+            // Check through all users and determine the best user found
+            SocketGuildUser bestUser = null;
+            float bestScore = 0;
+
+            foreach (SocketGuildUser user in ServerData.Server.Users)
+            {
+                // Check if username or nickname contains the name, or if it contains user ID
+                if (user.Username.ToLower().Contains(text.ToLower()))
+                {
+                    float score = UtilStringComparison.CompareWordScore(user.Username.ToLower(), text.ToLower());
+                    if (score > bestScore)
+                    {
+                        bestUser = user;
+                        bestScore = score;
+                        score = 0;
+                    }
+                }
+                if (user.Nickname != null && user.Nickname.Contains(text.ToLower()))
+                {
+                    float score = UtilStringComparison.CompareWordScore(user.Nickname.ToLower(), text.ToLower());
+                    if (score > bestScore)
+                    {
+                        bestUser = user;
+                        bestScore = score;
+                        score = 0;
+                    }
+                }
+                // User ID most likely would not be put in by mistake. Return that user
+                if (text.Contains(user.Id.ToString()))
+                {
+                    return user;
+                }
+            }
+
+            // Check if match is reasonably close
+            if (bestScore > 0.66f)
+            {
+                return bestUser;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
