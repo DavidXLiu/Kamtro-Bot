@@ -20,6 +20,7 @@ namespace Kamtro_Bot.Interfaces
 
         public List<string> InputFields = new List<string>();
 
+        public int PageNum = 0;
         public int CursorPos = 0;
 
         public abstract Task OnMessage(SocketUserMessage message);
