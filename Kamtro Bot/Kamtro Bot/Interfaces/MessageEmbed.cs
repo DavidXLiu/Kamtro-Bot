@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Kamtro_Bot.Interfaces
 {
@@ -16,6 +17,10 @@ namespace Kamtro_Bot.Interfaces
     public abstract class MessageEmbed : ActionEmbed
     {
         public SocketChannel CommandChannel;
+
+        public List<string> InputFields = new List<string>();
+
+        public int CursorPos = 0;
 
         public abstract Task OnMessage(SocketUserMessage message);
 
@@ -30,8 +35,10 @@ namespace Kamtro_Bot.Interfaces
         public abstract void PerformMessageAction(SocketUserMessage message);
 
 
-        public virtual async Task AddInputsAsync(EmbedBuilder builder) {
+        public virtual void AddInputs<T>(EmbedBuilder builder) {
+            Type t = typeof(T);
 
+            foreach ())
         }
 
         /// <summary>
@@ -39,7 +46,7 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// <param name="channel">The channel to display the embed in</param>
         /// <returns></returns>
-        public override async Task Display(IMessageChannel channel) {
+        public override async Task Display(IMessageChannel channel = null) {
             await base.Display(channel);
 
             EventQueueManager.AddMessageEvent(this);
