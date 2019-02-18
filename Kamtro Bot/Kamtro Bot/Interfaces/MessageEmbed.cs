@@ -34,13 +34,6 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="message">The message that was sent by the user</param>
         public abstract void PerformMessageAction(SocketUserMessage message);
 
-
-        public virtual void AddInputs<T>(EmbedBuilder builder) {
-            Type t = typeof(T);
-
-            foreach ())
-        }
-
         /// <summary>
         /// Displays the embed.
         /// </summary>
