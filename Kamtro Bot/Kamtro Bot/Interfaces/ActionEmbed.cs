@@ -21,7 +21,7 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="option"></param>
         public abstract Task PerformAction(SocketReaction option);
 
-        public override async Task Display(IMessageChannel channel) {
+        public override async Task Display(IMessageChannel channel = null) {
             await base.Display(channel);
 
             await AddReactions();  // Add the reactions

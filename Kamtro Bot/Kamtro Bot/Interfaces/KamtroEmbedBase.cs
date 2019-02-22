@@ -23,10 +23,6 @@ namespace Kamtro_Bot.Interfaces
     /// The embed does not automatically add itself to the pending action dictionary, and it should never do so.
     /// It's much safer and easier to manually add it when it is created, and in the context in which it is created,
     /// such as inside the command method.
-    /// 
-    /// 
-    /// TODO:
-    /// Change the display method to not require a channel as a parameter, and do the same for all classes in the inheritance chain.
     /// </remarks>
     /// -C
     public abstract class KamtroEmbedBase
@@ -103,11 +99,12 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// <param name="channel">The channel to send the message in</param>
         /// <returns></returns>
-        public async virtual Task Display(IMessageChannel channel) {
+        public async virtual Task Display(IMessageChannel channel = null) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
 
+            channel = channel ?? Message.Channel;  // If there is no channel specified, pass in the one that the embed came from
+
             Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message
-          
         }
     }
 }
