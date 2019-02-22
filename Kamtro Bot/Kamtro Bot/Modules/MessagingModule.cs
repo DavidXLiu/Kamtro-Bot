@@ -8,6 +8,7 @@ using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 
+using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Modules
@@ -29,11 +30,10 @@ namespace Kamtro_Bot.Modules
             {
                 /// TO DO
                 /// 
-                /// Get all users in remainder of the message
-                /// Make prompt on what message to send to the users
+                /// Get the user in remainder of the message [DONE]
+                /// Make prompt on what message to send to the user [DONE]
                 /// Include attachments
-                /// Prompt should have a cancel and confirm button
-                /// Sends the message to the users when confirmed
+                /// Sends the message to the user [DONE]
                 
                 // Inform user to specify the user to DM
                 if (args == null)
@@ -55,8 +55,27 @@ namespace Kamtro_Bot.Modules
                     else if (msgSplit.Length == 2)
                     {
                         /// To Do:
-                        /// Show embed for messaging the user
+                        /// Show embed for messaging the user [DONE]
                         /// Toggle on messaging that user
+                        
+                        MessagingEmbed embed = new MessagingEmbed(user);
+                        // Send embed in DMs to user
+                        try
+                        {
+                            await embed.Display((IMessageChannel)user.GetOrCreateDMChannelAsync());
+                        }
+                        // Could not send to the user
+                        catch (Exception e)
+                        {
+                            if (user.Nickname != null)
+                            {
+                                await ReplyAsync(BotUtils.KamtroText($"I cannot send direct messages to you, {user.Nickname}. Please allow direct messages from me."));
+                            }
+                            else
+                            {
+                                await ReplyAsync(BotUtils.KamtroText($"I cannot send direct messages to you, {user.Username}. Please allow direct messages from me."));
+                            }
+                        }
                     }
                     else
                     {

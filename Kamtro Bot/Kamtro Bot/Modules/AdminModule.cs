@@ -31,7 +31,7 @@ namespace Kamtro_Bot.Modules
         [Alias("off", "sleep")]
         public async Task OfflineAsync() {
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
-            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR) || user.Id == 118892308086128641) {
+            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR)) {
                 await ReplyAsync(BotUtils.KamtroText("Goodnight 💤"));
                 await Program.Client.LogoutAsync();
             }

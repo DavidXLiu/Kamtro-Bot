@@ -145,6 +145,7 @@
     <Compile Include="Interfaces\HackedEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\MessageEmbed.cs" />
+    <Compile Include="Interfaces\MessagingEmbed.cs" />
     <Compile Include="Interfaces\NSFWEmbed.cs" />
     <Compile Include="Interfaces\RoleEmbed.cs" />
     <Compile Include="Interfaces\UserSelectionEmbed.cs" />
