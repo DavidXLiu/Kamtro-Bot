@@ -46,9 +46,43 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <param name="message">The message that was sent by the user</param>
         public virtual void PerformMessageAction(SocketUserMessage message) {
-            InputFields[PageNum][CursorPos].SetValue(message.Content);
+            MessageFieldNode mfn = InputFields[PageNum][CursorPos];
+            string msg = message.Content;
+
+            switch(mfn.Type) {
+                case FieldDataType.BOOL:
+                    bool b_input;
+
+                    if (!bool.TryParse(msg, out b_input)) {
+                        return;  // If it's invalid, return
+                    }
+                    mfn.SetValue(b_input.ToString());
+                    break;
+
+                case FieldDataType.INT:
+                    int i_input;
+
+                    if(int.TryParse(msg, out i_input)) {
+                        return;
+                    }
+                    mfn.SetValue(i_input.ToString());
+                    break;
+
+                case FieldDataType.DBL:
+                    double d_input;
+
+                    if (!double.TryParse(msg, out d_input)) {
+                        return;  // If it's invalid, return
+                    }
+                    mfn.SetValue(d_input.ToString());
+                    break;
+
+                default:
+                    mfn.SetValue(msg);
+                    break;
+            }
         }
-        
+
 
         /// <summary>
         /// Registers the menu fields.

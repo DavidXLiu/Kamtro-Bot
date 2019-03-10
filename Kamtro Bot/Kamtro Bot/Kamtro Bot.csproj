@@ -181,6 +181,7 @@
     <Compile Include="Interfaces\ActionEmbeds\MessagingEmbed.cs" />
     <Compile Include="Nodes\MessageFieldNode.cs" />
     <Compile Include="Util\Exceptions\ConflictingFieldException.cs" />
+    <Compile Include="Util\FieldDataType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
