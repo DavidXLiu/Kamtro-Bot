@@ -12,8 +12,13 @@ using System.Reflection;
 namespace Kamtro_Bot.Interfaces
 {
     /// <summary>
-    /// This is a abse class for embeds that are waiting on a message
+    /// This is a base class for embeds that are waiting on a message.
     /// </summary>
+    /// <remarks>
+    /// Class chain so far is:
+    /// 
+    /// KamtroEmbedBase > ActionEmbed > MessageEmbed
+    /// </remarks>
     public abstract class MessageEmbed : ActionEmbed
     {
         public SocketChannel CommandChannel;

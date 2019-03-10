@@ -142,11 +142,9 @@
   <ItemGroup>
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\BasicEmbed.cs" />
-    <Compile Include="Interfaces\HackedEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\MessageEmbed.cs" />
     <Compile Include="Interfaces\MessagingEmbed.cs" />
-    <Compile Include="Interfaces\NSFWEmbed.cs" />
     <Compile Include="Interfaces\RoleEmbed.cs" />
     <Compile Include="Interfaces\UserSelectionEmbed.cs" />
     <Compile Include="Managers\EventQueueManager.cs" />
@@ -176,9 +174,11 @@
     <Compile Include="Util\Attributes\InputField.cs" />
     <Compile Include="Util\ServerData.cs" />
     <Compile Include="Util\StringComparison.cs" />
-    <Compile Include="Interfaces\ActionEmbed.cs" />
     <Compile Include="Managers\SecurityManager.cs" />
     <Compile Include="Util\SecurityMessageNode.cs" />
+    <Compile Include="Interfaces\ActionEmbed.cs" />
+    <Compile Include="Interfaces\HackedEmbed.cs" />
+    <Compile Include="Interfaces\NSFWEmbed.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
