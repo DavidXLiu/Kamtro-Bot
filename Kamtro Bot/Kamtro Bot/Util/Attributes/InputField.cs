@@ -23,6 +23,8 @@ namespace Kamtro_Bot.Util
         // Predefined variables
         public string Value = "[Enter Value]";
 
+        public FieldDataType Type = FieldDataType.STR;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Kamtro_Bot.Util.InputField"/> class.
         /// </summary>

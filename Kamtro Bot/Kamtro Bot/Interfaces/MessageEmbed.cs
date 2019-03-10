@@ -110,7 +110,7 @@ namespace Kamtro_Bot.Interfaces
 
                     // Otherwise, if everything is fine,
                     // Add the field.
-                    InputFields[info.Page][info.Position] = new MessageFieldNode(info.Name, info.Page, info.Position, info.Value);  // And add the appropriate node to the dict where it belongs
+                    InputFields[info.Page][info.Position] = new MessageFieldNode(info.Name, info.Page, info.Position, info.Value, info.Type);  // And add the appropriate node to the dict where it belongs
 
                     FieldCount++; // Account for the new field
                 }
