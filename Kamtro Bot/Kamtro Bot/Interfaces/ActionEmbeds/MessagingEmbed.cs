@@ -13,7 +13,7 @@ using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces
 {
-    class MessagingEmbed : ActionEmbed
+    public class MessagingEmbed : ActionEmbed
     {
         public const string MODIFY = "\u1f537";
         public const string END = "\u1f51a";

@@ -16,9 +16,9 @@ namespace Kamtro_Bot.Util
     public class InputField : Attribute
     {
         // Constructor variables
-        private string Name { get; set; }  // The displayed name of the variable
-        private int Page { get; set; }  // The page of the variable
-        private int Position { get; set; }  // The position of the variable on it's page
+        public string Name;  // The displayed name of the variable
+        public int Page; // The page of the variable
+        public int Position;  // The position of the variable on it's page
 
         // Predefined variables
         public string Value = "[Enter Value]";

@@ -37,10 +37,6 @@ namespace Kamtro_Bot.Interfaces
         /// <returns>The Embed object</returns>
         public abstract Embed GetEmbed();
 
-
-
-
-
         /// <summary>
         /// Displays the embed and sets the Message variable.
         /// </summary>
