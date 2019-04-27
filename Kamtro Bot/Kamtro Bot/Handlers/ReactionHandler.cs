@@ -12,15 +12,34 @@ using System.Threading.Tasks;
 namespace Kamtro_Bot.Handlers
 {
     /// <summary>
-    /// The handler class for reactions
+    /// The handler class for reactions.
+    /// Holds utility constants, and has the event handler method for reaction add/remove events.
     /// </summary>
     /// <remarks>
     /// Mostly just used for the interfaces
+    /// 
+    /// TODO:
+    /// - Add #regions for the constants
+    /// 
     /// -C
     /// </remarks>
     public class ReactionHandler
     {
-        public const string DONE_STR = "🔚";  // This is a constant for the done button
+        /**
+         * These variables are helpful constants for interface creation.
+         * Instead of having to make a new MenuOptionNode every time, you can now just use one of these constants.
+         * Each block of text here (seperated by a space in this context) contains a different object relating to the emoji.
+         * 
+         * First block is the emoji in string form. We should use proper excape sequences for this,
+         * and not use the emoji character as this has caused issues in the past.
+         * 
+         * Second block is the emoji object. Useful for putting in text.
+         * 
+         * Third block is for the MenuOptionNodes, very useful for quick creation of menus.
+         * 
+         * -C
+         */
+        public const string DONE_STR = "🔚"; 
         public const string CHECK_STR = "\u2705";
         public const string DECLINE_STR = "\u274C";
         public const string UP_STR = "\u2b06";
@@ -42,13 +61,27 @@ namespace Kamtro_Bot.Handlers
         public static readonly MenuOptionNode SELECT = new MenuOptionNode(SELECT_STR, "Select");
 
 
-
-
+        /// <summary>
+        /// Constructor for the handler, called on startup. 
+        /// This creates a handler object, and assigns it to handle the reaction events.
+        /// </summary>
+        /// <param name="client">The Client Object</param>
         public ReactionHandler(DiscordSocketClient client) {
             client.ReactionAdded += HandleReactionAsync;
             client.ReactionRemoved += HandleReactionAsync;
         }
 
+        /// <summary>
+        /// Reaction add/remove event handler method.
+        /// </summary>
+        /// <remarks>
+        /// This is called every time a reaction is added or removed, basically every time a user
+        /// clicks the reaction button.
+        /// </remarks>
+        /// <param name="cacheableMessage">Message that the reaction was added to</param>
+        /// <param name="channel">The channel the message with the reaction is in</param>
+        /// <param name="reaction">The reaction added</param>
+        /// <returns></returns>
         private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> cacheableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
             if (reaction.User.Value.IsBot) return;  // More Robophobia (no bots allowed)
 

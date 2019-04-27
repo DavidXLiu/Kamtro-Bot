@@ -31,7 +31,7 @@ namespace Kamtro_Bot.Interfaces
     {
         public SocketChannel CommandChannel;
 
-        // Storage for the input fields -C
+        // Storage for the input fields
         // First key is the page, second key is the position on the page
         // -C
         public Dictionary<int, Dictionary<int, MessageFieldNode>> InputFields = new Dictionary<int, Dictionary<int, MessageFieldNode>>();
@@ -41,6 +41,15 @@ namespace Kamtro_Bot.Interfaces
         public int PageNum = 1;
         public int CursorPos = 1;
 
+        /// <summary>
+        /// This is the method called when a message has been recieved by a user who has an active embed.
+        /// </summary>
+        /// <remarks>
+        /// This seems to be a duplicate of <see cref="PerformMessageAction(SocketUserMessage)"/>, no references in code so
+        /// this will not be used. It will be kept until needed, might be removed at a later time.
+        /// </remarks>
+        /// <param name="message">The message sent by the user</param>
+        /// <returns></returns>
         public virtual async Task OnMessage(SocketUserMessage message) {
             PerformMessageAction(message);
         }
@@ -93,7 +102,8 @@ namespace Kamtro_Bot.Interfaces
 
 
         /// <summary>
-        /// Registers the menu fields, and adds them to the dictionary.
+        /// Searches the class for all fields marked with <see cref="InputField"/>,
+        /// and adds them to the internal dictionary for use in other methods.
         /// </summary>
         /// <remarks>
         /// Important to note:
@@ -132,7 +142,7 @@ namespace Kamtro_Bot.Interfaces
         }
 
         /// <summary>
-        /// Adds the embed fields.
+        /// Adds the embed fields to the embed, with the cursor.
         /// </summary>
         /// <remarks>
         /// </remarks>
