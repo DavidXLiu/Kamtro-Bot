@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Kamtro_Bot.Interfaces.MessageEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -49,6 +50,14 @@ namespace Kamtro_Bot.Modules
         public async Task PoloAsync()
         {
             await ReplyAsync(BotUtils.KamtroText($"But nobody came."));
+        }
+        #endregion
+        #region Concept Commands
+        [Command("messagetest")]
+        public async Task MessageTestAsync() {
+            MessageTestEmbed mte = new MessageTestEmbed();
+            mte.SetContext(Context);
+            await mte.Display();
         }
         #endregion
     }

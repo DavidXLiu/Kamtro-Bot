@@ -16,7 +16,7 @@ namespace Kamtro_Bot.Interfaces
         public HackedEmbed(SocketGuildUser sender) {
             CommandCaller = sender;
 
-            AddMenuOptions(new MenuOptionNode(BotUtils.CHECK, "Confirm"), new MenuOptionNode(BotUtils.DECLINE, "Cancel"));
+            AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE);
         }
 
         public override Embed GetEmbed() {
@@ -33,7 +33,7 @@ namespace Kamtro_Bot.Interfaces
         }
 
         public async override Task PerformAction(SocketReaction option) {
-            if(option.Emote.ToString() == BotUtils.CHECK) {
+            if(option.Emote.ToString() == ReactionHandler.CHECK_STR) {
                 await Hacked();
             }
 

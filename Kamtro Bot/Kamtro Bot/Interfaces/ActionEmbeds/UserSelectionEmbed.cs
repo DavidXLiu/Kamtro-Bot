@@ -81,7 +81,7 @@ namespace Kamtro_Bot.Interfaces
                     nodes.Add(new MenuOptionNode(NUMBERS[i], $"Select user {i + 1}"));  // Add the menu node
                 }
 
-                nodes.Add(ReactionHandler.DONE_NODE);
+                nodes.Add(ReactionHandler.DONE);
                 
                 AddMenuOptions(nodes.GetRange(0, UserOptions.Count+1).ToArray());  // Add the menu options
             }

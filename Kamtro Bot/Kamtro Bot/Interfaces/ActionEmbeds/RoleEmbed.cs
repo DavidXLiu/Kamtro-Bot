@@ -13,10 +13,6 @@ namespace Kamtro_Bot.Interfaces
 {
     public class RoleEmbed : ActionEmbed
     {
-        private const string UP = "\u2b06";
-        private const string DOWN = "\u2b07";
-        private const string SELECT = "\U0001f537";
-
         private int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go
         private int cursorPos = 0;  // How many spaces down the cursor is
 
@@ -29,10 +25,8 @@ namespace Kamtro_Bot.Interfaces
             // Each option is added as a new MenuOptionNode object.
             // The last node passed in this specific call is one that's located in the ReactionHandler class
             // It's for the Done button.
-            AddMenuOptions(new MenuOptionNode(UP, "Cursor up"),
-                new MenuOptionNode(DOWN, "Cursor down"),
-                new MenuOptionNode(SELECT, "Select"),
-                ReactionHandler.DONE_NODE);
+            AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN,
+                ReactionHandler.SELECT, ReactionHandler.DONE);
 
             CommandCaller = user;
         }
@@ -99,15 +93,15 @@ namespace Kamtro_Bot.Interfaces
 
         public override async Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
-                case UP:
+                case ReactionHandler.UP_STR:
                     cursorPos--;  // Move the cursor up a space
                     break;
 
-                case DOWN:
+                case ReactionHandler.DOWN_STR:
                     cursorPos++;  // Move the cirsor down a space
                     break;
 
-                case SELECT:
+                case ReactionHandler.SELECT_STR:
                     if (!CommandCaller.Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
                         // If the user doesn't have the role
                         await CommandCaller.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role

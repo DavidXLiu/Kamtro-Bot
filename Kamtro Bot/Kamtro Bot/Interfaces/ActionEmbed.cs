@@ -13,12 +13,29 @@ using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Interfaces
 {
+    /// <summary>
+    /// Embed with reaction options
+    /// </summary>
+    /// <remarks>
+    /// Class chain:
+    /// 
+    /// KamtroEmbedBase > ActionEmbed
+    /// 
+    /// This is probably going to be the most common interface. 
+    /// </remarks>
     public abstract class ActionEmbed : KamtroEmbedBase
     {
         public SocketGuildUser CommandCaller;
         protected List<MenuOptionNode> MenuOptions;  // This should stay uninitialized. If there are no options, then it's value doesn't matter.
                                                      // This should be initialized in the constructor of the class.
-        
+        /// <summary>
+        /// Full context for the embed
+        /// </summary>
+        /// <remarks>
+        /// Oh boy this was needed for so long. Full context for everything
+        /// </remarks>
+        public SocketCommandContext Context;
+
         /// <summary>
         /// This method performs the interface's action for the option chosen by the user.
         /// </summary>
@@ -71,6 +88,8 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// <returns></returns>
         public async Task AddReactions() {
+            if (MenuOptions == null) return; // if there are no options return null. Otherwise it will crash on the next line.
+
             foreach (MenuOptionNode node in MenuOptions) {  // For each menu option
 
                 Emoji x = new Emoji(node.Icon);
@@ -90,6 +109,17 @@ namespace Kamtro_Bot.Interfaces
             await AddReactions();  // Add the reactions
 
             EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
+        }
+
+        /// <summary>
+        /// Set the context for the interface
+        /// </summary>
+        /// <remarks>
+        /// This is a temporary method.
+        /// </remarks>
+        /// <param name="ctx">The context object</param>
+        public void SetContext(SocketCommandContext ctx) {
+            Context = ctx;
         }
     }
 }

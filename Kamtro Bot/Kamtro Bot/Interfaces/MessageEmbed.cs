@@ -21,6 +21,10 @@ namespace Kamtro_Bot.Interfaces
     /// Class chain so far is:
     /// 
     /// KamtroEmbedBase > ActionEmbed > MessageEmbed
+    /// 
+    /// Addendum:
+    /// Wow I suck at documentation.
+    /// Going to fix that hopefully
     /// </remarks>
     /// -C
     public abstract class MessageEmbed : ActionEmbed
@@ -28,6 +32,8 @@ namespace Kamtro_Bot.Interfaces
         public SocketChannel CommandChannel;
 
         // Storage for the input fields -C
+        // First key is the page, second key is the position on the page
+        // -C
         public Dictionary<int, Dictionary<int, MessageFieldNode>> InputFields = new Dictionary<int, Dictionary<int, MessageFieldNode>>();
 
         public int FieldCount = 0;
@@ -35,7 +41,9 @@ namespace Kamtro_Bot.Interfaces
         public int PageNum = 1;
         public int CursorPos = 1;
 
-        public abstract Task OnMessage(SocketUserMessage message);
+        public virtual async Task OnMessage(SocketUserMessage message) {
+            PerformMessageAction(message);
+        }
 
         /// <summary>
         /// This is the method that will be called when the user sends a message in the bot channel if the interface is waiting on a message.
@@ -85,7 +93,7 @@ namespace Kamtro_Bot.Interfaces
 
 
         /// <summary>
-        /// Registers the menu fields.
+        /// Registers the menu fields, and adds them to the dictionary.
         /// </summary>
         /// <remarks>
         /// Important to note:
@@ -95,13 +103,17 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// -C
         protected void RegisterMenuFields() {
-            foreach(PropertyInfo f in GetType().GetProperties()) {
+            foreach(FieldInfo f in GetType().GetFields()) {
                 if(Attribute.IsDefined(f, typeof(InputField))) {
                     // if it's an input field var
                     InputField info = f.GetCustomAttribute(typeof(InputField)) as InputField; // get it's attribute
 
                     int page = info.Page;
                     int pos = info.Position;
+
+                    if(!InputFields.ContainsKey(page)) {
+                        InputFields[page] = new Dictionary<int, MessageFieldNode>();
+                    }
 
                     if(InputFields[page].ContainsKey(pos)) {
                         // If there is already an input field here
@@ -205,6 +217,14 @@ namespace Kamtro_Bot.Interfaces
 
             PageNum++;  // Move the page
         }
+
+        protected bool IsCursorOnVar() {
+            if(InputFields[PageNum].ContainsKey(CursorPos)) {
+                return true;
+            }
+
+            return false;
+        }
         #endregion
 
         /// <summary>
@@ -214,6 +234,8 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="channel">The channel to display the embed in</param>
         /// <returns></returns>
         public override async Task Display(IMessageChannel channel = null) {
+            if (channel == null) channel = Context.Channel;
+
             await base.Display(channel);
 
             EventQueueManager.AddMessageEvent(this);

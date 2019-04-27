@@ -24,7 +24,7 @@ namespace Kamtro_Bot.Managers
         /// -C
         /// <param name="embed">The interface to add</param>
         public static void AddEvent(ActionEmbed embed) {
-            ulong id = embed.CommandCaller.Id;
+            ulong id = embed.Context.User.Id;
 
             if (EventQueue.ContainsKey(id)) {
                 // If the user is in the queue
@@ -64,7 +64,7 @@ namespace Kamtro_Bot.Managers
         /// </remarks>
         /// <param name="embed">The embed to add</param>
         public static void AddMessageEvent(MessageEmbed embed) {
-            ulong id = embed.CommandCaller.Id;
+            ulong id = embed.Context.User.Id;
 
             if (MessageEventQueue.ContainsKey(id)) {
                 // If the user is in the queue
