@@ -31,7 +31,6 @@ namespace Kamtro_Bot.Interfaces
         private Func<SocketGuildUser, Task> selectedAction;
         private Func<SocketGuildUser, SocketCommandContext, Task> selectedActionWithContext;
 
-        private SocketCommandContext Context;
         private List<SocketGuildUser> UserOptions;
         private List<string> Numbers;
 

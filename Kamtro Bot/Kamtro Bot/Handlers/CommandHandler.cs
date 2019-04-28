@@ -24,7 +24,6 @@ namespace Kamtro_Bot.Handlers
     public class CommandHandler
     {
         public static CommandHandler instance;
-        public static Dictionary<ulong, MessageEventNode> MessageEventQueue = new Dictionary<ulong, MessageEventNode>();
 
         private DiscordSocketClient _client;
         private CommandService _service;
@@ -103,10 +102,10 @@ namespace Kamtro_Bot.Handlers
 
                 // Check if the user is responding to an interface. -C
                 // If the user has an entry in the dict, and their entry isn't null. -C
-                if(MessageEventQueue.ContainsKey(m.Author.Id) && MessageEventQueue[m.Author.Id] != null) {
+                if(EventQueueManager.MessageEventQueue.ContainsKey(m.Author.Id) && EventQueueManager.MessageEventQueue[m.Author.Id] != null) {
                     SocketUserMessage sm = m as SocketUserMessage;
                     if(sm != null) {
-                        MessageEventQueue[m.Author.Id].Interface.PerformMessageAction(sm);
+                        EventQueueManager.MessageEventQueue[m.Author.Id].Interface.PerformMessageAction(sm);
                     }
                 }
 

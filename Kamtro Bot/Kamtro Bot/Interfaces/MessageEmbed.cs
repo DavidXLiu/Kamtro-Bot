@@ -62,7 +62,7 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// -C
         /// <param name="message">The message that was sent by the user</param>
-        public virtual void PerformMessageAction(SocketUserMessage message) {
+        public virtual async void PerformMessageAction(SocketUserMessage message) {
             MessageFieldNode mfn = InputFields[PageNum][CursorPos];
             string msg = message.Content;
 
@@ -98,6 +98,8 @@ namespace Kamtro_Bot.Interfaces
                     mfn.SetValue(msg);
                     break;
             }
+
+            await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed()); // update the embed
         }
 
 
@@ -248,6 +250,7 @@ namespace Kamtro_Bot.Interfaces
 
             await base.Display(channel);
 
+            EventQueueManager.AddEvent(this);
             EventQueueManager.AddMessageEvent(this);
         }
     }

@@ -7,6 +7,7 @@ using Kamtro_Bot.Util;
 using Kamtro_Bot.Nodes;
 using Discord;
 using Discord.WebSocket;
+using Kamtro_Bot.Handlers;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
 {
@@ -16,7 +17,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public string Test;
 
         public MessageTestEmbed() {
-            AddMenuOptions();
+            AddMenuOptions(ReactionHandler.CHECK);
             RegisterMenuFields();
         }
 

@@ -97,7 +97,7 @@ namespace Kamtro_Bot
             while (GCReady && GCLoop) {
                 now = DateTime.Now;
 
-                foreach (KeyValuePair<ulong, MessageEventNode> action in CommandHandler.MessageEventQueue.AsEnumerable()) {
+                foreach (KeyValuePair<ulong, MessageEventNode> action in EventQueueManager.MessageEventQueue.AsEnumerable()) {
                     span = now - action.Value.TimeCreated;
 
                     if (span > MessageTimeout) {
@@ -106,7 +106,7 @@ namespace Kamtro_Bot
                 }
 
                 foreach (ulong node in toRemoveMsg) {
-                    CommandHandler.MessageEventQueue[node] = null;
+                    EventQueueManager.MessageEventQueue[node] = null;
                 }
 
                 foreach (KeyValuePair<ulong, List<EventQueueNode>> action in EventQueueManager.EventQueue.AsEnumerable()) {
