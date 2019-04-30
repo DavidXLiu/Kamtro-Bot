@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Nodes
@@ -12,6 +14,8 @@ namespace Kamtro_Bot.Nodes
         private string Value;
         public int Page;
         public int Pos;
+
+        public MessageEmbed ClassPtr;
 
         public FieldDataType Type;
 
@@ -32,7 +36,21 @@ namespace Kamtro_Bot.Nodes
         }
 
         public void SetValue(string val) {
-            Value = val;
+            Value = val;  // set the attribute's value
+            
+            // and set the actual variables value
+            foreach(FieldInfo f in ClassPtr.GetType().GetFields()) {
+                if(Attribute.IsDefined(f, typeof(InputField))) {
+                    InputField ipf = f.GetCustomAttribute(typeof(InputField)) as InputField;
+
+                    if (ipf.Page == Page && ipf.Position == Pos) {
+                        string s = f.Name;
+
+                        ClassPtr.GetType().GetField(s).SetValue(ClassPtr, val);
+                        break;
+                    }
+                }
+            }
         }
 
         public string GetValue() {

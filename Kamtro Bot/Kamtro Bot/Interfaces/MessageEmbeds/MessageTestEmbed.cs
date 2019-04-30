@@ -8,6 +8,7 @@ using Kamtro_Bot.Nodes;
 using Discord;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
+using Discord.Commands;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
 {
@@ -16,8 +17,13 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("TEstig", 1, 1)]
         public string Test;
 
-        public MessageTestEmbed() {
+        [InputField("SecondTezt", 1, 2)]
+        public string SecondTest;
+
+        public MessageTestEmbed(SocketCommandContext ctx) {
             AddMenuOptions(ReactionHandler.CHECK);
+            Context = ctx;
+            CommandCaller = ctx.User as SocketGuildUser;
             RegisterMenuFields();
         }
 
@@ -32,8 +38,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             return builder.Build();
         }
 
-        public override Task PerformAction(SocketReaction option) {
-            throw new NotImplementedException();
+        public override async Task PerformAction(SocketReaction option) {
+            if(option.Emote.ToString() == ReactionHandler.CHECK_STR) {
+                await Context.Channel.SendMessageAsync("MSG: " + Test);
+            }
         }
     }
 }

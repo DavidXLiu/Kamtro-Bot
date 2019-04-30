@@ -51,7 +51,7 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="message">The message sent by the user</param>
         /// <returns></returns>
         public virtual async Task OnMessage(SocketUserMessage message) {
-            PerformMessageAction(message);
+            // PerformMessageAction(message);
         }
 
         /// <summary>
@@ -134,7 +134,9 @@ namespace Kamtro_Bot.Interfaces
 
                     // Otherwise, if everything is fine,
                     // Add the field.
-                    InputFields[info.Page][info.Position] = new MessageFieldNode(info.Name, info.Page, info.Position, info.Value, info.Type);  // And add the appropriate node to the dict where it belongs
+                    MessageFieldNode node = new MessageFieldNode(info.Name, info.Page, info.Position, info.Value, info.Type); // create the node
+                    node.ClassPtr = this; // give it a pointer to this class, so it can modify the variable it's attached to
+                    InputFields[info.Page][info.Position] = node;  // And add the appropriate node to the dict where it belongs
 
                     FieldCount++; // Account for the new field
                 }
@@ -250,7 +252,6 @@ namespace Kamtro_Bot.Interfaces
 
             await base.Display(channel);
 
-            EventQueueManager.AddEvent(this);
             EventQueueManager.AddMessageEvent(this);
         }
     }
