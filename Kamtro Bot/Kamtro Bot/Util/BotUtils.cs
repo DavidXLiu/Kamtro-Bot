@@ -84,7 +84,7 @@ namespace Kamtro_Bot
         /// This stops kamtro from waiting for interfaces that are going to be unused.
         /// </summary>
         /// <remarks>
-        /// VERY IMPORTANT: This method has teh potential to cause a race condition with the autosave thread. This is why the two should NEVER
+        /// VERY IMPORTANT: This method has the potential to cause a race condition with the autosave thread. This is why the two should NEVER
         /// access the same variables.
         /// 
         /// -C
@@ -92,13 +92,14 @@ namespace Kamtro_Bot
         public static void GarbageCollection() {
             DateTime now;
             TimeSpan span;
-            List<EventQueueNode> toRemove = new List<EventQueueNode>();
-            List<ulong> toRemoveMsg = new List<ulong>();
+
             while (GCReady && GCLoop) {
+                List<EventQueueNode> toRemove = new List<EventQueueNode>();
+                List<ulong> toRemoveMsg = new List<ulong>();
                 now = DateTime.Now;
 
                 foreach (KeyValuePair<ulong, MessageEventNode> action in EventQueueManager.MessageEventQueue.AsEnumerable()) {
-                    span = now - action.Value.TimeCreated;
+                    span = now - action.Value.TimeCreated; 
 
                     if (span > MessageTimeout) {
                         toRemoveMsg.Add(action.Key);
@@ -106,20 +107,22 @@ namespace Kamtro_Bot
                 }
 
                 foreach (ulong node in toRemoveMsg) {
-                    EventQueueManager.MessageEventQueue[node] = null;
+                    EventQueueManager.RemoveMessageEvent(node);
+                    Console.WriteLine($"[GC] Message Event from user {node} removed.");
                 }
 
                 foreach (KeyValuePair<ulong, List<EventQueueNode>> action in EventQueueManager.EventQueue.AsEnumerable()) {
                     foreach (EventQueueNode node in action.Value) {
                         span = now - node.TimeCreated;
 
-                        if (span > Timeout) {
+                        if (span > Timeout || node.IsAlone && span > MessageTimeout) {
                             toRemove.Add(node);
                         }
                     }
 
                     foreach (EventQueueNode node in toRemove) {
                         action.Value.Remove(node);
+                        Console.WriteLine($"[GC] Event from user {action.Key} removed. {((node.IsAlone) ? "Event was paired with message event from same user.":"")}");
                     }
                 }
 

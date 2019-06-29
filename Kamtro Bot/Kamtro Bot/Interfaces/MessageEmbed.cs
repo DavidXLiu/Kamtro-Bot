@@ -11,6 +11,7 @@ using System.Reflection;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Util.Exceptions;
+using Kamtro_Bot.Handlers;
 
 namespace Kamtro_Bot.Interfaces
 {
@@ -142,6 +143,11 @@ namespace Kamtro_Bot.Interfaces
                 }
             }
 
+            if(FieldCount > 1) {
+                // if there is more than one field, add up and down buttons
+                AddMenuOptions(ReactionHandler.DOWN, ReactionHandler.UP);
+            }
+
             PageCount = InputFields.Values.Count(); // set the number of pages
         }
 
@@ -165,13 +171,58 @@ namespace Kamtro_Bot.Interfaces
             }
         }
 
+        /// <summary>
+        /// This method is called when a reaction is passed in. It is not to be overridden.
+        /// </summary>
+        /// <remarks>
+        /// This method is implemented to prevent redundant code (such as having to check for up and down arrows each time).
+        /// It calls the method ButtonAction after doing it's usual checks.
+        /// 
+        /// TODO:
+        /// Add the left and right reactions for those controls.
+        /// 
+        /// -C
+        /// </remarks>
+        /// <param name="action">The reaction used.</param>
+        /// <returns></returns>
+        public async override Task PerformAction(SocketReaction action) {
+            switch(action.Emote.ToString()) {
+                case ReactionHandler.DOWN_STR:
+                    // These cursor movement methods will work here even if the interface has only one field. If a user
+                    // manually adds one of these reactions, the cursor will move, then correct itself accordingly. -C
+                    await MoveCursorDown(); 
+                    break;
+
+                case ReactionHandler.UP_STR:
+                    await MoveCursorUp();
+                    break;
+
+                default:
+                    await ButtonAction(action);  // if none of the predefined actions were used, it must be a custom action.
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// This method is called when a reaction is passed in.
+        /// </summary>
+        /// <remarks>
+        /// This method will always need an implementation, as there will be a confirm button on every embed that needs this interface
+        /// If there isn't, just leave the extension empty, it'll be fine.
+        /// 
+        /// -C
+        /// </remarks>
+        /// <param name="action">The reaction used.</param>
+        /// <returns></returns>
+        public abstract Task ButtonAction(SocketReaction action);
+
         #region Utility
         /// <summary>
         /// Moves the cursor up num times.
         /// </summary>
         /// -C
         /// <param name="num">The number of times to move the cursor up. Default is 1.</param>
-        protected void MoveCursorUp(int num = 1) {
+        protected async Task MoveCursorUp(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
             if(num < 0) MoveCursorDown(-num); // if num is negative, use the other method with positive num
@@ -185,6 +236,8 @@ namespace Kamtro_Bot.Interfaces
                     CursorPos = 1;
                 }
             }
+
+            await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
         }
 
         /// <summary>
@@ -192,7 +245,7 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// -C
         /// <param name="num">The number of times to move the cursor down. Default is 1.</param>
-        protected void MoveCursorDown(int num = 1) {
+        protected async Task MoveCursorDown(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
             if (num < 0) MoveCursorUp(-num); // if num is negative, use the other method with positive num
@@ -206,6 +259,8 @@ namespace Kamtro_Bot.Interfaces
                     CursorPos = FieldCount;
                 }
             }
+
+            await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
         }
 
         /// <summary>

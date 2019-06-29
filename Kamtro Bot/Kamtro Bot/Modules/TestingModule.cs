@@ -54,6 +54,7 @@ namespace Kamtro_Bot.Modules
         #endregion
         #region Concept Commands
         [Command("messagetest")]
+        [Alias("msgtst", "mts")]
         public async Task MessageTestAsync() {
             MessageTestEmbed mte = new MessageTestEmbed(Context);
             await mte.Display();

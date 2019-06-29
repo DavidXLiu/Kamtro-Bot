@@ -26,8 +26,8 @@ namespace Kamtro_Bot.Interfaces
     public abstract class ActionEmbed : KamtroEmbedBase
     {
         public SocketGuildUser CommandCaller;
-        protected List<MenuOptionNode> MenuOptions;  // This should stay uninitialized. If there are no options, then it's value doesn't matter.
-                                                     // This should be initialized in the constructor of the class.
+        protected List<MenuOptionNode> MenuOptions;  // This should stay null. If there are no options, then it's value doesn't matter.
+                                                     // This should be assigned in the constructor of the class.
         /// <summary>
         /// Full context for the embed
         /// </summary>
@@ -74,8 +74,11 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <param name="options">The different menu options and their descriptions</param>
         protected void AddMenuOptions(params MenuOptionNode[] options) {
-            MenuOptions = new List<MenuOptionNode>();  // Initialize the list
-            MenuOptions.AddRange(options);  // Fill it with the menu options
+            if (MenuOptions == null) {
+                MenuOptions = new List<MenuOptionNode>();  // Initialize the list, but only if it's null.
+            }
+
+            MenuOptions.AddRange(options);  // add the menu options
         }
 
 

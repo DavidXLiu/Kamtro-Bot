@@ -27,6 +27,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             RegisterMenuFields();
         }
 
+        public async override Task ButtonAction(SocketReaction action) {
+            if (action.Emote.ToString() == ReactionHandler.CHECK_STR) {
+                await Context.Channel.SendMessageAsync("MSG: " + Test);
+            }
+        }
+
         public override Embed GetEmbed() {
             EmbedBuilder builder = new EmbedBuilder();
 
@@ -36,12 +42,6 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             AddEmbedFields(builder);
 
             return builder.Build();
-        }
-
-        public override async Task PerformAction(SocketReaction option) {
-            if(option.Emote.ToString() == ReactionHandler.CHECK_STR) {
-                await Context.Channel.SendMessageAsync("MSG: " + Test);
-            }
         }
     }
 }

@@ -26,13 +26,15 @@ namespace Kamtro_Bot.Managers
         public static void AddEvent(ActionEmbed embed) {
             ulong id = embed.CommandCaller.Id;
 
+            bool alone = embed is MessageEmbed;
+
             if (EventQueue.ContainsKey(id)) {
                 // If the user is in the queue
-                EventQueue[id].Add(new EventQueueNode(embed));  // Add the action to their list
+                EventQueue[id].Add(new EventQueueNode(embed, alone));  // Add the action to their list
             } else {
                 // otherwise
                 EventQueue.Add(id, new List<EventQueueNode>());  // Create the list
-                EventQueue[id].Add(new EventQueueNode(embed));  // And add the action to their list
+                EventQueue[id].Add(new EventQueueNode(embed, alone));  // And add the action to their list
             }
         }
 
@@ -71,8 +73,7 @@ namespace Kamtro_Bot.Managers
                 MessageEventQueue[id] = new MessageEventNode(embed);  // Add the action to their list
             } else {
                 // otherwise
-                MessageEventQueue.Add(id, null);  // Create the entry
-                MessageEventQueue[id] = new MessageEventNode(embed);  // And add the action to their list
+                MessageEventQueue.Add(id, new MessageEventNode(embed));  // Create the entry and add the action to their list
             }
         }
 
@@ -83,7 +84,15 @@ namespace Kamtro_Bot.Managers
         public static void RemoveMessageEvent(MessageEmbed node) {
             ulong id = node.CommandCaller.Id;
 
-            MessageEventQueue[id] = null;
+            RemoveMessageEvent(id);
+        }
+
+        /// <summary>
+        /// Removes a message event from the queue via ID
+        /// </summary>
+        /// <param name="id">The ID of the user associated with the node</param>
+        public static void RemoveMessageEvent(ulong id) {
+            MessageEventQueue.Remove(id);
         }
 
         /// <summary>
