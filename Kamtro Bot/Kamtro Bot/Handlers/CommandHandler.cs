@@ -79,13 +79,12 @@ namespace Kamtro_Bot.Handlers
 
             SecurityManager.CheckMessage(message);  // Security Clearance -C
 
-            if(!UserDataManager.UserData.ContainsKey(m.Author.Id)) {
-                UserDataManager.AddUser(m.Author);
-            }
-
             if (Program.Settings.Prefix == null) return;  // if there is no prefix, also prevents null errors  -C
             if (message.Source != MessageSource.User) return;  // No bots allowed. #robophobia  -C
 
+            UserDataManager.OnChannelMessage(message);  // evaluate the message for user score
+
+            // From here on, only valid commands will get past
             int argPos = 0;  // This is the position of the command character, it should usually be 0. -C
             if(message.HasStringPrefix(Program.Settings.Prefix, ref argPos)) {
                 // if it's a command  -C

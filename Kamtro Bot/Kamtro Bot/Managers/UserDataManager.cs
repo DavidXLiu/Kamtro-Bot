@@ -59,7 +59,15 @@ namespace Kamtro_Bot.Managers
         /// -C
         /// </summary>
         // public Dictionary<ulong, UserInventoryNode> UserInventories;
-        
+        #region Event
+        public static void OnChannelMessage(SocketUserMessage message) {
+            bool userAdded = AddUserIfNotExists(message.Author);  // if the user does not have an entry, add it.
+            // TODO add score
+
+            if (userAdded && !BotUtils.SaveInProgress) SaveUserData();  // save the data if the user was added, but only if autosave isn't in progress.
+        }
+        #endregion
+        #region Utility
         /// <summary>
         /// Saves the user data to it's file.
         /// </summary>
@@ -71,11 +79,15 @@ namespace Kamtro_Bot.Managers
         /// Adds a user to the dict if it doesn't exist
         /// </summary>
         /// <param name="user">The user to add</param>
+        /// <returns>True if the user needed to be added, false otherwise.</returns>
         /// -C
-        public static void AddUserIfNotExists(SocketGuildUser user) {
+        public static bool AddUserIfNotExists(SocketUser user) {
             if(!UserData.ContainsKey(user.Id)) {
                 AddUser(user);
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -107,16 +119,13 @@ namespace Kamtro_Bot.Managers
         /// <param name="user">The user who will have their score added to</param>
         /// <param name="score">The score that will be added to the user</param>
         public static void AddScore(SocketGuildUser user, int score) {
-            if(!UserData.ContainsKey(user.Id)) {
-                // It's a user that doesn't have an entry  -C
-                AddUser(user);
-            }
+            AddUserIfNotExists(user);
 
             UserData[user.Id].Score += score;  // Add to the score
 
             SaveUserData();  // Save the updated data.
         }
 
-        
+        #endregion
     }
 }

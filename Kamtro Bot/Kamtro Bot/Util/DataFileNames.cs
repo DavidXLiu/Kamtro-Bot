@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kamtro_Bot
+namespace Kamtro_Bot 
 {
     public static class DataFileNames
     {
@@ -13,7 +13,7 @@ namespace Kamtro_Bot
         /// If you add a folder name to this list then the bot will create the dir on startup
         /// Make sure any necessary folders are in this list.
         /// </summary>
-        public static readonly string[] Folders = {"Config", "User Data"};
+        public static readonly string[] Folders = {"Config", "User Data", "Admin"};
 
         // Config Files  -C
         public const string GeneralConfigFile = @"Config\settings.json";

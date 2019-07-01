@@ -27,8 +27,13 @@ namespace Kamtro_Bot
 
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.
+        public static bool PauseSave = false;
+        public static bool SaveInProgress = false;
+
         public static bool GCReady = false;
         public static bool GCLoop = true;
+        public static bool PauseGC = false;
+        public static bool GCInProgress = false;
 
         /// <summary>
         /// Formats the message so the text is blue (AKA Kamtro speak)
@@ -56,6 +61,15 @@ namespace Kamtro_Bot
         }
 
         /// <summary>
+        /// Gets the user's name and discriminator in standard form (Username#XXXX)
+        /// </summary>
+        /// <param name="user">The user to inspect</param>
+        /// <returns>The user's full name and discriminator</returns>
+        public static string GetFullUsername(SocketUser user) {
+            return user.Username + "#" + user.Discriminator;
+        }
+
+        /// <summary>
         /// This method is to optimize saving the user data files.
         /// It will save the file every minute, that way the 
         /// potentially massive file isn't being saved every message or so.
@@ -63,7 +77,12 @@ namespace Kamtro_Bot
         /// </summary>
         public static void AutoSave() {
             while (SaveReady && SaveLoop) {
-                UserDataManager.SaveUserData();  // Save the user data.
+                if (!PauseSave) {
+                    SaveInProgress = true;
+                    UserDataManager.SaveUserData();  // Save the user data, but only if the thread is not paused.
+                    SaveInProgress = false;
+                }
+
                 Thread.Sleep(new TimeSpan(0, 10, 0));  // Pause for 10 minutes
             }
         }
@@ -77,7 +96,6 @@ namespace Kamtro_Bot
             SaveLoop = false;  // Stop the loop.
             Program.Autosave.Abort();  // Stop the thread here, just in case
         }
-
 
         /// <summary>
         /// Garbage collection thread method.
@@ -94,6 +112,13 @@ namespace Kamtro_Bot
             TimeSpan span;
 
             while (GCReady && GCLoop) {
+                if(PauseGC) {
+                    Thread.Sleep(new TimeSpan(0, 1, 0));
+                    continue;
+                }
+
+                GCInProgress = true;
+
                 List<EventQueueNode> toRemove = new List<EventQueueNode>();
                 List<ulong> toRemoveMsg = new List<ulong>();
                 now = DateTime.Now;
@@ -125,6 +150,8 @@ namespace Kamtro_Bot
                         Console.WriteLine($"[GC] Event from user {action.Key} removed. {((node.IsAlone) ? "Event was paired with message event from same user.":"")}");
                     }
                 }
+
+                GCInProgress = false;
 
                 Thread.Sleep(new TimeSpan(0, 1, 0));
             }

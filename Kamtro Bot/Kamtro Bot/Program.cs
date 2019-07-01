@@ -120,6 +120,10 @@ namespace Kamtro_Bot
                 Settings = JsonConvert.DeserializeObject<BotSettings>(FileManager.ReadFullFile(DataFileNames.GeneralConfigFile));  // Load from the file
             }
 
+            // Special case for Excel files.
+            // Only used for admin stuff atm
+            AdminDataManager.InitExcel();
+
             // Now for the files
             // This loop uses Reflection to iterate through all of the file paths and create any missing files
             // The settings.json file is the only one that needs a default template generated for it, and was handled above.
