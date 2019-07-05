@@ -130,8 +130,6 @@ namespace Kamtro_Bot.Util
             #endregion
         }
 
-
-
         public static bool HasPermissionLevel(SocketGuildUser user, PermissionLevel level) {
             switch(level) {
                 case PermissionLevel.USER:

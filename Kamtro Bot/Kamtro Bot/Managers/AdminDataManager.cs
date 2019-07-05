@@ -12,7 +12,7 @@ using OfficeOpenXml;
 namespace Kamtro_Bot.Managers
 {
     public class AdminDataManager {
-        private const string StrikeLogPath = @"Admin\strikelog.xlsx";
+        public const string StrikeLogPath = @"Admin\strikelog.xlsx";
         private const string StrikeLogPage = "Strike Log";
 
         private const string IDColumn = "A";
@@ -24,7 +24,7 @@ namespace Kamtro_Bot.Managers
         /// Only the header is generated, all other data is left as-is.
         /// </summary>
         public static void InitExcel() {
-            Console.WriteLine("[I] Initializing Excel...");
+            KLog.Info("Initializing Excel...");
             FileInfo strikeFile = new FileInfo(StrikeLogPath);
             ExcelPackage excel = new ExcelPackage(strikeFile);
 
@@ -34,14 +34,12 @@ namespace Kamtro_Bot.Managers
 
             // if the cell A1 is the word "reset", then regenerate the header.
             if (excel.Workbook.Worksheets[StrikeLogPage].Cells["A1"].Value == null) {
-                Console.WriteLine("[I] Adding Header...");
+                KLog.Info("Adding Header...");
                 AddHeader(excel);
             }
 
             StrikeLog = excel;  // now add a hook to the log file.
             excel.Save();
-
-
         }
 
         /// <summary>

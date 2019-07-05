@@ -73,6 +73,23 @@ namespace Kamtro_Bot
         }
 
         /// <summary>
+        /// This method gets the effective extension of a file.
+        /// </summary>
+        /// <remarks>
+        /// The active extension is the text after the LAST . in the name
+        /// For example, test.xlsx would have an extension of xlsx.
+        /// myFile.tar.gz would have an extension of gz.
+        /// </remarks>
+        /// <param name="filename">The name of the file</param>
+        /// <returns>The file's extension</returns>
+        public static string GetFileExtension(string filename) {
+            if (!filename.Contains(".") || filename.LastIndexOf('.')+1 == filename.Length) return "";
+
+            string ext = filename.Substring(filename.LastIndexOf('.') + 1);
+            return ext;
+        }
+
+        /// <summary>
         /// This method is to optimize saving the user data files.
         /// It will save the file every minute, that way the 
         /// potentially massive file isn't being saved every message or so.

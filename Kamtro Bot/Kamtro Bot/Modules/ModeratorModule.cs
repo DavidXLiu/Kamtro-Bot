@@ -12,6 +12,9 @@ using Discord.Rest;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Interfaces.MessageEmbeds;
+using Kamtro_Bot.Managers;
+using System.IO;
+using System.Net;
 
 namespace Kamtro_Bot.Modules
 {
@@ -151,10 +154,14 @@ namespace Kamtro_Bot.Modules
 
         [Command("strike")]
         [Alias("addstrike", "adds")]
-        public async Task AddStrikeAsync([Remainder] string name) {
+        public async Task AddStrikeAsync([Remainder] string name = "") {
             if(name == "") {
                 await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
+                return;
             }
+
+            SocketGuildUser caller = Context.Guild.GetUser(Context.User.Id);
+            if (!ServerData.HasPermissionLevel(caller, ServerData.PermissionLevel.MODERATOR)) return;
 
             List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
@@ -170,6 +177,47 @@ namespace Kamtro_Bot.Modules
                 UserSelectionEmbed use = new UserSelectionEmbed(users, StrikeUser, Context.Guild.GetUser(Context.User.Id));
                 await use.Display(Context.Channel);
             }
+        }
+
+        [Command("strikelog")]
+        [Alias("getstrikelog", "sl")]
+        public async Task StrikeLogAsync() {
+            if (!ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.MODERATOR)) return;
+
+            if (File.Exists(AdminDataManager.StrikeLogPath)) {
+                await Context.Channel.SendFileAsync(AdminDataManager.StrikeLogPath);
+            } else {
+                AdminDataManager.InitExcel();
+                await ReplyAsync(BotUtils.KamtroText("Stirke file was missing, so I made a new one."));
+                await Context.Channel.SendFileAsync(AdminDataManager.StrikeLogPath);
+            }
+        }
+
+        [Command("editstrikelog")]
+        [Alias("esl", "replacestrikelog")]
+        public async Task EditStrikeLogAsync() {
+            if (!ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.MODERATOR)) return;
+
+            if(Context.Message.Attachments.Count != 1) {
+                await ReplyAsync(BotUtils.KamtroText("Please attach the strike log file with no other attachments!"));
+                return;
+            }
+
+            Attachment file = Context.Message.Attachments.ElementAt(0);
+
+            if(file.Filename != "strikelog.xlsx") {
+                await ReplyAsync(BotUtils.KamtroText("The strike log must be an excel file named strikelog.xlsx!"));
+                return;
+            }
+
+            // At this point, the file is valid
+            string url = file.Url;
+
+            WebClient wc = new WebClient();
+            wc.DownloadFile(url, AdminDataManager.StrikeLogPath);
+
+            KLog.Info($"Strike log updated by {BotUtils.GetFullUsername(Context.User)}");
+            await ReplyAsync(BotUtils.KamtroText("The strike log has been updated!"));
         }
 
         #region Helper Methods
