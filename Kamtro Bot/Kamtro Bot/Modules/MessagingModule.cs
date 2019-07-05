@@ -16,7 +16,7 @@ namespace Kamtro_Bot.Modules
     /// <summary>
     /// Module that is made for sending or receiving messages through the bot.
     /// </summary>
-    class MessagingModule : ModuleBase<SocketCommandContext>
+    public class MessagingModule : ModuleBase<SocketCommandContext>
     {
         [Command("directmessage"), Alias("dm","pm","privatemessage","tell")]
         [Name("DirectMessage")]

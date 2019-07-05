@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
+using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Util;
+using Kamtro_Bot.Nodes;
+using Discord.Commands;
+using Kamtro_Bot.Managers;
+
+namespace Kamtro_Bot.Interfaces.MessageEmbeds
+{
+    public class StrikeEmbed : MessageEmbed
+    {
+        [InputField("Reason", 1, 1)]
+        public string Reason;
+
+        private SocketUser Target;
+
+        public StrikeEmbed(SocketCommandContext ctx, SocketUser target) {
+            AddMenuOptions(ReactionHandler.CHECK);
+            Context = ctx;
+            Target = target;
+            CommandCaller = ctx.User as SocketGuildUser;
+            RegisterMenuFields();
+        }
+
+        public override async Task ButtonAction(SocketReaction action) {
+            switch(action.Emote.ToString()) {
+                case ReactionHandler.CHECK_STR:
+                    // On confirm
+                    if (!AllFieldsFilled()) return;  // Do nothing if the fields are not filled.
+
+                    // otherwise, add the strike.
+                    StrikeDataNode str = new StrikeDataNode(Context.User, Reason);
+                    int strikes = AdminDataManager.AddStrike(Target, str);
+
+                    if (strikes > 3) {
+                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"{BotUtils.GetFullUsername(Target)} has 3 strikes"));
+                        break;
+                    }
+
+                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Added strike for {BotUtils.GetFullUsername(Target)}, they now have {strikes} strike{((strikes == 1) ? "":"s")}"));
+                    break;
+            }
+
+            EventQueueManager.RemoveEvent(this); // now remove the event
+        }
+
+        public override Embed GetEmbed() {
+            EmbedBuilder eb = new EmbedBuilder();
+
+            eb.WithTitle($"Add Strike for {BotUtils.GetFullUsername(Target)}");
+            eb.WithThumbnailUrl(Target.GetAvatarUrl());
+            eb.WithColor(BotUtils.Red);
+
+            AddEmbedFields(eb);
+            AddMenu(eb);
+
+            return eb.Build();
+        }
+    }
+}

@@ -15,6 +15,8 @@ namespace Kamtro_Bot.Managers
         private const string StrikeLogPath = @"Admin\strikelog.xlsx";
         private const string StrikeLogPage = "Strike Log";
 
+        private const string IDColumn = "A";
+
         private static ExcelPackage StrikeLog;
 
         /// <summary>
@@ -38,6 +40,8 @@ namespace Kamtro_Bot.Managers
 
             StrikeLog = excel;  // now add a hook to the log file.
             excel.Save();
+
+
         }
 
         /// <summary>
@@ -81,8 +85,73 @@ namespace Kamtro_Bot.Managers
         /// </summary>
         /// <param name="target"></param>
         /// <param name="strike"></param>
-        public static void AddStrike(SocketUser target, StrikeDataNode strike) {
+        /// <returns>The number of strikes the user has.</returns>
+        public static int AddStrike(SocketUser target, StrikeDataNode strike) {
+            ulong targetId = target.Id;
+            int pos = 2;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            while (cells["A"+pos].Value != null) {
+                ExcelRange cell = cells["A" + pos];
+                object test = cell.Value;
+                if (test == null) break;
 
+                if (Convert.ToUInt64(test) == targetId) {
+                    // Add the srike to this row.
+
+                    // First, check the username. 
+                    if(cells["B" + pos].Text != BotUtils.GetFullUsername(target)) {
+                        // if it doesn't check out, update it.
+                        cells["B" + pos].Value = BotUtils.GetFullUsername(target);
+                    }
+
+                    // now for the strike address. This will be based off of the number of strikes.
+                    // This is in column C
+                    int strikes = cells["C" + pos].GetValue<int>();
+
+                    if (strikes == 3) return 4;  // 4 is the signal
+
+                    // now to get the column. Fun ascii math.
+                    // 68 = ASCII for capital D. 
+                    string range = char.ConvertFromUtf32(68 + strikes*3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
+
+                    cells[range].LoadFromArrays(strike.GetStrikeForExcel());
+
+                    cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) + 1).ToString();
+                    StrikeLog.Save();
+
+                    KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {BotUtils.GetFullUsername(target)} in cell range {range}");
+
+                    return Convert.ToInt32(cells[$"C{pos}"].Text);
+                }
+
+                pos++;
+            }
+
+            // The user doesn't have an entry. So make one.
+            GenUserStrike(pos, target);
+
+            // Now add the strike
+            ExcelRange er = cells[$"D{pos}:F{pos}"];
+            er.LoadFromArrays(strike.GetStrikeForExcel());
+            StrikeLog.Save();
+            KLog.Info($"Added strike for {BotUtils.GetFullUsername(target)} in cell range D{pos}:F{pos}");
+
+            return 1;
+        }
+
+
+        /// <summary>
+        /// Generates the base for a user entry. Does not generate the strike, only columns A through C
+        /// </summary>
+        /// <param name="pos">Row in the spreadsheet</param>
+        /// <param name="target">Target user for entry</param>
+        private static void GenUserStrike(int pos, SocketUser target) {
+            KLog.Info($"User {BotUtils.GetFullUsername(target)} doesn't have a strike entry, creating one...");
+            List<string[]> entry = new List<string[]>();
+
+            entry.Add(new string[] { target.Id.ToString(), BotUtils.GetFullUsername(target), "1" });
+
+            StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
         }
     }
 }

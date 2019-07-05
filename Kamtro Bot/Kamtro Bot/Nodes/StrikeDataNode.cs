@@ -12,16 +12,17 @@ namespace Kamtro_Bot.Nodes
         public string Moderator;
         public DateTime Date;
 
-        public StrikeDataNode(SocketUser mod, string Reason) {
+        public StrikeDataNode(SocketUser mod, string reason) {
             Moderator = mod.Username + "#" + mod.Discriminator;
             Date = DateTime.Now;
+            Reason = reason;
         }
 
-        public List<string> GetStrikeForExcel() {
-            List<string> row = new List<string>();
-            row.Add(Date.ToString("F")); // F here means return a string with long date and time format.
-            row.Add(Moderator);
-            row.Add(Reason);
+        public List<string[]> GetStrikeForExcel() {
+            List<string[]> row = new List<string[]>();
+
+            row.Add(new string[] { Date.ToString("F"), Moderator, Reason });
+
             return row;
         }
     }

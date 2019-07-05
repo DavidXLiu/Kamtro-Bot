@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Discord.WebSocket;
+using Discord;
 
 namespace Kamtro_Bot
 {
@@ -24,6 +25,8 @@ namespace Kamtro_Bot
     {
         public static readonly TimeSpan Timeout = new TimeSpan(0, 10, 0);
         public static readonly TimeSpan MessageTimeout = new TimeSpan(0, 1, 0);
+
+        public static readonly Color Red = new Color(247, 47, 60);
 
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.

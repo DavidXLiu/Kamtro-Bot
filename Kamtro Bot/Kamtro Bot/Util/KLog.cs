@@ -8,9 +8,11 @@ namespace Kamtro_Bot
 {
     public class KLog {
         public static void Info(string msg) {
-            Console.WriteLine("[I] " + msg);
+            Console.WriteLine("[i] " + msg);
         }
 
-        public static void Warning(striung)
+        public static void Warning(string msg) {
+            Console.WriteLine("[W] " + msg);
+        }
     }
 }

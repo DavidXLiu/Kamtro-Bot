@@ -225,7 +225,7 @@ namespace Kamtro_Bot.Interfaces
         protected async Task MoveCursorUp(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
-            if(num < 0) MoveCursorDown(-num); // if num is negative, use the other method with positive num
+            if(num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
@@ -248,7 +248,7 @@ namespace Kamtro_Bot.Interfaces
         protected async Task MoveCursorDown(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
-            if (num < 0) MoveCursorUp(-num); // if num is negative, use the other method with positive num
+            if (num < 0) await MoveCursorUp(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
@@ -287,12 +287,32 @@ namespace Kamtro_Bot.Interfaces
             PageNum++;  // Move the page
         }
 
+        /// <summary>
+        /// Used to test if the cursor is on a variable for input
+        /// </summary>
+        /// <returns>True if the cursor is over an input variable, false otherwise.</returns>
         protected bool IsCursorOnVar() {
             if(InputFields[PageNum].ContainsKey(CursorPos)) {
                 return true;
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Tests all fields to see if they are filled.
+        /// </summary>
+        /// <returns>True if all fields have been filled out, false otherwise.</returns>
+        protected bool AllFieldsFilled() {
+            for(int i = 1; i <= PageCount; i++) {
+                foreach(int j in InputFields[i].Keys) {
+                    if(string.IsNullOrEmpty(InputFields[i][j].GetValue())) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
         #endregion
 

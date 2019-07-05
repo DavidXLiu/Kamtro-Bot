@@ -48,7 +48,7 @@ namespace Kamtro_Bot.Interfaces
         /// <returns></returns>
         public async virtual Task Display(IMessageChannel channel = null) {
             Embed kamtroEmbed = GetEmbed();  // The embed to send
-
+            
             channel = channel ?? Message.Channel;  // If there is no channel specified, pass in the one that the embed came from
 
             Message = await channel.SendMessageAsync(null, false, kamtroEmbed) as RestUserMessage;  // send the embed in the message

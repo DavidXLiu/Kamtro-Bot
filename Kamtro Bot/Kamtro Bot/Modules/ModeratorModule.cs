@@ -11,6 +11,7 @@ using Discord.Rest;
 
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Interfaces.MessageEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -29,7 +30,7 @@ namespace Kamtro_Bot.Modules
             if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR) || user.Id == 118892308086128641)
             {
                 // Only command was used. Get info on current user
-                if (String.IsNullOrWhiteSpace(args))
+                if (string.IsNullOrWhiteSpace(args))
                 {
                     await DisplayUserInfoEmbed(user);
                     return;
@@ -148,7 +149,35 @@ namespace Kamtro_Bot.Modules
             }
         }
 
+        [Command("strike")]
+        [Alias("addstrike", "adds")]
+        public async Task AddStrikeAsync([Remainder] string name) {
+            if(name == "") {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
+            }
+
+            List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
+
+            if(users.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                return;
+            } else if(users.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
+                return;
+            } else if(users.Count == 1) {
+                await StrikeUser(users[0]);
+            } else {
+                UserSelectionEmbed use = new UserSelectionEmbed(users, StrikeUser, Context.Guild.GetUser(Context.User.Id));
+                await use.Display(Context.Channel);
+            }
+        }
+
         #region Helper Methods
+        private async Task StrikeUser(SocketUser user) {
+            StrikeEmbed se = new StrikeEmbed(Context, user);
+            await se.Display();
+        }
+
         private async Task DisplayUserInfoEmbed(SocketGuildUser user)
         {
             EmbedBuilder embed = new EmbedBuilder();
