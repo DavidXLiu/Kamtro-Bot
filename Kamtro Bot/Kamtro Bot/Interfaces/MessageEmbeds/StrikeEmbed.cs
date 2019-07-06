@@ -26,9 +26,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         public StrikeEmbed(SocketCommandContext ctx, SocketUser target) {
             AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE, new MenuOptionNode(diamond, "Toggle Notify User"));
-            Context = ctx;
+            SetCtx(ctx);
             Target = target;
-            CommandCaller = ctx.User as SocketGuildUser;
             RegisterMenuFields();
         }
 
@@ -58,7 +57,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 case diamond:
                     // toggles the notification of the user
                     notifyUser = !notifyUser;
-                    await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
+                    await UpdateEmbed();
                     return;
             }
 
@@ -70,7 +69,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
             eb.WithTitle($"Add Strike for {BotUtils.GetFullUsername(Target)}");
             eb.WithThumbnailUrl(Target.GetAvatarUrl());
-            eb.WithColor(BotUtils.Red);
+            eb.WithColor(BotUtils.Orange);
 
             eb.AddField("User's current strike count:", $"{AdminDataManager.GetStrikes(Target)}");
 

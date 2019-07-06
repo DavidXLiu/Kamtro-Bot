@@ -155,13 +155,13 @@ namespace Kamtro_Bot.Modules
         [Command("strike")]
         [Alias("addstrike", "adds")]
         public async Task AddStrikeAsync([Remainder] string name = "") {
-            if(name == "") {
+            SocketGuildUser caller = Context.Guild.GetUser(Context.User.Id);
+            if (!ServerData.HasPermissionLevel(caller, ServerData.PermissionLevel.MODERATOR)) return;
+
+            if (name == "") {
                 await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
                 return;
             }
-
-            SocketGuildUser caller = Context.Guild.GetUser(Context.User.Id);
-            if (!ServerData.HasPermissionLevel(caller, ServerData.PermissionLevel.MODERATOR)) return;
 
             List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
@@ -220,10 +220,42 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText("The strike log has been updated!"));
         }
 
+        [Command("ban")]
+        [Alias("banuser")]
+        public async Task BanMemberAsync([Remainder] string name = "") {
+            SocketGuildUser caller = Context.Guild.GetUser(Context.User.Id);
+            if (!ServerData.HasPermissionLevel(caller, ServerData.PermissionLevel.MODERATOR)) return;
+
+            if (name == "") {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
+                return;
+            }
+
+            List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
+
+            if (users.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                return;
+            } else if (users.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
+                return;
+            } else if (users.Count == 1) {
+                await BanUser(users[0]);
+            } else {
+                UserSelectionEmbed use = new UserSelectionEmbed(users, BanUser, Context.Guild.GetUser(Context.User.Id));
+                await use.Display(Context.Channel);
+            }
+        }
+
         #region Helper Methods
         private async Task StrikeUser(SocketUser user) {
             StrikeEmbed se = new StrikeEmbed(Context, user);
             await se.Display();
+        }
+
+        private async Task BanUser(SocketUser user) {
+            BanEmbed be = new BanEmbed(Context, user);
+            await be.Display();
         }
 
         private async Task DisplayUserInfoEmbed(SocketGuildUser user)

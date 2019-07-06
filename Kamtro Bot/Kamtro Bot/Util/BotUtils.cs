@@ -23,14 +23,16 @@ namespace Kamtro_Bot
     /// </summary>
     public class BotUtils
     {
+        public const string ZeroSpace = "​"; // This is a zero-width space. (it's invisible)  -C
+
         public static readonly TimeSpan Timeout = new TimeSpan(0, 10, 0);
         public static readonly TimeSpan MessageTimeout = new TimeSpan(0, 1, 0);
 
         public static readonly Color Red = new Color(247, 47, 60); 
         public static readonly Color Orange = new Color(250, 148, 80);
 
-        public static bool SaveReady = false; // This is set to true once the files are safe to save to.
-        public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.
+        public static bool SaveReady = false; // This is set to true once the files are safe to save to.  -C
+        public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.  -C
         public static bool PauseSave = false;
         public static bool SaveInProgress = false;
 
@@ -47,6 +49,15 @@ namespace Kamtro_Bot
         /// <returns>The message in kamtro-formatting</returns>
         public static string KamtroText(string message) {
             return $"```INI\n[{message}]\n```";
+        }
+
+        /// <summary>
+        /// Formats the message to be red.
+        /// </summary>
+        /// <param name="message"The message</param>
+        /// <returns>The formatted message</returns>
+        public static string KamtroAngry(string message) {
+            return $"```DIFF\n- {message} -\n```";
         }
 
         /// <summary>

@@ -73,6 +73,9 @@ namespace Kamtro_Bot.Managers
             ex.SaveAs(file);
         }
 
+        /// <summary>
+        /// Saves the strike log file
+        /// </summary>
         public static void SaveExcel() {
             KLog.Info("Saving Excel...");
             StrikeLog.Save();
@@ -137,6 +140,26 @@ namespace Kamtro_Bot.Managers
             return 1;
         }
 
+        public static void AddBan(SocketUser target, BanDataNode ban) {
+            int pos = 2;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+
+            while (cells["A" + pos].Value != null) {
+                if (Convert.ToUInt64(cells["A" + pos].Value) == target.Id) {
+                    cells[$"M{pos}:O{pos}"].LoadFromArrays(ban.GetBanForExcel());
+                    KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range M{pos}:O{pos}.");
+                    SaveExcel();
+                    return;
+                }
+            }
+
+            // User doesn't have an entry, so is likely just a troll.
+            GenUserStrike(pos, target);
+            cells[$"M{pos}:O{pos}"].LoadFromArrays(ban.GetBanForExcel());
+            KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range M{pos}:O{pos}.");
+            SaveExcel();
+        }
+
         /// <summary>
         /// Generates the base for a user entry. Does not generate the strike, only columns A through C
         /// </summary>
@@ -173,6 +196,7 @@ namespace Kamtro_Bot.Managers
             }
 
             GenUserStrike(pos, user);
+            SaveExcel();
             return 0;
         }
     }

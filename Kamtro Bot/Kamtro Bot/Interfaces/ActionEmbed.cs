@@ -114,15 +114,17 @@ namespace Kamtro_Bot.Interfaces
             EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
         }
 
-        /// <summary>
-        /// Set the context for the interface
-        /// </summary>
-        /// <remarks>
-        /// This is a temporary method.
-        /// </remarks>
-        /// <param name="ctx">The context object</param>
-        public void SetContext(SocketCommandContext ctx) {
+        protected void SetCtx(SocketCommandContext ctx) {
             Context = ctx;
+            CommandCaller = ctx.User as SocketGuildUser;
+        }
+
+        /// <summary>
+        /// Updates the embed, and all content within it.
+        /// </summary>
+        /// <returns></returns>
+        public async Task UpdateEmbed() {
+            await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
         }
     }
 }

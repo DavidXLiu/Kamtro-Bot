@@ -23,9 +23,11 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             builder.WithTitle("You have recieved a strike.");
             builder.WithColor(BotUtils.Orange);
 
+            if (Number > 0) builder.AddField(BotUtils.ZeroSpace, $"This is your {GetStrikeNumber()} strike."); 
+
+
             builder.AddField("Reason:", Reason);
 
-            if(Number > 0) builder.AddField("​", $"This is your {GetStrikeNumber()} strike."); // The first set of quotes here has a zero-width space (You can't see it, but it's there)  -C
 
             return builder.Build();
         }

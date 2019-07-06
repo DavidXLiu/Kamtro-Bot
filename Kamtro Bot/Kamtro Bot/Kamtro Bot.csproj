@@ -148,9 +148,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\ReactionHandler.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\StrikeNotifyEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\MessageEmbed.cs" />
+    <Compile Include="Interfaces\MessageEmbeds\BanEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\MessageTestEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeEmbed.cs" />
     <Compile Include="Managers\AdminDataManager.cs" />
@@ -162,6 +164,7 @@
     <Compile Include="Modules\ModeratorModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />
+    <Compile Include="Nodes\BanDataNode.cs" />
     <Compile Include="Nodes\ColorNode.cs" />
     <Compile Include="Nodes\EventQueueNode.cs" />
     <Compile Include="Nodes\MenuOptionNode.cs" />
