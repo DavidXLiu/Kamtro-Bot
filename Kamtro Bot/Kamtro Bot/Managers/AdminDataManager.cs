@@ -137,7 +137,6 @@ namespace Kamtro_Bot.Managers
             return 1;
         }
 
-
         /// <summary>
         /// Generates the base for a user entry. Does not generate the strike, only columns A through C
         /// </summary>
@@ -150,6 +149,31 @@ namespace Kamtro_Bot.Managers
             entry.Add(new string[] { target.Id.ToString(), BotUtils.GetFullUsername(target), "1" });
 
             StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
+        }
+
+        /// <summary>
+        /// Returns the number of strikes a user currently has. If the user does not have an entry, this creates one.
+        /// </summary>
+        /// <param name="user">The user to check</param>
+        /// <returns>The number of strikes the user has</returns>
+        public static int GetStrikes(SocketUser user) {
+            ulong id = user.Id;
+            int pos = 2;
+            ulong target;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+
+            while (cells["A" + pos].Value != null) {
+                target = Convert.ToUInt64(cells["A" + pos].Value);
+                if (target == id) {
+                    int strikes = Convert.ToInt32(cells["C" + pos].Value);
+                    return strikes;
+                }
+
+                pos++;
+            }
+
+            GenUserStrike(pos, user);
+            return 0;
         }
     }
 }

@@ -197,6 +197,10 @@ namespace Kamtro_Bot.Interfaces
                     await MoveCursorUp();
                     break;
 
+                case ReactionHandler.DECLINE_STR:
+                    EventQueueManager.RemoveMessageEvent(this);
+                    break;
+
                 default:
                     await ButtonAction(action);  // if none of the predefined actions were used, it must be a custom action.
                     break;

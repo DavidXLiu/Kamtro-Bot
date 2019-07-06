@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\ReactionHandler.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\StrikeNotifyEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\MessageEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\MessageTestEmbed.cs" />

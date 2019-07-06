@@ -36,7 +36,7 @@ namespace Kamtro_Bot.Managers
         /// <param name="msg">Message.</param>
         public static bool MessageExempt(SocketUserMessage msg) {
             SocketGuildUser author = msg.Author as SocketGuildUser;
-
+            if (author == null) return true;
             // O(1) Checks
             if (author.Guild.Owner.Id == author.Id) return true;
             if (author.GuildPermissions.ManageMessages) return true;

@@ -10,6 +10,7 @@ using Kamtro_Bot.Util;
 using Kamtro_Bot.Nodes;
 using Discord.Commands;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
 {
@@ -19,9 +20,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public string Reason;
 
         private SocketUser Target;
+        private bool notifyUser = true;
+
+        private const string diamond = "\U0001F4A0";
 
         public StrikeEmbed(SocketCommandContext ctx, SocketUser target) {
-            AddMenuOptions(ReactionHandler.CHECK);
+            AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE, new MenuOptionNode(diamond, "Toggle Notify User"));
             Context = ctx;
             Target = target;
             CommandCaller = ctx.User as SocketGuildUser;
@@ -44,10 +48,21 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     }
 
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Added strike for {BotUtils.GetFullUsername(Target)}, they now have {strikes} strike{((strikes == 1) ? "":"s")}"));
+
+                    if(notifyUser) {
+                        await Target.SendMessageAsync("", false, new StrikeNotifyEmbed(str.Reason, AdminDataManager.GetStrikes(Target)).GetEmbed());
+                    }
+
                     break;
+
+                case diamond:
+                    // toggles the notification of the user
+                    notifyUser = !notifyUser;
+                    await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
+                    return;
             }
 
-            EventQueueManager.RemoveEvent(this); // now remove the event
+            EventQueueManager.RemoveMessageEvent(this); // now remove the event
         }
 
         public override Embed GetEmbed() {
@@ -56,6 +71,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             eb.WithTitle($"Add Strike for {BotUtils.GetFullUsername(Target)}");
             eb.WithThumbnailUrl(Target.GetAvatarUrl());
             eb.WithColor(BotUtils.Red);
+
+            eb.AddField("User's current strike count:", $"{AdminDataManager.GetStrikes(Target)}");
+
+            eb.AddField("Will notify user?", notifyUser ? "Yes":"No");
 
             AddEmbedFields(eb);
             AddMenu(eb);

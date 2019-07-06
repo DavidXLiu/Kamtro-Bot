@@ -93,6 +93,7 @@ namespace Kamtro_Bot.Managers
         /// <param name="id">The ID of the user associated with the node</param>
         public static void RemoveMessageEvent(ulong id) {
             MessageEventQueue.Remove(id);
+            EventQueue.Remove(id);
         }
 
         /// <summary>
