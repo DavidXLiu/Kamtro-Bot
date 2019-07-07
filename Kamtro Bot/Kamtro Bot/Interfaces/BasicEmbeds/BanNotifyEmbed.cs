@@ -21,7 +21,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             eb.WithTitle("Ban Notice");
             eb.WithColor(BotUtils.Red);
 
-            eb.AddField(BotUtils.ZeroSpace, "You have been banned from Kamtro.");
+            eb.AddField("You have been banned from Kamtro.", "");
             eb.AddField("Reason:", Reason);
 
             return eb.Build();
