@@ -151,6 +151,7 @@ namespace Kamtro_Bot.Managers
                     SaveExcel();
                     return;
                 }
+                pos++;
             }
 
             // User doesn't have an entry, so is likely just a troll.

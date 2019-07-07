@@ -279,5 +279,15 @@ namespace Kamtro_Bot
                 return null;
             }
         }
+
+        /// <summary>
+        /// Checks to see if A is higher in role structure than B
+        /// </summary>
+        /// <param name="a">The first user</param>
+        /// <param name="b">The user to compare</param>
+        /// <returns>True if A is higher up than B, false if A is equal to, or lower than B.</returns>
+        public static bool HighestUser(SocketGuildUser a, SocketGuildUser b) {
+            return a.Hierarchy > b.Hierarchy;
+        }
     }
 }
