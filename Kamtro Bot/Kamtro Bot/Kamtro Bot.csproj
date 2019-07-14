@@ -173,6 +173,7 @@
     <Compile Include="Nodes\StrikeDataNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
+    <Compile Include="Nodes\UserInventoryNode.cs" />
     <Compile Include="Util\BotSettings.cs" />
     <Compile Include="Util\BotUtils.cs" />
     <Compile Include="Util\CustomEmotes.cs" />
