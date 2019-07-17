@@ -26,7 +26,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             if (Number > 0) builder.AddField(BotUtils.ZeroSpace, $"This is your {GetStrikeNumber()} strike."); 
 
 
-            builder.AddField("Reason:", Reason);
+            if(!string.IsNullOrWhiteSpace(Reason))builder.AddField("Reason:", Reason);
 
 
             return builder.Build();

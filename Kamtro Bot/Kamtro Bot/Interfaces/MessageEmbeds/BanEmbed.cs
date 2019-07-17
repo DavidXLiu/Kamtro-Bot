@@ -35,15 +35,26 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public override async Task ButtonAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.CHECK_STR:
+                    // Time for security checks
+
+                    // First, the classic null check
                     if(Context.Guild.GetUser(Target.Id) == null) {
                         await Context.Channel.SendMessageAsync(BotUtils.KamtroText("That user does not exist!"));
                         KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban non-existant member {BotUtils.GetFullUsername(Target)}");
                         break;
                     }
 
+                    // next, check to see if Kamtro has perms to ban the user
                     if (!BotUtils.HighestUser(Context.Guild.GetUser(Context.Client.CurrentUser.Id), Context.Guild.GetUser(Context.User.Id))) {
                         await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot ban them."));
                         KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(Target)} of higher status than bot");
+                        break;
+                    }
+
+                    // next, check if the caller can ban the user
+                    if(!BotUtils.HighestUser(Context.Guild.GetUser(Context.User.Id), Context.Guild.GetUser(Target.Id)) && !ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.ADMIN)) {
+                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher than you, and as such you cannot ban them."));
+                        KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(Target)} of higher status than caller");
                         break;
                     }
 

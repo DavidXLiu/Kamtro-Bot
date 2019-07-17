@@ -41,7 +41,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     StrikeDataNode str = new StrikeDataNode(Context.User, Reason);
                     int strikes = AdminDataManager.AddStrike(Target, str);
 
-                    if (strikes > 3) {
+                    if (strikes >= 3) {
                         await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"{BotUtils.GetFullUsername(Target)} has 3 strikes"));
                         break;
                     }

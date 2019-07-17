@@ -109,7 +109,7 @@ namespace Kamtro_Bot.Managers
                     // This is in column C
                     int strikes = cells["C" + pos].GetValue<int>();
 
-                    if (strikes == 3) return 4;  // 4 is the signal
+                    if (strikes == 2) return 4;  // 4 is the signal
 
                     // now to get the column. Fun ascii math.
                     // 68 = ASCII for capital D. 
@@ -146,8 +146,8 @@ namespace Kamtro_Bot.Managers
 
             while (cells["A" + pos].Value != null) {
                 if (Convert.ToUInt64(cells["A" + pos].Value) == target.Id) {
-                    cells[$"M{pos}:O{pos}"].LoadFromArrays(ban.GetBanForExcel());
-                    KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range M{pos}:O{pos}.");
+                    cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+                    KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
                     SaveExcel();
                     return;
                 }
@@ -156,8 +156,8 @@ namespace Kamtro_Bot.Managers
 
             // User doesn't have an entry, so is likely just a troll.
             GenUserStrike(pos, target);
-            cells[$"M{pos}:O{pos}"].LoadFromArrays(ban.GetBanForExcel());
-            KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range M{pos}:O{pos}.");
+            cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+            KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
             SaveExcel();
         }
 
