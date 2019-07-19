@@ -176,7 +176,7 @@ namespace Kamtro_Bot.Util
         }
 
         public static bool IsTrusted(SocketGuildUser user) {
-            foreach (SocketRole trustedRole in ServerData.TrustedRoles) {
+            foreach (SocketRole trustedRole in TrustedRoles) {
                 foreach (SocketRole role in user.Roles) {
                     if (trustedRole.Id == role.Id) return true;
                 }

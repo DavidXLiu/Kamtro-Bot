@@ -51,7 +51,7 @@ namespace Kamtro_Bot.Managers
                 new string[] { "ID", "Username", "Strike Count",
                     "Strike 1 Date", "Strike 1 Moderator", "Strike 1 Reason",
                     "Strike 2 Date", "Strike 2 Moderator", "Strike 2 Reason",
-                    "Strike 3 Date", "Strike 3 Moderator", "Strike 3 Reason"
+                    "Ban Date", "Ban Moderator", "Ban Reason"
                 }
             };
 

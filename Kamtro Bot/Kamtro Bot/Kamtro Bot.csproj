@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Handlers\ReactionHandler.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\StrikeNotifyEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Nodes\BanDataNode.cs" />
     <Compile Include="Nodes\ColorNode.cs" />
     <Compile Include="Nodes\EventQueueNode.cs" />
+    <Compile Include="Nodes\HelpPageNode.cs" />
     <Compile Include="Nodes\MenuOptionNode.cs" />
     <Compile Include="Nodes\MessageEventNode.cs" />
     <Compile Include="Nodes\RoleInfoNode.cs" />

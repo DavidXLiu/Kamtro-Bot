@@ -30,6 +30,7 @@ namespace Kamtro_Bot
 
         public static readonly Color Red = new Color(247, 47, 60); 
         public static readonly Color Orange = new Color(250, 148, 80);
+        public static readonly Color White = new Color(255, 255, 255);
 
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.  -C
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.  -C

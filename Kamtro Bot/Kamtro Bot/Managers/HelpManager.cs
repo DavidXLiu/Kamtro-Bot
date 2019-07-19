@@ -3,13 +3,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Kamtro_Bot.Nodes;
+using Newtonsoft.Json;
 
 namespace Kamtro_Bot.Managers
 {
     public class HelpManager
     {
+        public const string EmptyDirMsg = "Nothing here.";
+
+        public static string[] GetDirList(string dir) {
+           List<string> dirs = new List<string>();
+
+            dirs.AddRange(Directory.GetDirectories(dir));
+            dirs.AddRange(Directory.GetFiles(dir, "*.json"));
+            dirs.AddRange(Directory.GetFiles(dir, "*.txt"));
+
+            dirs.Sort();
+
+            return dirs.ToArray();
+        }
+        
+        /// <summary>
+        /// Returns the gelp file as a node object
+        /// </summary>
+        /// <param name="path">Path to the help file</param>
+        /// <returns>The node corresponding to the file</returns>
+        public static HelpPageNode GetNode(string path) {
+            string json = FileManager.ReadFullFile(path);
+
+            HelpPageNode help = JsonConvert.DeserializeObject<HelpPageNode>(json);
+
+            return help;
+        }
+
+        #region Helper Methods
+        public static string StripExtraDirs(string dir) {
+            dir.TrimEnd('\\');
+            dir = dir.Substring(dir.LastIndexOf('\\') + 1);
+            return dir;
+        }
+
+        /// <summary>
+        /// Adds the dir to your path
+        /// </summary>
+        /// <param name="path">Current file path</param>
+        /// <param name="dir">Chosen Directory</param>
+        /// <returns></returns>
         public static string SelectDir(string path, string dir) {
-            return path + "\\" + dir;
+            return path + "\\" +  StripExtraDirs(dir);
+        }
+
+        public static string BackDir(string path) {
+            if(!path.Contains('\\')) {
+                return "Help"; // Don't go before help dir
+            }
+
+            int pos = path.LastIndexOf('\\');
+
+            return path.Substring(0, pos);
         }
 
         /// <summary>
@@ -29,5 +82,11 @@ namespace Kamtro_Bot.Managers
 
             return name;
         }
+
+        public static string GetFolder(string path) {
+            int pos = path.LastIndexOf('\\');
+            return path.Substring(pos + 1);
+        }
+        #endregion
     }
 }
