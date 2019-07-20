@@ -35,11 +35,11 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         public async override Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
                 case ReactionHandler.UP_STR:
-                    await CursorUp();
+                    await CursorDown(); // these are swapped because I messed something up. They should remain swapped (CursorDown under the UP_STR case and vice versa)
                     break;
 
                 case ReactionHandler.DOWN_STR:
-                    await CursorDown();
+                    await CursorUp();
                     break;
 
                 case ReactionHandler.SELECT_STR:
@@ -94,11 +94,11 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     if (i == pos) dl += "> ";
 
                     // else it's a file (no extension)
-                    dl += HelpManager.StripExtraDirs(dirs[i].Substring(0, dirs[i].LastIndexOf('.'))); //  add it and trim off the end
+                    dl += HelpManager.StripExtraDirs(dirs[i].Substring(0, dirs[i].LastIndexOf('.'))) + "\n"; //  add it and trim off the end
                 }
             }
 
-            return dl;
+            return dl.TrimEnd('\n');
         }
 
         /// <summary>
@@ -113,10 +113,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 eb.AddField("Command Name", $"!{page.Name}");
 
                 if(page.Alias.Length > 0) {
-                    string alias = page.Alias[0];
+                    string alias = "!" + page.Alias[0];
 
                     for(int i = 1; i < page.Alias.Length; i++) {
-                        alias += $", {page.Alias[i]}";
+                        alias += $", !{page.Alias[i]}";
                     }
 
                     eb.AddField("Aliases", alias);
@@ -124,7 +124,11 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 eb.AddField("Usage", page.Usage);
                 eb.AddField("Description", page.Description);
-                if(!string.IsNullOrWhiteSpace(page.GifURL)) eb.AddField("Example", new Image(page.GifURL));
+
+                if (!string.IsNullOrWhiteSpace(page.GifURL)) {
+                    eb.AddField("Example:", BotUtils.ZeroSpace);
+                    eb.WithImageUrl(page.GifURL);
+                }
             } else {
                 // Assume it's text. All other files are ignored anyways
                 string text = FileManager.ReadFullFile(Path);

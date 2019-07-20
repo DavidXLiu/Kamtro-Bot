@@ -27,7 +27,7 @@ namespace Kamtro_Bot
     /// </remarks>
     public class Program
     {
-        public const string Version = "0.0.1";  // We could manually change this, or do it differently. I'm going to leave it as it is for this test commit. -C
+        public const string Version = "0.5.0";
         private const string TokenFile = "token.txt";
 
         public static BotSettings Settings;
@@ -41,6 +41,7 @@ namespace Kamtro_Bot
         private CommandHandler _commands;
         private LogHandler _logs;
         private ReactionHandler _reaction;
+        private GeneralHandler _general;
 
         public static FileManager fileManager;
         public static UserDataManager userDataManager;
@@ -82,6 +83,7 @@ namespace Kamtro_Bot
             _commands = new CommandHandler(Client);
             _logs = new LogHandler();
             _reaction = new ReactionHandler(Client);
+            _general = new GeneralHandler(Client);
 
             Client.Ready += OnReady;  // Add the OnReady event
 

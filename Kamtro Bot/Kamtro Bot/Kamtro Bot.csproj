@@ -147,6 +147,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\GeneralHandler.cs" />
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />

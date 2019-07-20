@@ -59,6 +59,14 @@ namespace Kamtro_Bot.Modules
             MessageTestEmbed mte = new MessageTestEmbed(Context);
             await mte.Display();
         }
+
+        [Command("serverlist")]
+        [RequireOwner]
+        public async Task ServerListAsync() {
+            foreach(SocketGuild server in Context.Client.Guilds) {
+                Console.WriteLine($"[{server.Name}] Owned by: {BotUtils.GetFullUsername(server.Owner)}");
+            }
+        }
         #endregion
     }
 }

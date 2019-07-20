@@ -23,6 +23,7 @@ namespace Kamtro_Bot.Util
         public static List<SocketRole> ModifiableRoles;
         public static List<SocketRole> ModeratorRoles;
         public static List<SocketRole> TrustedRoles;
+        public static List<SocketRole> SilencedRoles;
 
         public static Dictionary<SocketRole, RoleInfoNode> RoleInfo;
 
@@ -61,10 +62,11 @@ namespace Kamtro_Bot.Util
             AllRoles = Server.Roles.ToList();
             #endregion
 
-            #region ModifiableRoles, TrustedRoles & ModeratorRoles
+            #region ModifiableRoles, SilencedRoles, TrustedRoles & ModeratorRoles
             ModifiableRoles = new List<SocketRole>();
             ModeratorRoles = new List<SocketRole>();
             TrustedRoles = new List<SocketRole>();
+            SilencedRoles = new List<SocketRole>();
 
             // Loop through each role id and add the SocketRole to the collection it is in. - Arcy
             foreach (SocketRole role in Server.Roles) {
@@ -90,6 +92,13 @@ namespace Kamtro_Bot.Util
                 foreach (ulong roleId in bs.TrustedRoles) {
                     if(role.Id == roleId) {
                         TrustedRoles.Add(role);
+                    }
+                }
+
+                // Silenced roles
+                foreach(ulong roleId in bs.SilencedRoles) {
+                    if(role.Id == roleId) {
+                        SilencedRoles.Add(role);
                     }
                 }
             }
@@ -132,8 +141,11 @@ namespace Kamtro_Bot.Util
 
         public static bool HasPermissionLevel(SocketGuildUser user, PermissionLevel level) {
             switch(level) {
+                case PermissionLevel.MUTED:
+                    return IsSilenced(user);
+
                 case PermissionLevel.USER:
-                    return true;
+                    return !IsSilenced(user);
 
                 case PermissionLevel.TRUSTED:
                     if (IsTrusted(user)) return true;
@@ -179,6 +191,16 @@ namespace Kamtro_Bot.Util
             foreach (SocketRole trustedRole in TrustedRoles) {
                 foreach (SocketRole role in user.Roles) {
                     if (trustedRole.Id == role.Id) return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsSilenced(SocketGuildUser user) {
+            foreach (SocketRole silencedRole in SilencedRoles) {
+                foreach (SocketRole role in user.Roles) {
+                    if (silencedRole.Id == role.Id) return true;
                 }
             }
 

@@ -31,6 +31,7 @@ namespace Kamtro_Bot
         public List<ulong> ModifiableRoles;
         public List<ulong> ModeratorRoles;
         public List<ulong> TrustedRoles;
+        public List<ulong> SilencedRoles;
 
         public Dictionary<ulong, RoleInfoNode> RoleDescriptions;
 
@@ -71,6 +72,7 @@ namespace Kamtro_Bot
             ModifiableRoles = new List<ulong>();
             ModeratorRoles = new List<ulong>();
             TrustedRoles = new List<ulong>();
+            SilencedRoles = new List<ulong>();
 
             RelayUsers = new List<ulong>();
             AdminUsers = new List<ulong>();

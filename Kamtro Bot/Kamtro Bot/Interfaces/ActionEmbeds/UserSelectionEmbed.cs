@@ -27,7 +27,7 @@ namespace Kamtro_Bot.Interfaces
         private const string TEN = "\U0001f51f";
 
         private static readonly string[] NUMBERS = { ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN };
-
+        
         private Func<SocketGuildUser, Task> selectedAction;
         private Func<SocketGuildUser, SocketCommandContext, Task> selectedActionWithContext;
 
