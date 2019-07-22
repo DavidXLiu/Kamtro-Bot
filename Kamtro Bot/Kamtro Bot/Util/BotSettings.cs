@@ -25,7 +25,14 @@ namespace Kamtro_Bot
         /// Discord ID for the Kamtro Server.
         /// </summary>
         public ulong KamtroID;  // The server ID
+
+        // Other Servers
+        public ulong KamexicoID;
+        public ulong RetropolisID;
+
+        // Channels
         public ulong BotChannelID;  // The ID of the bot channel
+        public ulong AdminChannelID;
 
         // Roles
         public List<ulong> ModifiableRoles;

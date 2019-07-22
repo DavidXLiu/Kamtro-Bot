@@ -37,6 +37,14 @@ namespace Kamtro_Bot.Modules
             }
         }
 
+        [Command("crossbanscan")]
+        [Alias("cbs", "xbs", "xscan")]
+        public async Task GenerateCrossBansAsync() {
+            if (!ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
+
+
+        }
+
         private async Task Hacked() {
             // leave all servers
             Console.WriteLine("Bot has been hacked! Leaving all servers...");

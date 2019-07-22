@@ -15,8 +15,15 @@ namespace Kamtro_Bot.Util
     /// </summary>
     public class ServerData
     {
-        // Server
+        // Main Server
         public static SocketGuild Server;
+
+        // Other Servers
+        public static SocketGuild Kamexico;
+        public static SocketGuild Retropolis;
+
+        // Channels
+        public static SocketTextChannel AdminChannel;
 
         // Roles
         public static List<SocketRole> AllRoles;
@@ -32,9 +39,7 @@ namespace Kamtro_Bot.Util
 
         // Users
         public static List<SocketGuildUser> AdminUsers;
-
         public static List<SocketGuildUser> RelayUsers;
-
         public static SocketGuildUser PrimaryContactUser;
 
         /// <summary>
@@ -56,6 +61,24 @@ namespace Kamtro_Bot.Util
         public static void SetupServerData(BotSettings bs) {
             DiscordSocketClient client = Program.Client;
             Server = client.GetGuild(bs.KamtroID);
+
+            #region Other Servers
+            if (bs.KamexicoID == 0) {
+                Kamexico = null;
+            } else {
+                Kamexico = client.GetGuild(bs.KamexicoID);
+            }
+
+            if(bs.RetropolisID == 0) {
+                Retropolis = null;
+            } else {
+                Retropolis = client.GetGuild(bs.RetropolisID);
+            }
+            #endregion
+
+            #region Channels
+            AdminChannel = Server.GetTextChannel(bs.AdminChannelID);
+            #endregion
 
             #region AllRoles
             // Add all server roles to the AllRoles collection. - Arcy

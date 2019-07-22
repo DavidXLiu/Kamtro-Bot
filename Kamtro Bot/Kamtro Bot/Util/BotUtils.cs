@@ -62,6 +62,20 @@ namespace Kamtro_Bot
         }
 
         /// <summary>
+        /// Sends the specified message to the selected admin channel.
+        /// </summary>
+        /// <param name="text">The text to send</param>
+        /// <param name="angry">True if the text should be red, false for normal kamtro blue.</param>
+        /// <returns></returns>
+        public static async Task AdminLog(string text, bool angry = true) {
+            if(angry) {
+                await ServerData.AdminChannel.SendMessageAsync(KamtroAngry(text));
+            } else {
+                await ServerData.AdminChannel.SendMessageAsync(KamtroText(text));
+            }
+        }
+
+        /// <summary>
         /// This is a helper method to save an object to JSON given the location and object.
         /// </summary>
         /// <param name="location">The path of the file it will be saved to.</param>
@@ -120,11 +134,17 @@ namespace Kamtro_Bot
             }
         }
 
+        /// <summary>
+        /// Starts the Autosave loop
+        /// </summary>
         public static void StartAutosaveLoop() {
             SaveLoop = true;  // Turn on the loop
             Program.Autosave.Start();  // Start the thread again
         }
 
+        /// <summary>
+        /// Stops the autosave loop
+        /// </summary>
         public static void StopAutosaveLoop() {
             SaveLoop = false;  // Stop the loop.
             Program.Autosave.Abort();  // Stop the thread here, just in case
