@@ -5,10 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
-
+using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Interfaces;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Modules
 {
@@ -42,7 +45,33 @@ namespace Kamtro_Bot.Modules
         public async Task GenerateCrossBansAsync() {
             if (!ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
 
+            ScanInfoEmbed scan = new ScanInfoEmbed();
 
+            foreach(RestBan ban in await ServerData.Kamexico.GetBansAsync()) {
+                scan.KamexTotal++;
+                scan.KamexUnique++;
+                scan.Total++;
+
+                GeneralHandler.CrossBan[ban.User.Id] = new CrossBanDataNode(1, ban.Reason);
+            }
+
+            foreach(RestBan ban in await ServerData.Retropolis.GetBansAsync()) {
+                scan.RetroTotal++;
+                scan.Total++;
+
+                if (GeneralHandler.CrossBan.ContainsKey(ban.User.Id)) {
+                    // if it's a mutual ban
+                    scan.Mutual++;
+                    scan.KamexUnique--;
+                } else {
+                    // else if it's unique to retropolis
+                    scan.RetroUnique++;
+                }
+            }
+
+            GeneralHandler.SaveList();
+
+            await scan.Display(ServerData.AdminChannel);
         }
 
         private async Task Hacked() {

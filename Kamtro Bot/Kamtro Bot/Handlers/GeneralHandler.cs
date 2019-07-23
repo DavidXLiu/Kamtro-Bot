@@ -16,7 +16,7 @@ namespace Kamtro_Bot.Handlers
     /// </summary>
     public class GeneralHandler
     {
-        public Dictionary<ulong, CrossBanDataNode> CrossBan;
+        public static Dictionary<ulong, CrossBanDataNode> CrossBan;
 
         public GeneralHandler(DiscordSocketClient client) {
             // Setup
@@ -77,7 +77,7 @@ namespace Kamtro_Bot.Handlers
             }
         }
 
-        public void LoadList() {
+        public static void LoadList() {
             string json = FileManager.ReadFullFile(DataFileNames.AutoBanFile);
 
             CrossBan = JsonConvert.DeserializeObject<Dictionary<ulong, CrossBanDataNode>>(json);
@@ -85,7 +85,7 @@ namespace Kamtro_Bot.Handlers
             KLog.Info("Loaded AutoBan JSON into object");
         }
 
-        private void SaveList() {
+        public static void SaveList() {
             using (StreamWriter sw = new StreamWriter(File.OpenWrite(DataFileNames.AutoBanFile))) {
                 JsonSerializer js = new JsonSerializer();
                 js.Formatting = Formatting.Indented;

@@ -151,6 +151,7 @@
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\ScanInfoEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\StrikeNotifyEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\MessageEmbed.cs" />
