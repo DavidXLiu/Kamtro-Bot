@@ -8,6 +8,8 @@ using Discord.WebSocket;
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Nodes;
 using Newtonsoft.Json;
+using System.Threading;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -18,6 +20,12 @@ namespace Kamtro_Bot.Handlers
     {
         public static Dictionary<ulong, CrossBanDataNode> CrossBan;
 
+        public static bool ResetOn = true;
+
+        public static int ConsMessages = 0;
+        public static ulong LastUser = 0;
+
+        #region Event Handlers
         public GeneralHandler(DiscordSocketClient client) {
             // Setup
             LoadList();
@@ -37,9 +45,10 @@ namespace Kamtro_Bot.Handlers
             // For cross ban.
             if(CrossBan.ContainsKey(user.Id)) {
                 await BotUtils.AdminLog($"Cross-banned user {BotUtils.GetFullUsername(user)}. " + CrossBan[user.Id].GetInfoText());
+                AdminDataManager.AddBan(user, new BanDataNode(Program.Client.CurrentUser, $"[X-ban | {CrossBan[user.Id].GetServer()}] {CrossBan[user.Id].Reason}"));
                 await ServerData.Server.AddBanAsync(user);
 
-                KLog.Info($"Cross-banned user {BotUtils.GetFullUsername(user)}");
+                 KLog.Info($"Cross-banned user {BotUtils.GetFullUsername(user)}");
             }
         }
 
@@ -76,7 +85,40 @@ namespace Kamtro_Bot.Handlers
                 }
             }
         }
+        #endregion
 
+        #region Non-Handlers
+        public static async Task HandleMessage(SocketUserMessage msg) {
+            if (msg.Channel is ISocketPrivateChannel) return;
+
+            SocketGuildUser auth = ServerData.Server.GetUser(msg.Author.Id);
+
+            if (LastUser == 0 || auth.Id != LastUser) {
+                LastUser = msg.Author.Id;
+                ConsMessages = 1;
+            } else if (ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
+                ConsMessages = 0;
+                LastUser = auth.Id;
+            } else {
+                ConsMessages++;
+            }
+            
+            if(ConsMessages == 3) {
+                await msg.Channel.SendMessageAsync(BotUtils.KamtroAngry($"Please slow down {BotUtils.GetFullUsername(msg.Author)}, or you will be autobanned for spam."));
+            }
+
+            if(ConsMessages >= 5) {
+                await BotUtils.AdminLog($"User {BotUtils.GetFullUsername(auth)} was autobanned for spam");
+                await ServerData.Server.AddBanAsync(auth);
+
+                AdminDataManager.AddBan(msg.Author, new BanDataNode(Program.Client.CurrentUser, "Autobanned for spam"));
+
+                KLog.Info($"Autobanned user {BotUtils.GetFullUsername(auth)} for spam.");
+            }
+        }
+        #endregion
+
+        #region Helper Methods
         public static void LoadList() {
             string json = FileManager.ReadFullFile(DataFileNames.AutoBanFile);
 
@@ -94,6 +136,16 @@ namespace Kamtro_Bot.Handlers
 
             KLog.Info("Saved autoban list.");
         }
+        #endregion
+
+        #region Threads
+        public static void ResetThread() {
+            while(ResetOn) {
+                ConsMessages = 0;
+                Thread.Sleep(new TimeSpan(0, 0, 10));
+            }
+        }
+        #endregion
     }
 }
  

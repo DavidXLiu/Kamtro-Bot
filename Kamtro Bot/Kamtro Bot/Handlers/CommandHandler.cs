@@ -105,9 +105,12 @@ namespace Kamtro_Bot.Handlers
                     SocketUserMessage sm = m as SocketUserMessage;
                     if(sm != null) {
                         EventQueueManager.MessageEventQueue[m.Author.Id].Interface.PerformMessageAction(sm);
+                        return;
                     }
                 }
 
+                SecurityManager.CheckMessage(message);
+                GeneralHandler.HandleMessage(message);
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy

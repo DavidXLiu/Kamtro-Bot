@@ -31,5 +31,9 @@ namespace Kamtro_Bot.Nodes
         public string GetInfoText() {
             return $"User was banned on {Servers[Server]}" + (string.IsNullOrWhiteSpace(Reason) ? "": $" for **{Reason}**");
         }
+
+        public string GetServer() {
+            return Servers[Server];
+        }
     }
 }
