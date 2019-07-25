@@ -95,14 +95,14 @@ namespace Kamtro_Bot
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();
 
-            Console.WriteLine("Logged in!");
+            KLog.Important("Logged in!");
 
             await Task.Delay(-1);  // Stop this method from exiting.
         }
 
         public async Task OnReady() {
             SetupGeneral();
-            Console.WriteLine("Ready!");
+            KLog.Important("Ready!");
         }
 
         private static void SetupFiles() {

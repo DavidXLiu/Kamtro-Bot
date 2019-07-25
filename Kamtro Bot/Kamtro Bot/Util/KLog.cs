@@ -11,6 +11,10 @@ namespace Kamtro_Bot
             Console.WriteLine("[i] " + msg);
         }
 
+        public static void Important(string msg) {
+            Console.WriteLine("[I] " + msg);
+        }
+
         public static void Warning(string msg) {
             Console.WriteLine("[W] " + msg);
         }
