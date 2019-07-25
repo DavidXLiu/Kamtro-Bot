@@ -10,12 +10,16 @@ using Kamtro_Bot.Nodes;
 using Newtonsoft.Json;
 using System.Threading;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
+using Discord;
 
 namespace Kamtro_Bot.Handlers
 {
     /// <summary>
     /// Handler for all events that do not need their own class.
     /// </summary>
+    /// <remarks>
+    /// </remarks>
     public class GeneralHandler
     {
         public static Dictionary<ulong, CrossBanDataNode> CrossBan;
@@ -34,6 +38,8 @@ namespace Kamtro_Bot.Handlers
             client.GuildMemberUpdated += OnMemberUpdate;
             client.UserJoined += OnMemberJoin;
             client.UserUnbanned += OnMemberUnban;
+            client.MessageUpdated += OnMessageUpdate;
+            client.MessageDeleted += OnMessageDelete;
         }
 
         /// <summary>
@@ -66,11 +72,35 @@ namespace Kamtro_Bot.Handlers
             }
         }
 
+        /// <summary>
+        /// Happens whenever anything about a user (except roles) updates
+        /// </summary>
+        /// <remarks>
+        /// This is pretty dumb. 
+        /// It's up to you to figure out what changed. It could be anything from a new pfp or username,
+        /// to changing your status from idle to online.
+        /// </remarks>
+        /// <param name="before">User before</param>
+        /// <param name="after">User after</param>
+        /// <returns></returns>
         public async Task OnMemberUpdate(SocketGuildUser before, SocketGuildUser after) {
             if (before.Guild != ServerData.Server) return; // If it's not on kamtro, ignore it
 
             if(BotUtils.GetFullUsername(before) != BotUtils.GetFullUsername(after)) {
                 // If the user changed their name.
+                NameChangeEmbed nce = new NameChangeEmbed(before, after);
+                await nce.Display(ServerData.AdminChannel);
+            }
+
+            if (before.Nickname != after.Nickname) {
+                // If the nickame changed
+                NameChangeEmbed nce = new NameChangeEmbed(before, after, true);
+                await nce.Display(ServerData.AdminChannel);
+            }
+
+            if(before.GetAvatarUrl() != after.GetAvatarUrl()) {
+                AvatarUpdateEmbed emb = new AvatarUpdateEmbed(before, after);
+                await emb.Display();
             }
 
             if(before.Roles.Count != after.Roles.Count) {
@@ -84,6 +114,40 @@ namespace Kamtro_Bot.Handlers
                     }
                 }
             }
+        }
+        
+        /// <summary>
+        /// Called whenever a user edits a message
+        /// </summary>
+        /// <param name="old">The old message</param>
+        /// <param name="updated">The updated message</param>
+        /// <returns></returns>
+        public async Task OnMessageUpdate(Cacheable<IMessage, ulong> old, SocketMessage updated, ISocketMessageChannel channel) {
+            IMessage msg = await old.GetOrDownloadAsync();
+
+            if (msg.Source != MessageSource.User || !(msg is SocketMessage) || !(channel is SocketTextChannel)) return;
+
+            SocketMessage sm = msg as SocketMessage;
+
+            MessageEditEmbed messageEdit = new MessageEditEmbed(sm, updated);
+            await messageEdit.Display(ServerData.AdminChannel);
+        }
+        
+        /// <summary>
+        /// Called when a user deletes a message
+        /// </summary>
+        /// <param name="message">The deleted message</param>
+        /// <param name="channel">The channel it was deleted in</param>
+        /// <returns></returns>
+        public async Task OnMessageDelete(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel) {
+            IMessage msg = await message.GetOrDownloadAsync();
+
+            if (msg.Source != MessageSource.User || !(msg is SocketMessage) || !(channel is SocketTextChannel)) return;
+
+            SocketMessage sm = msg as SocketMessage;
+
+            MessageDeleteEmbed mde = new MessageDeleteEmbed(sm);
+            await mde.Display(ServerData.AdminChannel);
         }
         #endregion
 

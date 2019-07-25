@@ -150,7 +150,11 @@
     <Compile Include="Handlers\GeneralHandler.cs" />
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\MessageDeleteEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\MessageEditEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\NameChangeEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\ScanInfoEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\StrikeNotifyEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
