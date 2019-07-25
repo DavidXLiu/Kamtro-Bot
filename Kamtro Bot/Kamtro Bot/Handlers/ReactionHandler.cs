@@ -91,7 +91,7 @@ namespace Kamtro_Bot.Handlers
         private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> cacheableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
             if (reaction.User.Value.IsBot) return;  // More Robophobia (no bots allowed)
 
-            if (cacheableMessage.Value.Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null) {
+            if ((await cacheableMessage.GetOrDownloadAsync()).Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null) {
                 // if it's the role select message
                 await OnRoleMessageReaction(channel as SocketTextChannel, reaction);
                 return;
@@ -116,7 +116,7 @@ namespace Kamtro_Bot.Handlers
         }
 
         private async Task RemoveReaction(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction) {
-            if (msg.Value.Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null && RoleMap.ContainsKey(reaction.Emote.Name)) {
+            if ((await msg.GetOrDownloadAsync()).Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null && RoleMap.ContainsKey(reaction.Emote.Name)) {
                 SocketTextChannel chan = channel as SocketTextChannel;
                 // this method only checks for this message. Ignore in other cases
                 if (chan.Guild.GetUser(reaction.UserId).Roles.Contains(chan.Guild.GetRole(RoleMap[reaction.Emote.Name]))) {
@@ -129,6 +129,8 @@ namespace Kamtro_Bot.Handlers
         private async Task OnRoleMessageReaction(SocketTextChannel channel, SocketReaction reaction) { 
             if (RoleMap.ContainsKey(reaction.Emote.Name)) {
                 SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.Name]);
+
+                if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
 
                 await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
             }
