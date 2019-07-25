@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace Kamtro_Bot.Handlers
          * 
          * -C
          */
-        public const string DONE_STR = "🔚"; 
+        public const string DONE_STR = "🔚";
         public const string CHECK_STR = "\u2705";
         public const string DECLINE_STR = "\u274C";
         public const string UP_STR = "\u2b06";
@@ -60,6 +61,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly MenuOptionNode DOWN = new MenuOptionNode(DOWN_STR, "Cursor Down");
         public static readonly MenuOptionNode SELECT = new MenuOptionNode(SELECT_STR, "Select");
 
+        public static Dictionary<string, ulong> RoleMap = new Dictionary<string, ulong>();
 
         /// <summary>
         /// Constructor for the handler, called on startup. 
@@ -67,10 +69,14 @@ namespace Kamtro_Bot.Handlers
         /// </summary>
         /// <param name="client">The Client Object</param>
         public ReactionHandler(DiscordSocketClient client) {
+            SetupDict();
+
             client.ReactionAdded += HandleReactionAsync;
             client.ReactionRemoved += HandleReactionAsync;
+            client.ReactionRemoved += RemoveReaction;
         }
 
+        #region Events
         /// <summary>
         /// Reaction add/remove event handler method.
         /// </summary>
@@ -85,13 +91,19 @@ namespace Kamtro_Bot.Handlers
         private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> cacheableMessage, ISocketMessageChannel channel, SocketReaction reaction) {
             if (reaction.User.Value.IsBot) return;  // More Robophobia (no bots allowed)
 
+            if (cacheableMessage.Value.Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null) {
+                // if it's the role select message
+                await OnRoleMessageReaction(channel as SocketTextChannel, reaction);
+                return;
+            }
+
             List<EventQueueNode> awaitingActions = EventQueueManager.EventQueue[reaction.User.Value.Id];  // Get a list of the user's actions awaiting a reaction
 
-            foreach(EventQueueNode action in awaitingActions) {
+            foreach (EventQueueNode action in awaitingActions) {
                 if (DateTime.Now - action.TimeCreated > BotUtils.Timeout) continue;  // If the GC is going to clean it up, don't risk a race condition.
-                if(cacheableMessage.Value.Id == action.EventAction.Message.Id) {
+                if (cacheableMessage.Value.Id == action.EventAction.Message.Id) {
                     // If the message matches the one in the Embed
-                    if(reaction.Emote.ToString() == DONE_EM.ToString()) {
+                    if (reaction.Emote.ToString() == DONE_EM.ToString()) {
                         // The user has indicated that they no longer need the Interface,
                         // So remove it from the dict
                         awaitingActions.Remove(action);
@@ -102,5 +114,29 @@ namespace Kamtro_Bot.Handlers
                 }
             }
         }
+
+        private async Task RemoveReaction(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction) {
+            if (msg.Value.Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null && RoleMap.ContainsKey(reaction.Emote.Name)) {
+                SocketTextChannel chan = channel as SocketTextChannel;
+                // this method only checks for this message. Ignore in other cases
+                if (chan.Guild.GetUser(reaction.UserId).Roles.Contains(chan.Guild.GetRole(RoleMap[reaction.Emote.Name]))) {
+                    await chan.Guild.GetUser(reaction.UserId).RemoveRoleAsync(chan.Guild.GetRole(RoleMap[reaction.Emote.Name]));
+                }
+            }
+        }
+        #endregion
+        #region Helper Methods
+        private async Task OnRoleMessageReaction(SocketTextChannel channel, SocketReaction reaction) { 
+            if (RoleMap.ContainsKey(reaction.Emote.Name)) {
+                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.Name]);
+
+                await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
+            }
+        }
+
+        private void SetupDict() {
+            RoleMap.Add("OwO", 535627110153191427);
+        }
+        #endregion
     }
 }

@@ -34,6 +34,9 @@ namespace Kamtro_Bot
         public ulong BotChannelID;  // The ID of the bot channel
         public ulong AdminChannelID;
 
+        // Messages
+        public ulong RoleSelectMessageID;
+
         // Roles
         public List<ulong> ModifiableRoles;
         public List<ulong> ModeratorRoles;
