@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
@@ -14,8 +15,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
     public class StrikeLogEditEmbed : MessageEmbed
     {
         private static List<List<string>> Options = null;
+        private static Dictionary<int, int> BackMap = null;
 
         private int OpCursor = 0;
+        private int LastPage = 1;
 
         private SocketUser Moderator;
 
@@ -81,18 +84,63 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 Options.Add(page);
             }
 
+            if(BackMap == null) {
+                BackMap = new Dictionary<int, int>();
+
+                BackMap.Add(3, 2);
+                BackMap.Add(2, 1);
+                BackMap.Add(4, 1);
+                BackMap.Add(5, 4);
+                BackMap.Add(6, 5);
+                BackMap.Add(7, 5);
+                BackMap.Add(8, 5);
+                BackMap.Add(9, 1);
+                BackMap.Add(10, 9);
+                BackMap.Add(11, 10);
+                BackMap.Add(12, 10);
+                BackMap.Add(13, 10);
+                BackMap.Add(14, 1);
+            }
+
             AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.CHECK, ReactionHandler.DONE, ReactionHandler.DECLINE);
             RegisterMenuFields();
         }
 
-        public async override Task ButtonAction(SocketReaction action) {
+        public async override Task PerformAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
-                case ReactionHandler.DECLINE_STR:
+                case ReactionHandler.DOWN_STR:
+                    await MoveCursorDown();
+                    break;
 
+                case ReactionHandler.UP_STR:
+                    await MoveCursorUp();
+                    break;
+
+                default:
+                    await ButtonAction(action);
+                    break;
+            }
+        }
+
+        public override async Task ButtonAction(SocketReaction action) {
+            switch (action.Emote.ToString()) {
+                case ReactionHandler.DECLINE_STR:
+                    await Message.DeleteAsync();
+                    EventQueueManager.RemoveMessageEvent(Context.User.Id);
+                    await Context.Message.Channel.SendMessageAsync(BotUtils.KamtroText("Thank you for editing the log."));
                     break;
 
                 case ReactionHandler.CHECK_STR:
                     HandleConfirm();
+                    break;
+
+                case ReactionHandler.DONE_STR:
+                    if(!BackMap.ContainsKey(PageNum)) {
+                        PageNum = 1;
+                        break;
+                    }
+
+                    PageNum = BackMap[PageNum];
                     break;
             }
 
@@ -131,7 +179,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             return eb.Build();
         }
 
+        #region Helper Methods
         private void HandleConfirm() {
+            LastPage = PageNum;
+
             switch (PageNum) {
                 case 1:
                     switch (OpCursor) {
@@ -224,5 +275,6 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
             }
         }
+        #endregion
     }
 }
