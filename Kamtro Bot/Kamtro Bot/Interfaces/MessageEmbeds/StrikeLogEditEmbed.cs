@@ -39,6 +39,22 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("Ban Reason", 3, 5)]
         public string BanReason;
         #endregion
+
+
+        [InputField("Enter Server User", 4, 1)]
+        public string ServerUsername4;
+
+        #region Page 6-8
+        [InputField("Strike 1 Reason", 6, 1)]
+        public string Strike1Reason6;
+        [InputField("Strike 2 Reason", 7, 1)]
+        public string Strike2Reason7;
+        [InputField("Ban Reason", 8, 1)]
+        public string BanReason8;
+        #endregion
+
+        [InputField("Enter Server User", 9, 1)]
+        public string ServerUsername9;
         #endregion
 
         public StrikeLogEditEmbed(SocketCommandContext ctx) {
