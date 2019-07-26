@@ -22,10 +22,6 @@ namespace Kamtro_Bot.Interfaces
     /// Class chain so far is:
     /// 
     /// KamtroEmbedBase > ActionEmbed > MessageEmbed
-    /// 
-    /// Addendum:
-    /// Wow I suck at documentation.
-    /// Going to fix that hopefully
     /// </remarks>
     /// -C
     public abstract class MessageEmbed : ActionEmbed
@@ -103,7 +99,6 @@ namespace Kamtro_Bot.Interfaces
             await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed()); // update the embed
         }
 
-
         /// <summary>
         /// Searches the class for all fields marked with <see cref="InputField"/>,
         /// and adds them to the internal dictionary for use in other methods.
@@ -149,6 +144,8 @@ namespace Kamtro_Bot.Interfaces
             }
 
             PageCount = InputFields.Values.Count(); // set the number of pages
+
+            // TODO: Add left and right buttons
         }
 
         /// <summary>

@@ -18,7 +18,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
         private int Cursor;
         private int FileCount;
-        //private bool DisplayFile;
         private string Path;
         private bool Admin;
 
@@ -27,7 +26,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             SetCtx(ctx);
             Path = @"Help";
             Cursor = 0;
-            //DisplayFile = false;
             Admin = admin;
             FileCount = HelpManager.GetDirList(Path).Length;
         }

@@ -81,6 +81,13 @@ namespace Kamtro_Bot.Interfaces
             MenuOptions.AddRange(options);  // add the menu options
         }
 
+        /// <summary>
+        /// Clears all menu options
+        /// </summary>
+        protected void ClearMenuOptions() {
+            MenuOptions.Clear();
+        }
+
 
         /// <summary>
         /// Adds the menu options to the message as reactions.
