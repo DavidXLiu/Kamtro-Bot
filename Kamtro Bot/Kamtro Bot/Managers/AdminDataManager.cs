@@ -222,8 +222,10 @@ namespace Kamtro_Bot.Managers
             GenUserStrike(pos, targetId, username);
 
             // Now add the strike
-            ExcelRange er = cells[$"D{pos}:F{pos}"];
-            er.LoadFromArrays(strike.GetStrikeForExcel());
+            // 68 = ASCII for capital D. 
+            string range = char.ConvertFromUtf32(68 + GetStrikes(targetId) * 3) + pos + ":" + char.ConvertFromUtf32(70 + GetStrikes(targetId) * 3) + pos;
+            cells[range].LoadFromArrays(strike.GetStrikeForExcel());
+
             StrikeLog.Save();
             KLog.Info($"Added strike for {(username == "" ? targetId.ToString() : username)} in cell range D{pos}:F{pos}");
 
@@ -251,6 +253,37 @@ namespace Kamtro_Bot.Managers
             entry.Add(new string[] { target.ToString(), username, "1" });
 
             StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
+        }
+
+        /// <summary>
+        /// Gets the reason for the user's strike
+        /// </summary>
+        /// <param name="id">ID of the user</param>
+        /// <param name="strike">Number of the strike (3 for ban)</param>
+        /// <returns>The reason for the strike/ban</returns>
+        public static string GetStrikeReason(ulong id, int strike) {
+            if (strike < 1 || strike > 3) return "";
+
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            string reason = "";
+
+            int i = 2;
+
+            while (cells[$"A{i}"].Value != null) {
+                if(Convert.ToUInt64(cells[$"A{i}"].Value) == id) {
+                    if(strike == 1) {
+                        reason = cells[$"F{i}"].Text;
+                    } else if(strike == 2) {
+                        reason = cells[$"I{i}"].Text;
+                    } else {
+                        reason = cells[$"L{i}"].Text;
+                    }
+
+                    break;
+                }
+            }
+
+            return reason;
         }
 
         /// <summary>

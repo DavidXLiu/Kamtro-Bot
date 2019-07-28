@@ -241,6 +241,14 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case 2:
                     // autofill
+                    if(Autofill != null) {
+                        UserId = Autofill.Id.ToString();
+                        FullUsername = BotUtils.GetFullUsername(Autofill);
+                        Strike1Reason = AdminDataManager.GetStrikeReason(Autofill.Id, 1);
+                        Strike2Reason = AdminDataManager.GetStrikeReason(Autofill.Id, 2);
+                        BanReason = AdminDataManager.GetStrikeReason(Autofill.Id, 3);
+                    }
+
                     PageNum = 3;
                     break;
 
