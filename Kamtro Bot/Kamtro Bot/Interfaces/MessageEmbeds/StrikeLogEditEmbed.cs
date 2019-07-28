@@ -21,6 +21,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         private int LastPage = 1;
 
         private SocketUser Moderator;
+        private SocketUser Autofill = null;
 
         #region Input Fields
         [InputField("Enter Server User", 2, 1)]
@@ -110,10 +111,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             switch(action.Emote.ToString()) {
                 case ReactionHandler.DOWN_STR:
                     await MoveCursorDown();
+                    await OpCursorDown();
                     break;
 
                 case ReactionHandler.UP_STR:
                     await MoveCursorUp();
+                    await OpCursorUp();
                     break;
 
                 default:
@@ -179,6 +182,42 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             return eb.Build();
         }
 
+        public override void PerformMessageAction(SocketUserMessage message) {
+            base.PerformMessageAction(message); // first start off with the base func
+
+            // now for special rendering
+            if (PageNum == 2 || PageNum == 4 || PageNum == 9) {
+                // Autofill.
+                List<SocketGuildUser> users = BotUtils.GetUsers(ServerUsername);
+                SocketGuildUser user;
+
+                if (users.Count < 1) {
+                    // fail check
+                    if (PageNum == 2) {
+                        ServerUsername = $"Unable to find user: {ServerUsername}";
+                    } else if (PageNum == 4) {
+                        ServerUsername4 = $"Unable to find user: {ServerUsername4}";
+                    } else if (PageNum == 9) {
+                        ServerUsername9 = $"Unable to find user: {ServerUsername9}";
+                    }
+
+                    Autofill = null;
+                } else {
+                    user = users[0];
+
+                    if (PageNum == 2) {
+                        ServerUsername = user.Mention;
+                    } else if (PageNum == 4) {
+                        ServerUsername4 = user.Mention;
+                    } else if (PageNum == 9) {
+                        ServerUsername9 = user.Mention;
+                    }
+
+                    Autofill = user;
+                }
+            }
+        }
+
         #region Helper Methods
         private void HandleConfirm() {
             LastPage = PageNum;
@@ -201,11 +240,46 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 2:
+                    // autofill
                     PageNum = 3;
                     break;
 
                 case 3:
-                    // Handle confirm
+                    ulong id;
+                    if(!string.IsNullOrWhiteSpace(UserId) && ulong.TryParse(UserId, out id)) {
+                        bool strike1Added = false;
+                        bool strike2Added = false;
+
+                        if(!string.IsNullOrWhiteSpace(Strike1Reason)) {
+                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
+                            strike1Added = true;
+                        }
+
+                        if(!string.IsNullOrWhiteSpace(Strike2Reason)) {
+                            if(!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
+                                // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
+                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
+                                strike1Added = true;
+                            }
+
+                            // Add strike 2
+                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason));
+                            strike2Added = true;
+                        }
+
+                        if(!string.IsNullOrWhiteSpace(BanReason)) {
+                            if (!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
+                                // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
+                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
+                            }
+
+                            if (!strike2Added && AdminDataManager.GetStrikes(id) == 1) {
+                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason));
+                            }
+
+                            AdminDataManager.AddBan(id, new Nodes.BanDataNode(Context.User, BanReason));
+                        }
+                    }
                     break;
 
                 case 4:
@@ -230,15 +304,15 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 6:
-
+                    // handle confirm
                     break;
 
                 case 7:
-
+                    // handle confirm
                     break;
 
                 case 8:
-
+                    // handle confirm
                     break;
 
                 case 9:
@@ -263,17 +337,35 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 11:
-
+                    // handle confirm
                     break;
 
                 case 12:
-
+                    // handle confirm
                     break;
 
                 case 13:
-
+                    // handle confirm
                     break;
             }
+        }
+        
+        private async Task OpCursorUp() {
+            OpCursor++;
+            if(PageNum >= Options.Count() || Options[PageNum].Count()-1 < OpCursor) {
+                OpCursor = 0;
+            }
+
+            await UpdateEmbed();
+        }
+
+        private async Task OpCursorDown() {
+            OpCursor--;
+            if (PageNum >= Options.Count() || OpCursor < 0) {
+                OpCursor = Options[PageNum].Count() - 1;
+            }
+
+            await UpdateEmbed();
         }
         #endregion
     }

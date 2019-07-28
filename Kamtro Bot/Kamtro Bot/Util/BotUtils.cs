@@ -247,6 +247,23 @@ namespace Kamtro_Bot
             return users;
         }
 
+        public static List<SocketGuildUser> GetUsers(string name) {
+            List<SocketGuildUser> users = new List<SocketGuildUser>();
+
+            foreach (SocketGuildUser user in ServerData.Server.Users) {
+                // Add to list if username or nickname contains the name, or if it contains user ID
+                if (user.Username.ToLower().Contains(name)) {
+                    users.Add(user);
+                } else if (user.Nickname != null && user.Nickname.Contains(name)) {
+                    users.Add(user);
+                } else if (name.Contains(user.Id.ToString())) {
+                    users.Add(user);
+                }
+            }
+
+            return users;
+        }
+
         /// <summary>
         /// Finds the <see cref="SocketGuildUser"/> in the given <see cref="string"/> text and returns it in the list.
         /// <para></para>

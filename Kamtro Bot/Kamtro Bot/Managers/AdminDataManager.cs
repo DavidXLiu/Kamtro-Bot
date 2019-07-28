@@ -161,6 +161,75 @@ namespace Kamtro_Bot.Managers
             SaveExcel();
         }
 
+        public static void AddBan(ulong id, BanDataNode ban, string username = "") {
+            int pos = 2;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+
+            while (cells["A" + pos].Value != null) {
+                if (Convert.ToUInt64(cells["A" + pos].Value) == id) {
+                    cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+                    KLog.Info($"Banned user {(username == "" ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
+                    SaveExcel();
+                    return;
+                }
+                pos++;
+            }
+
+            // User doesn't have an entry, so is likely just a troll.
+            GenUserStrike(pos, id);
+            cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+            KLog.Info($"Banned user {(username == "" ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
+            SaveExcel();
+        }
+
+        public static int AddStrike(ulong targetId, StrikeDataNode strike, string username = "") {
+            int pos = 2;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            while (cells["A" + pos].Value != null) {
+                ExcelRange cell = cells["A" + pos];
+                object test = cell.Value;
+                if (test == null) break;
+
+                if (Convert.ToUInt64(test) == targetId) {
+                    // Add the srike to this row.
+
+                    if(username != "") cells["B" + pos].Value = username;
+
+                    // now for the strike address. This will be based off of the number of strikes.
+                    // This is in column C
+                    int strikes = cells["C" + pos].GetValue<int>();
+
+                    if (strikes == 2) return 4;  // 4 is the signal
+
+                    // now to get the column. Fun ascii math.
+                    // 68 = ASCII for capital D. 
+                    string range = char.ConvertFromUtf32(68 + strikes * 3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
+
+                    cells[range].LoadFromArrays(strike.GetStrikeForExcel());
+
+                    cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) + 1).ToString();
+                    StrikeLog.Save();
+
+                    KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {(username == "" ? targetId.ToString() : username)} in cell range {range}");
+
+                    return Convert.ToInt32(cells[$"C{pos}"].Text);
+                }
+
+                pos++;
+            }
+
+            // The user doesn't have an entry. So make one.
+            GenUserStrike(pos, targetId, username);
+
+            // Now add the strike
+            ExcelRange er = cells[$"D{pos}:F{pos}"];
+            er.LoadFromArrays(strike.GetStrikeForExcel());
+            StrikeLog.Save();
+            KLog.Info($"Added strike for {(username == "" ? targetId.ToString() : username)} in cell range D{pos}:F{pos}");
+
+            return 1;
+        }
+
         /// <summary>
         /// Generates the base for a user entry. Does not generate the strike, only columns A through C
         /// </summary>
@@ -175,6 +244,15 @@ namespace Kamtro_Bot.Managers
             StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
         }
 
+        private static void GenUserStrike(int pos, ulong target, string username = "") {
+            KLog.Info($"User {(username == "" ? target.ToString() : username)} doesn't have a strike entry, creating one...");
+            List<string[]> entry = new List<string[]>();
+
+            entry.Add(new string[] { target.ToString(), username, "1" });
+
+            StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
+        }
+
         /// <summary>
         /// Returns the number of strikes a user currently has. If the user does not have an entry, this creates one.
         /// </summary>
@@ -182,6 +260,10 @@ namespace Kamtro_Bot.Managers
         /// <returns>The number of strikes the user has</returns>
         public static int GetStrikes(SocketUser user) {
             ulong id = user.Id;
+            return GetStrikes(id);
+        }
+
+        public static int GetStrikes(ulong id) {
             int pos = 2;
             ulong target;
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
@@ -196,7 +278,7 @@ namespace Kamtro_Bot.Managers
                 pos++;
             }
 
-            GenUserStrike(pos, user);
+            GenUserStrike(pos, id);
             SaveExcel();
             return 0;
         }
