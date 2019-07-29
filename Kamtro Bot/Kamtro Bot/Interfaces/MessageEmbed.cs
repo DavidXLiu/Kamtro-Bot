@@ -60,6 +60,8 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <param name="message">The message that was sent by the user</param>
         public virtual async void PerformMessageAction(SocketUserMessage message) {
+            if (!InputFields.ContainsKey(PageNum) || !InputFields[PageNum].ContainsKey(CursorPos)) return;  // Safeguard
+
             MessageFieldNode mfn = InputFields[PageNum][CursorPos];
             string msg = message.Content;
 
@@ -156,6 +158,8 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <param name="builder">The embed builder</param>
         protected virtual void AddEmbedFields(EmbedBuilder builder) {
+            if (!InputFields.ContainsKey(PageNum)) return;
+
             foreach(int index in InputFields[PageNum].Keys) {
                 // Add them as text
                 MessageFieldNode mfn = InputFields[PageNum][index];

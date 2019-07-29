@@ -203,14 +203,14 @@ namespace Kamtro_Bot.Managers
 
                     // now to get the column. Fun ascii math.
                     // 68 = ASCII for capital D. 
-                    string range = char.ConvertFromUtf32(68 + strikes * 3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
+                    string rr = char.ConvertFromUtf32(68 + strikes * 3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
 
-                    cells[range].LoadFromArrays(strike.GetStrikeForExcel());
+                    cells[rr].LoadFromArrays(strike.GetStrikeForExcel());
 
                     cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) + 1).ToString();
                     StrikeLog.Save();
 
-                    KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {(username == "" ? targetId.ToString() : username)} in cell range {range}");
+                    KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {(username == "" ? targetId.ToString() : username)} in cell range {rr}");
 
                     return Convert.ToInt32(cells[$"C{pos}"].Text);
                 }
@@ -265,25 +265,34 @@ namespace Kamtro_Bot.Managers
             if (strike < 1 || strike > 3) return "";
 
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
-            string reason = "";
+            if (strike == 1) {
+                return cells[$"F{GetEntryPos(id)}"].Text;
+            } else if (strike == 2) {
+                return cells[$"I{GetEntryPos(id)}"].Text;
+            } else {
+                return cells[$"L{GetEntryPos(id)}"].Text;
+            }
+        }
 
-            int i = 2;
+        /// <summary>
+        /// Sets the reason for a strike for a user
+        /// </summary>
+        /// <param name="id">ID of the user</param>
+        /// <param name="strike">The number of the strike (3 for ban)</param>
+        /// <param name="reason">New reason for the strike</param>
+        public static void SetStrikeReason(ulong id, int strike, string reason) {
+            if (strike < 1 || strike > 3) return;
 
-            while (cells[$"A{i}"].Value != null) {
-                if(Convert.ToUInt64(cells[$"A{i}"].Value) == id) {
-                    if(strike == 1) {
-                        reason = cells[$"F{i}"].Text;
-                    } else if(strike == 2) {
-                        reason = cells[$"I{i}"].Text;
-                    } else {
-                        reason = cells[$"L{i}"].Text;
-                    }
-
-                    break;
-                }
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            if (strike == 1) {
+                cells[$"F{GetEntryPos(id)}"].Value = reason;
+            } else if (strike == 2) {
+                cells[$"I{GetEntryPos(id)}"].Value = reason;
+            } else {
+                cells[$"L{GetEntryPos(id)}"].Value = reason;
             }
 
-            return reason;
+            SaveExcel();
         }
 
         /// <summary>
@@ -314,6 +323,21 @@ namespace Kamtro_Bot.Managers
             GenUserStrike(pos, id);
             SaveExcel();
             return 0;
+        }
+
+        public static int GetEntryPos(ulong id) {
+            int i = 2;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+
+            while(cells["A"+i].Value != null) {
+                if(Convert.ToUInt64(cells[$"A{i}"].Value) == id) {
+                    return i;
+                }
+
+                i++;
+            }
+
+            return i;
         }
     }
 }

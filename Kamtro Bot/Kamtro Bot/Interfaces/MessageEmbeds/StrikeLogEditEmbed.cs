@@ -23,6 +23,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         private SocketUser Moderator;
         private SocketUser Autofill = null;
 
+        private string Strike1Reason11;
+        private string Strike2Reason12;
+        private string BanReason13;
+
         #region Input Fields
         [InputField("Enter Server User", 2, 1)]
         public string ServerUsername;
@@ -155,6 +159,15 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
             eb.WithTitle("Editing Strike Log");
             eb.WithColor(BotUtils.Kamtro);
+
+            // now for the reason fields
+            if (PageNum == 11) {
+                eb.AddField("Strike 1 reason", Strike1Reason11);
+            } else if(PageNum == 12) {
+                eb.AddField("Strike 2 reason", Strike2Reason12);
+            } else if(PageNum == 13) {
+                eb.AddField("Ban Reason", BanReason13);
+            }
 
             if(PageNum-1 >= Options.Count() && Options[PageNum-1].Count() > 0) {
                 string text = "";
@@ -291,7 +304,17 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 4:
-                    // handle confirm
+                    // autofill
+                    if (Autofill != null) {
+                        UserId = Autofill.Id.ToString();
+                        FullUsername = BotUtils.GetFullUsername(Autofill);
+                        Strike1Reason6 = AdminDataManager.GetStrikeReason(Autofill.Id, 1);
+                        Strike2Reason7 = AdminDataManager.GetStrikeReason(Autofill.Id, 2);
+                        BanReason8 = AdminDataManager.GetStrikeReason(Autofill.Id, 3);
+                    } else {
+                        return; // you must specify a user
+                    }
+
                     PageNum = 5;
                     break;
 
@@ -313,18 +336,31 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case 6:
                     // handle confirm
+                    AdminDataManager.SetStrikeReason(Autofill.Id, 1, Strike1Reason6);
                     break;
 
                 case 7:
                     // handle confirm
+                    AdminDataManager.SetStrikeReason(Autofill.Id, 2, Strike2Reason7);
                     break;
 
                 case 8:
                     // handle confirm
+                    AdminDataManager.SetStrikeReason(Autofill.Id, 3, BanReason8);
                     break;
 
                 case 9:
                     // HC
+                    if (Autofill != null) {
+                        UserId = Autofill.Id.ToString();
+                        FullUsername = BotUtils.GetFullUsername(Autofill);
+                        Strike1Reason11 = AdminDataManager.GetStrikeReason(Autofill.Id, 1);
+                        Strike2Reason12 = AdminDataManager.GetStrikeReason(Autofill.Id, 2);
+                        BanReason13  = AdminDataManager.GetStrikeReason(Autofill.Id, 3);
+                    } else {
+                        return; // you must specify a user
+                    }
+
                     PageNum = 10;
                     break;
 
@@ -346,6 +382,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case 11:
                     // handle confirm
+
                     break;
 
                 case 12:

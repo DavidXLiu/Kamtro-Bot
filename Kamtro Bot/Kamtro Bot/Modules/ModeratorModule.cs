@@ -199,10 +199,12 @@ namespace Kamtro_Bot.Modules
             if (!ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.MODERATOR)) return;
 
             if(Context.Message.Attachments.Count != 1) {
-                await ReplyAsync(BotUtils.KamtroText("Please attach the strike log file with no other attachments!"));
+                StrikeLogEditEmbed sle = new StrikeLogEditEmbed(Context);
+                await sle.Display();
                 return;
             }
 
+            // Alt version
             Attachment file = Context.Message.Attachments.ElementAt(0);
 
             if(file.Filename != "strikelog.xlsx") {
