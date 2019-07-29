@@ -132,8 +132,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public override async Task ButtonAction(SocketReaction action) {
             switch (action.Emote.ToString()) {
                 case ReactionHandler.DECLINE_STR:
-                    await Message.DeleteAsync();
                     EventQueueManager.RemoveMessageEvent(Context.User.Id);
+                    await Message.DeleteAsync();
                     await Context.Message.Channel.SendMessageAsync(BotUtils.KamtroText("Thank you for editing the log."));
                     break;
 
