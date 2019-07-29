@@ -14,6 +14,7 @@ namespace Kamtro_Bot.Util
     {
         BOOL,
         INT,
+        ULONG,
         DBL,
         STR
     }

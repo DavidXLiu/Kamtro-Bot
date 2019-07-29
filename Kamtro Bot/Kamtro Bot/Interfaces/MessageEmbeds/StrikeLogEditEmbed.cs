@@ -32,7 +32,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public string ServerUsername;
 
         #region Page 3
-        [InputField("User ID (Required)", 3, 1)]
+        [InputField("User ID (Required)", 3, 1, Type = FieldDataType.ULONG)]
         public string UserId;
 
         [InputField("Full Username + Descriminator", 3, 2)]
@@ -67,13 +67,14 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         public StrikeLogEditEmbed(SocketCommandContext ctx) {
             SetCtx(ctx);
-
+            Timeout = new TimeSpan(0, 20, 0);
             Moderator = ctx.User;
 
             // Initialize List
             if(Options == null) {
                 Options = new List<List<string>>();
 
+                // Page 1
                 List<string> page = new List<string>();
                 page.Add("Add a strike/ban");
                 page.Add("Edit a reason");
@@ -81,6 +82,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 Options.Add(page);
 
+                // Page 2-3
+                Options.Add(new List<string>());
+                Options.Add(new List<string>());
+                
+                // Page 4
                 page = new List<string>();
 
                 page.Add("Add strike/ban to user currently in the log");
@@ -114,13 +120,13 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public async override Task PerformAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.DOWN_STR:
-                    await MoveCursorDown();
-                    await OpCursorDown();
+                    await MoveCursorUp();
+                    await OpCursorUp();
                     break;
 
                 case ReactionHandler.UP_STR:
-                    await MoveCursorUp();
-                    await OpCursorUp();
+                    await MoveCursorDown();
+                    await OpCursorDown();
                     break;
 
                 default:
@@ -133,8 +139,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             switch (action.Emote.ToString()) {
                 case ReactionHandler.DECLINE_STR:
                     EventQueueManager.RemoveMessageEvent(Context.User.Id);
-                    await Message.DeleteAsync();
                     await Context.Message.Channel.SendMessageAsync(BotUtils.KamtroText("Thank you for editing the log."));
+                    await Message.DeleteAsync();
                     break;
 
                 case ReactionHandler.CHECK_STR:
@@ -195,8 +201,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             return eb.Build();
         }
 
-        public override void PerformMessageAction(SocketUserMessage message) {
-            base.PerformMessageAction(message); // first start off with the base func
+        public override async Task PerformMessageAction(SocketUserMessage message) {
+            await base.PerformMessageAction(message); // first start off with the base func
 
             // now for special rendering
             if (PageNum == 2 || PageNum == 4 || PageNum == 9) {
@@ -218,16 +224,14 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 } else {
                     user = users[0];
 
-                    if (PageNum == 2) {
-                        ServerUsername = user.Mention;
-                    } else if (PageNum == 4) {
-                        ServerUsername4 = user.Mention;
-                    } else if (PageNum == 9) {
-                        ServerUsername9 = user.Mention;
+                    if (PageNum == 2 || PageNum == 4 || PageNum == 9) {
+                        InputFields[PageNum][CursorPos].SetValue(user.Mention);
                     }
 
                     Autofill = user;
                 }
+
+                await UpdateEmbed();
             }
         }
 
@@ -237,7 +241,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
             switch (PageNum) {
                 case 1:
-                    switch (OpCursor) {
+                    switch (OpCursor+1) {
                         case 1:
                             PageNum = 2;
                             break;
@@ -319,7 +323,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 5:
-                    switch (OpCursor) {
+                    switch (OpCursor+1) {
                         case 1:
                             PageNum = 6;
                             break;
@@ -365,7 +369,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 10:
-                    switch (OpCursor) {
+                    switch (OpCursor+1) {
                         case 1:
                             PageNum = 11;
                             break;
@@ -396,18 +400,18 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         }
         
         private async Task OpCursorUp() {
-            OpCursor--;
-            if (PageNum >= Options.Count() || OpCursor < 0) {
-                OpCursor = Options[PageNum-1].Count() - 1;
+            OpCursor++;
+            if (PageNum >= Options.Count() || Options[PageNum - 1].Count() - 1 < OpCursor) {
+                OpCursor = 0;
             }
 
             await UpdateEmbed();
         }
 
         private async Task OpCursorDown() {
-            OpCursor++;
-            if (PageNum >= Options.Count() || Options[PageNum-1].Count() - 1 < OpCursor) {
-                OpCursor = 0;
+            OpCursor--;
+            if (PageNum >= Options.Count() || OpCursor < 0) {
+                OpCursor = Options[PageNum - 1].Count() - 1;
             }
 
             await UpdateEmbed();

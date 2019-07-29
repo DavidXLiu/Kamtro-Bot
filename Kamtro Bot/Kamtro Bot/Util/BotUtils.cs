@@ -25,9 +25,6 @@ namespace Kamtro_Bot
     {
         public const string ZeroSpace = "​"; // This is a zero-width space. (it's invisible)  -C
 
-        public static readonly TimeSpan Timeout = new TimeSpan(0, 10, 0);
-        public static readonly TimeSpan MessageTimeout = new TimeSpan(0, 1, 0);
-
         public static readonly Color Red = new Color(247, 47, 60); 
         public static readonly Color Orange = new Color(250, 148, 80);
         public static readonly Color White = new Color(255, 255, 255);
@@ -180,7 +177,7 @@ namespace Kamtro_Bot
                 foreach (KeyValuePair<ulong, MessageEventNode> action in EventQueueManager.MessageEventQueue.AsEnumerable()) {
                     span = now - action.Value.TimeCreated; 
 
-                    if (span > MessageTimeout) {
+                    if (span > action.Value.Interface.Timeout) {
                         toRemoveMsg.Add(action.Key);
                     }
                 }
@@ -194,7 +191,7 @@ namespace Kamtro_Bot
                     foreach (EventQueueNode node in action.Value) {
                         span = now - node.TimeCreated;
 
-                        if (span > Timeout || node.IsAlone && span > MessageTimeout) {
+                        if (span > node.EventAction.Timeout || node.IsAlone && span > node.EventAction.Timeout) {
                             toRemove.Add(node);
                         }
                     }
@@ -249,6 +246,8 @@ namespace Kamtro_Bot
 
         public static List<SocketGuildUser> GetUsers(string name) {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
+
+            name = name.ToLower();
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID

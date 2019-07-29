@@ -27,13 +27,13 @@ namespace Kamtro_Bot.Interfaces
     public abstract class MessageEmbed : ActionEmbed
     {
         public SocketChannel CommandChannel;
+        public new TimeSpan Timeout = new TimeSpan(0, 1, 0);
 
         // Storage for the input fields
         // First key is the page, second key is the position on the page
         // -C
         public Dictionary<int, Dictionary<int, MessageFieldNode>> InputFields = new Dictionary<int, Dictionary<int, MessageFieldNode>>();
 
-        public int FieldCount = 0;
         public int PageCount = 0;
         public int PageNum = 1;
         public int CursorPos = 1;
@@ -59,7 +59,7 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// -C
         /// <param name="message">The message that was sent by the user</param>
-        public virtual async void PerformMessageAction(SocketUserMessage message) {
+        public virtual async Task PerformMessageAction(SocketUserMessage message) {
             if (!InputFields.ContainsKey(PageNum) || !InputFields[PageNum].ContainsKey(CursorPos)) return;  // Safeguard
 
             MessageFieldNode mfn = InputFields[PageNum][CursorPos];
@@ -78,10 +78,19 @@ namespace Kamtro_Bot.Interfaces
                 case FieldDataType.INT:
                     int i_input;
 
-                    if(int.TryParse(msg, out i_input)) {
+                    if(!int.TryParse(msg, out i_input)) {
                         return;
                     }
                     mfn.SetValue(i_input.ToString());
+                    break;
+
+                case FieldDataType.ULONG:
+                    ulong u_input;
+
+                    if (!ulong.TryParse(msg, out u_input)) {
+                        return;
+                    }
+                    mfn.SetValue(u_input.ToString());
                     break;
 
                 case FieldDataType.DBL:
@@ -113,6 +122,8 @@ namespace Kamtro_Bot.Interfaces
         /// </remarks>
         /// -C
         protected void RegisterMenuFields() {
+            bool arrows = false;
+
             foreach(FieldInfo f in GetType().GetFields()) {
                 if(Attribute.IsDefined(f, typeof(InputField))) {
                     // if it's an input field var
@@ -135,12 +146,21 @@ namespace Kamtro_Bot.Interfaces
                     MessageFieldNode node = new MessageFieldNode(info.Name, info.Page, info.Position, info.Value, info.Type); // create the node
                     node.ClassPtr = this; // give it a pointer to this class, so it can modify the variable it's attached to
                     InputFields[info.Page][info.Position] = node;  // And add the appropriate node to the dict where it belongs
-
-                    FieldCount++; // Account for the new field
                 }
             }
 
-            if(FieldCount > 1) {
+            int FieldCount = 0;
+
+            foreach(int i in InputFields.Keys) {
+                foreach(int j in InputFields[i].Keys) {
+                    FieldCount++;
+                    if (FieldCount > 1) arrows = true;
+                }
+
+                FieldCount = 0;
+            }
+
+            if(arrows) {
                 // if there is more than one field, add up and down buttons
                 AddMenuOptions(ReactionHandler.DOWN, ReactionHandler.UP);
             }
@@ -229,14 +249,14 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="num">The number of times to move the cursor up. Default is 1.</param>
         protected async Task MoveCursorUp(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
-
+            
             if(num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
                 CursorPos++;
 
-                if (CursorPos > FieldCount) {
+                if (CursorPos > GetFieldCount()) {
                     // If the cursor goes out of bounds, correct it
                     CursorPos = 1;
                 }
@@ -261,7 +281,7 @@ namespace Kamtro_Bot.Interfaces
 
                 if(CursorPos < 1) {
                     // If the cursor goes out of bounds, correct it
-                    CursorPos = FieldCount;
+                    CursorPos = GetFieldCount();
                 }
             }
 
@@ -318,6 +338,14 @@ namespace Kamtro_Bot.Interfaces
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets the number of fields on the current page
+        /// </summary>
+        /// <returns>The number of fields on the current page</returns>
+        protected int GetFieldCount() {
+            return InputFields[PageNum].Count();
         }
         #endregion
 

@@ -100,7 +100,7 @@ namespace Kamtro_Bot.Handlers
             List<EventQueueNode> awaitingActions = EventQueueManager.EventQueue[reaction.User.Value.Id];  // Get a list of the user's actions awaiting a reaction
 
             foreach (EventQueueNode action in awaitingActions) {
-                if (DateTime.Now - action.TimeCreated > BotUtils.Timeout) continue;  // If the GC is going to clean it up, don't risk a race condition.
+                if (DateTime.Now - action.TimeCreated > action.EventAction.Timeout) continue;  // If the GC is going to clean it up, don't risk a race condition.
                 if (cacheableMessage.Value.Id == action.EventAction.Message.Id) {
                     // If the message matches the one in the Embed
                     if (reaction.Emote.ToString() == DONE_EM.ToString()) {

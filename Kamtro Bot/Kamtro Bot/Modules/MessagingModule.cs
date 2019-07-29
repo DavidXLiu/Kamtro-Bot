@@ -65,7 +65,7 @@ namespace Kamtro_Bot.Modules
                             await embed.Display((IMessageChannel)user.GetOrCreateDMChannelAsync());
                         }
                         // Could not send to the user
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             if (user.Nickname != null)
                             {
@@ -97,7 +97,7 @@ namespace Kamtro_Bot.Modules
                             await ReplyAsync(BotUtils.KamtroText($"Message sent to {target.Username}#{user.Discriminator}."));
                         }
                         // Could not send to the user
-                        catch(Exception e)
+                        catch(Exception)
                         {
                             await ReplyAsync(BotUtils.KamtroText($"Message could not be sent to the user. The user either has messages from only friends allowed or has blocked me."));
                         }

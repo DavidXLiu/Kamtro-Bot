@@ -28,6 +28,9 @@ namespace Kamtro_Bot.Interfaces
         public SocketGuildUser CommandCaller;
         protected List<MenuOptionNode> MenuOptions;  // This should stay null. If there are no options, then it's value doesn't matter.
                                                      // This should be assigned in the constructor of the class.
+
+        public TimeSpan Timeout = new TimeSpan(0, 10, 0);
+
         /// <summary>
         /// Full context for the embed
         /// </summary>
