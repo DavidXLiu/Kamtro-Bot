@@ -169,15 +169,15 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 eb.AddField("Ban Reason", BanReason13);
             }
 
-            if(PageNum-1 >= Options.Count() && Options[PageNum-1].Count() > 0) {
+            if(PageNum-1 < Options.Count() && Options[PageNum-1].Count() > 0) {
                 string text = "";
 
-                if (OpCursor > Options[PageNum - 1].Count()) {
+                if (OpCursor >= Options[PageNum - 1].Count()) {
                     OpCursor = 0;
                 }
 
                 for (int i = 0; i < Options[PageNum-1].Count(); i++) {
-                    if(i+1 == OpCursor) {
+                    if(i == OpCursor) {
                         text += $"{CustomEmotes.CursorAnimated} {i+1}. {Options[PageNum - 1][i]}\n";
                     } else {
                         text += $"{i + 1}. {Options[PageNum - 1][i]}\n";
@@ -396,18 +396,18 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         }
         
         private async Task OpCursorUp() {
-            OpCursor++;
-            if(PageNum >= Options.Count() || Options[PageNum].Count()-1 < OpCursor) {
-                OpCursor = 0;
+            OpCursor--;
+            if (PageNum >= Options.Count() || OpCursor < 0) {
+                OpCursor = Options[PageNum-1].Count() - 1;
             }
 
             await UpdateEmbed();
         }
 
         private async Task OpCursorDown() {
-            OpCursor--;
-            if (PageNum >= Options.Count() || OpCursor < 0) {
-                OpCursor = Options[PageNum].Count() - 1;
+            OpCursor++;
+            if (PageNum >= Options.Count() || Options[PageNum-1].Count() - 1 < OpCursor) {
+                OpCursor = 0;
             }
 
             await UpdateEmbed();
