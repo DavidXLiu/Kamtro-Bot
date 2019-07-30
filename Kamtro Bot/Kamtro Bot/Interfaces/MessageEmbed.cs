@@ -345,6 +345,8 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// <returns>The number of fields on the current page</returns>
         protected int GetFieldCount() {
+            if (!InputFields.ContainsKey(PageNum)) return 0;
+
             return InputFields[PageNum].Count();
         }
         #endregion

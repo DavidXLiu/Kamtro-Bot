@@ -14,6 +14,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 {
     public class StrikeLogEditEmbed : MessageEmbed
     {
+        private const string DefaultText = "[Enter Text]";
+
         private static List<List<string>> Options = null;
         private static Dictionary<int, int> BackMap = null;
 
@@ -259,11 +261,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 case 2:
                     // autofill
                     if(Autofill != null) {
-                        UserId = Autofill.Id.ToString();
-                        FullUsername = BotUtils.GetFullUsername(Autofill);
-                        Strike1Reason = AdminDataManager.GetStrikeReason(Autofill.Id, 1);
-                        Strike2Reason = AdminDataManager.GetStrikeReason(Autofill.Id, 2);
-                        BanReason = AdminDataManager.GetStrikeReason(Autofill.Id, 3);
+                        InputFields[3][1].SetValue(Parse(Autofill.Id.ToString()));
+                        InputFields[3][2].SetValue(Parse(BotUtils.GetFullUsername(Autofill)));
+                        InputFields[3][3].SetValue(Parse(AdminDataManager.GetStrikeReason(Autofill.Id, 1)));
+                        InputFields[3][4].SetValue(Parse(AdminDataManager.GetStrikeReason(Autofill.Id, 2)));
+                        InputFields[3][5].SetValue(Parse(AdminDataManager.GetStrikeReason(Autofill.Id, 3)));
                     }
 
                     PageNum = 3;
@@ -275,12 +277,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         bool strike1Added = false;
                         bool strike2Added = false;
 
-                        if(!string.IsNullOrWhiteSpace(Strike1Reason)) {
+                        if(!string.IsNullOrWhiteSpace(Strike1Reason) && Strike1Reason != DefaultText) {
                             AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
                             strike1Added = true;
                         }
 
-                        if(!string.IsNullOrWhiteSpace(Strike2Reason)) {
+                        if(!string.IsNullOrWhiteSpace(Strike2Reason) && Strike2Reason != DefaultText) {
                             if(!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
                                 // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
                                 AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
@@ -292,7 +294,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                             strike2Added = true;
                         }
 
-                        if(!string.IsNullOrWhiteSpace(BanReason)) {
+                        if(!string.IsNullOrWhiteSpace(BanReason) && BanReason != DefaultText) {
                             if (!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
                                 // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
                                 AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
@@ -312,9 +314,9 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     if (Autofill != null) {
                         UserId = Autofill.Id.ToString();
                         FullUsername = BotUtils.GetFullUsername(Autofill);
-                        Strike1Reason6 = AdminDataManager.GetStrikeReason(Autofill.Id, 1);
-                        Strike2Reason7 = AdminDataManager.GetStrikeReason(Autofill.Id, 2);
-                        BanReason8 = AdminDataManager.GetStrikeReason(Autofill.Id, 3);
+                        InputFields[6][1].SetValue(Parse(AdminDataManager.GetStrikeReason(Autofill.Id, 1)));
+                        InputFields[7][1].SetValue(Parse(AdminDataManager.GetStrikeReason(Autofill.Id, 2)));
+                        InputFields[8][1].SetValue(Parse(AdminDataManager.GetStrikeReason(Autofill.Id, 3)));
                     } else {
                         return; // you must specify a user
                     }
@@ -415,6 +417,14 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             }
 
             await UpdateEmbed();
+        }
+
+        private string Parse(string inp) {
+            if(string.IsNullOrWhiteSpace(inp)) {
+                return "[Enter Text]";
+            }
+
+            return inp;
         }
         #endregion
     }
