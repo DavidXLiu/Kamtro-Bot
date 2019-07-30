@@ -84,15 +84,32 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 Options.Add(page);
 
-                // Page 2-3
+                // Page 2-4
                 Options.Add(new List<string>());
                 Options.Add(new List<string>());
-                
-                // Page 4
+                Options.Add(new List<string>());
+
+                // Page 5
                 page = new List<string>();
 
-                page.Add("Add strike/ban to user currently in the log");
-                page.Add("Add a new entry to the log");
+                page.Add("Strike 1 Reason");
+                page.Add("Strike 2 Reason");
+                page.Add("Ban Reason");
+
+                Options.Add(page);
+
+                // Pages 6-9
+                Options.Add(new List<string>());
+                Options.Add(new List<string>());
+                Options.Add(new List<string>());
+                Options.Add(new List<string>());
+
+                // Page 10
+                page = new List<string>();
+
+                page.Add("Strike 1 Reason");
+                page.Add("Strike 2 Reason");
+                page.Add("Ban Reason");
 
                 Options.Add(page);
             }
@@ -143,7 +160,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     EventQueueManager.RemoveMessageEvent(Context.User.Id);
                     await Context.Message.Channel.SendMessageAsync(BotUtils.KamtroText("Thank you for editing the log."));
                     await Message.DeleteAsync();
-                    break;
+                    return;
 
                 case ReactionHandler.CHECK_STR:
                     HandleConfirm();
@@ -167,6 +184,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
             eb.WithTitle("Editing Strike Log");
             eb.WithColor(BotUtils.Kamtro);
+
+            if(PageNum == 14) {
+                eb.AddField("Thank you for editing the stirke log", "Press the back button to return to the start, or press cancel if you have no more edits to make.");
+                AddMenu(eb);
+                return eb.Build();
+            }
 
             // now for the reason fields
             if (PageNum == 11) {
@@ -209,7 +232,26 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             // now for special rendering
             if (PageNum == 2 || PageNum == 4 || PageNum == 9) {
                 // Autofill.
-                List<SocketGuildUser> users = BotUtils.GetUsers(ServerUsername);
+                List<SocketGuildUser> users;
+
+                switch(PageNum) {
+                    case 2:
+                        users = BotUtils.GetUsers(ServerUsername);
+                        break;
+
+                    case 4:
+                        users = BotUtils.GetUsers(ServerUsername4);
+                        break;
+
+                    case 9:
+                        users = BotUtils.GetUsers(ServerUsername9);
+                        break;
+
+                    default:
+                        users = new List<SocketGuildUser>();
+                        break;
+                }
+                
                 SocketGuildUser user;
 
                 if (users.Count < 1) {
@@ -403,7 +445,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         
         private async Task OpCursorUp() {
             OpCursor++;
-            if (PageNum >= Options.Count() || Options[PageNum - 1].Count() - 1 < OpCursor) {
+            if (PageNum-1 >= Options.Count() || Options[PageNum - 1].Count() - 1 < OpCursor) {
                 OpCursor = 0;
             }
 
@@ -412,7 +454,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         private async Task OpCursorDown() {
             OpCursor--;
-            if (PageNum >= Options.Count() || OpCursor < 0) {
+            if (PageNum-1 >= Options.Count() || OpCursor < 0) {
                 OpCursor = Options[PageNum - 1].Count() - 1;
             }
 
