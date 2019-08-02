@@ -157,6 +157,8 @@ namespace Kamtro_Bot.Handlers
 
             SocketGuildUser auth = ServerData.Server.GetUser(msg.Author.Id);
 
+            if (auth == null) return;
+
             if (LastUser == 0 || auth.Id != LastUser) {
                 LastUser = msg.Author.Id;
                 ConsMessages = 1;

@@ -8,6 +8,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
@@ -15,6 +16,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
     public class StrikeLogEditEmbed : MessageEmbed
     {
         private const string DefaultText = "[Enter Text]";
+        private const string BACK = "\U0001F519";
 
         private static List<List<string>> Options = null;
         private static Dictionary<int, int> BackMap = null;
@@ -28,6 +30,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         private string Strike1Reason11;
         private string Strike2Reason12;
         private string BanReason13;
+        
+
 
         #region Input Fields
         [InputField("Enter Server User", 2, 1)]
@@ -132,7 +136,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 BackMap.Add(14, 1);
             }
 
-            AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.CHECK, ReactionHandler.DONE, ReactionHandler.DECLINE);
+            AddMenuOptions(new MenuOptionNode(BACK, "Go Back"), ReactionHandler.CHECK, ReactionHandler.DECLINE);
             RegisterMenuFields();
         }
 
@@ -164,10 +168,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case ReactionHandler.CHECK_STR:
                     HandleConfirm();
+                    OpCursor = 0; // reset the cursor
                     break;
 
-                case ReactionHandler.DONE_STR:
-                    if(!BackMap.ContainsKey(PageNum)) {
+                case BACK:
+                    if(!BackMap.ContainsKey(PageNum) || PageNum == 14) {
                         PageNum = 1;
                         break;
                     }
@@ -348,6 +353,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                             AdminDataManager.AddBan(id, new Nodes.BanDataNode(Context.User, BanReason));
                         }
+
+                        PageNum = 14;
                     }
                     break;
 
@@ -385,16 +392,19 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 case 6:
                     // handle confirm
                     AdminDataManager.SetStrikeReason(Autofill.Id, 1, Strike1Reason6);
+                    PageNum = 14;
                     break;
 
                 case 7:
                     // handle confirm
                     AdminDataManager.SetStrikeReason(Autofill.Id, 2, Strike2Reason7);
+                    PageNum = 14;
                     break;
 
                 case 8:
                     // handle confirm
                     AdminDataManager.SetStrikeReason(Autofill.Id, 3, BanReason8);
+                    PageNum = 14;
                     break;
 
                 case 9:
@@ -430,15 +440,20 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case 11:
                     // handle confirm
-
+                    AdminDataManager.DeleteStrike(Autofill.Id, 1);
+                    PageNum = 14;
                     break;
 
                 case 12:
                     // handle confirm
+                    AdminDataManager.DeleteStrike(Autofill.Id, 2);
+                    PageNum = 14;
                     break;
 
                 case 13:
                     // handle confirm
+                    AdminDataManager.DeleteStrike(Autofill.Id, 3);
+                    PageNum = 14;
                     break;
             }
         }

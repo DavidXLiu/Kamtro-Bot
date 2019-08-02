@@ -339,5 +339,32 @@ namespace Kamtro_Bot.Managers
 
             return i;
         }
+
+        public static void DeleteStrike(ulong id, int strike) {
+            if (GetStrikes(id) < strike) return;
+
+            int pos = GetEntryPos(id);
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+
+            switch(strike) {
+                case 1:
+                    cells[$"D{pos}:F{pos}"].Clear();
+                    break;
+
+                case 2:
+                    cells[$"G{pos}:I{pos}"].Clear();
+                    break;
+
+                case 3:
+                    cells[$"J{pos}:L{pos}"].Clear();
+                    break;
+            }
+
+            cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) - 1).ToString();
+
+            KLog.Info($"Removed entry for user {id}: {(strike == 3 ? "Ban" : $"Strike {strike}")}");
+
+            SaveExcel();
+        }
     }
 }
