@@ -146,7 +146,22 @@ namespace Kamtro_Bot.Managers
 
             SaveUserData();  // Save the updated data.
         }
+        
+        public static void ResetWeekly() {
+            foreach(ulong key in UserData.Keys) {
+                UserData[key].WeeklyScore = 0;
+            }
 
+            KLog.Info("Reset weekly message scores");
+        }
+
+        public static void ResetRep() {
+            foreach (ulong key in UserData.Keys) {
+                UserData[key].ReputationToGive = 3;
+            }
+
+            KLog.Info("Reset giveable reputation stats");
+        }
         #endregion
     }
 }

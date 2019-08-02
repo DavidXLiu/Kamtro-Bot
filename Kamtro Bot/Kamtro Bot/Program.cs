@@ -34,6 +34,7 @@ namespace Kamtro_Bot
 
         public static Thread Autosave;
         public static Thread GarbageCollection;
+        public static Thread DateCheck;
 
         public static DiscordSocketClient Client;
         private DiscordSocketConfig config;
@@ -62,6 +63,7 @@ namespace Kamtro_Bot
 
             Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
             GarbageCollection = new Thread(new ThreadStart(BotUtils.GarbageCollection));
+            DateCheck = new Thread(new ThreadStart(BotUtils.DateEventCheckLoop));
 
             SetupFiles();  // This is to keep the Main method more readable
 
@@ -91,6 +93,7 @@ namespace Kamtro_Bot
             BotUtils.GCReady = true;
             Autosave.Start();  // Start the autosave loop
             GarbageCollection.Start();
+            DateCheck.Start();
 
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();

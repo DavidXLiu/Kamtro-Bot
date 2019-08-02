@@ -30,6 +30,8 @@ namespace Kamtro_Bot
         public static readonly Color White = new Color(255, 255, 255);
         public static readonly Color Kamtro = new Color(137, 232, 249);
 
+        public static DateTime LastWeeklyReset = new DateTime(0, 0, 0);
+
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.  -C
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.  -C
         public static bool PauseSave = false;
@@ -114,6 +116,7 @@ namespace Kamtro_Bot
             return ext;
         }
 
+        #region Threads
         /// <summary>
         /// This method is to optimize saving the user data files.
         /// It will save the file every minute, that way the 
@@ -207,6 +210,24 @@ namespace Kamtro_Bot
                 Thread.Sleep(new TimeSpan(0, 1, 0));
             }
         }
+
+        /// <summary>
+        /// Thread that handles all events that depend on the date
+        /// </summary>
+        public static void DateEventCheckLoop() {
+            // Check for weekly reset
+            if(DateTime.Now - LastWeeklyReset > new TimeSpan(7, 0, 0, 0)) {
+                // reset things
+                UserDataManager.ResetWeekly();
+                UserDataManager.ResetRep();
+
+                // set the new time
+                LastWeeklyReset = LastWeeklyReset.LastSunday();
+            }
+
+            Thread.Sleep(new TimeSpan(0, 20, 0));
+        }
+        #endregion
 
         /// <summary>
         /// Finds the <see cref="SocketGuildUser"/> in the given message and returns it in the list. If a user cannot be distinguished by the given message, a list of users are put out containing the possible users.
@@ -328,4 +349,17 @@ namespace Kamtro_Bot
             return a.Hierarchy > b.Hierarchy;
         }
     }
+
+    /// <summary>
+    /// Extension methods
+    /// </summary>
+    public static class GeneralExtensions
+    {
+        public static DateTime LastSunday(this DateTime dt) {
+            int diff = (7 + (dt.DayOfWeek - DayOfWeek.Sunday)) % 7;
+            return dt.AddDays(-1 + diff).Date;
+        }
+    }
 }
+
+
