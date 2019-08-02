@@ -212,7 +212,10 @@ namespace Kamtro_Bot.Handlers
         #region Threads
         public static void ResetThread() {
             while(ResetOn) {
-                ConsMessages = 0;
+                foreach(ulong key in ConsMessages.Keys) {
+                    ConsMessages[key] = 0;
+                }
+
                 Thread.Sleep(new TimeSpan(0, 0, 10));
             }
         }

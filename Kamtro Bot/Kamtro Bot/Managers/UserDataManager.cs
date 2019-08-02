@@ -75,13 +75,14 @@ namespace Kamtro_Bot.Managers
                 UserData.Add(message.Author.Id, new UserDataNode(BotUtils.GetFullUsername(message.Author)));
             }
             
-            if(UserData[message.Author.Id].Score > SCORE_NERF) {
+            if(UserData[message.Author.Id].WeeklyScore > SCORE_NERF) {
                 score = Math.Max(0, 3 - x);
             } else {
                 score = Math.Max(1, 5 - x);
             }
 
             UserData[message.Author.Id].Score += score;
+            UserData[message.Author.Id].WeeklyScore += score;
             // End of score calculation
 
             if (userAdded && !BotUtils.SaveInProgress) SaveUserData();  // save the data if the user was added, but only if autosave isn't in progress.
