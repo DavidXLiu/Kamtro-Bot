@@ -26,8 +26,8 @@ namespace Kamtro_Bot.Handlers
 
         public static bool ResetOn = true;
 
-        public static int ConsMessages = 0;
-        public static ulong LastUser = 0;
+        public static Dictionary<ulong, int> ConsMessages;
+        public static Dictionary<ulong, ulong> LastUser;
 
         #region Event Handlers
         public GeneralHandler(DiscordSocketClient client) {
@@ -155,25 +155,30 @@ namespace Kamtro_Bot.Handlers
         public static async Task HandleMessage(SocketUserMessage msg) {
             if (msg.Channel is ISocketPrivateChannel) return;
 
+            if(!LastUser.ContainsKey(msg.Channel.Id)) {
+                LastUser.Add(msg.Channel.Id, 0);
+            }
+
+            if(!ConsMessages.ContainsKey(msg.Channel.Id)) {
+                ConsMessages.Add(msg.Channel.Id, 0);
+            }
+
             SocketGuildUser auth = ServerData.Server.GetUser(msg.Author.Id);
 
             if (auth == null) return;
 
-            if (LastUser == 0 || auth.Id != LastUser) {
-                LastUser = msg.Author.Id;
-                ConsMessages = 1;
-            } else if (ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
-                ConsMessages = 0;
-                LastUser = auth.Id;
+            if (LastUser[msg.Channel.Id] == 0 || auth.Id != LastUser[msg.Channel.Id]) {
+                LastUser[msg.Channel.Id] = msg.Author.Id;
+                ConsMessages[msg.Channel.Id] = 1;
             } else {
-                ConsMessages++;
+                ConsMessages[msg.Channel.Id]++;
             }
             
-            if(ConsMessages == 3) {
+            if(ConsMessages[msg.Channel.Id] == 3 && !ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
                 await msg.Channel.SendMessageAsync(BotUtils.KamtroAngry($"Please slow down {BotUtils.GetFullUsername(msg.Author)}, or you will be autobanned for spam."));
             }
 
-            if(ConsMessages >= 5) {
+            if(ConsMessages[msg.Channel.Id] >= 5 && !ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
                 await BotUtils.AdminLog($"User {BotUtils.GetFullUsername(auth)} was autobanned for spam");
                 await ServerData.Server.AddBanAsync(auth);
 

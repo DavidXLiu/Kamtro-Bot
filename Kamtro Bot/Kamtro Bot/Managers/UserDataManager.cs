@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Newtonsoft.Json;
 
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Handlers;
 
 namespace Kamtro_Bot.Managers
 {
@@ -29,6 +30,8 @@ namespace Kamtro_Bot.Managers
         /// -C
         /// </summary>
         public static Dictionary<ulong, UserDataNode> UserData;
+
+        public const int SCORE_NERF = 1000;
 
         public UserDataManager() {
             UserData = LoadUserData();
@@ -62,7 +65,24 @@ namespace Kamtro_Bot.Managers
         #region Event
         public static void OnChannelMessage(SocketUserMessage message) {
             bool userAdded = AddUserIfNotExists(message.Author);  // if the user does not have an entry, add it.
-            // TODO add score
+            // Add score
+            // x = user's consecutive messages
+            int x = GeneralHandler.ConsMessages[message.Channel.Id];
+
+            int score;
+
+            if(!UserData.ContainsKey(message.Author.Id)) {
+                UserData.Add(message.Author.Id, new UserDataNode(BotUtils.GetFullUsername(message.Author)));
+            }
+            
+            if(UserData[message.Author.Id].Score > SCORE_NERF) {
+                score = Math.Max(0, 3 - x);
+            } else {
+                score = Math.Max(1, 5 - x);
+            }
+
+            UserData[message.Author.Id].Score += score;
+            // End of score calculation
 
             if (userAdded && !BotUtils.SaveInProgress) SaveUserData();  // save the data if the user was added, but only if autosave isn't in progress.
         }
