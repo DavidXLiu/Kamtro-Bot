@@ -97,6 +97,32 @@ namespace Kamtro_Bot.Managers
         }
 
         /// <summary>
+        /// Gives one reputation point to a user
+        /// </summary>
+        /// <param name="from">The user giving the reputation point</param>
+        /// <param name="to">The user recieving the reputation point</param>
+        /// <returns>True if the donor can give a rep point, false otherwise.</returns>
+        public static bool AddRep(SocketUser from, SocketUser to) {
+            if(UserData[from.Id].ReputationToGive <= 0) {
+                return false;
+            }
+
+            UserData[from.Id].ReputationToGive--;
+            UserData[to.Id].Reputation++;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Tests to see if the user can give reputation
+        /// </summary>
+        /// <param name="user">The user to test</param>
+        /// <returns>True if the user can give rep, false otherwise</returns>
+        public static bool CanAddRep(SocketUser user) {
+            return UserData[user.Id].ReputationToGive > 0;
+        }
+
+        /// <summary>
         /// Adds a user to the dict if it doesn't exist
         /// </summary>
         /// <param name="user">The user to add</param>

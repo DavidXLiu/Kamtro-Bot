@@ -29,6 +29,11 @@ namespace Kamtro_Bot.Modules
         [Command("roll")]
         [Alias("dice", "rolldice")]
         public async Task DiceRollAsync([Remainder] string args = "") {
+            if(args == "") {
+                await ReplyAsync(BotUtils.KamtroText("Please specify parameters as <num>d<sides>"));
+                return;
+            }
+
             string[] s = args.Split('d');
             int num, sides;
 
