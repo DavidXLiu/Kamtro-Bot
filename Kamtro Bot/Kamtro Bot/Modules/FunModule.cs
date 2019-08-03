@@ -47,6 +47,11 @@ namespace Kamtro_Bot.Modules
                 return;
             }
 
+            if(num < 0) {
+                await ReplyAsync(BotUtils.KamtroText($"Unrolled {Math.Abs(num)} dice. Didn't get any other numbers out of it though."));
+                return;
+            }
+
             if (sides == 0 || sides == 1) {
                 await ReplyAsync(BotUtils.KamtroText($"Every dice landed on {sides}. What did you expect?"));
                 return;
@@ -57,10 +62,10 @@ namespace Kamtro_Bot.Modules
             string result = $"Rolled {num} {(num == 1 ? "die" : "dice")}:\n\n";
 
             for (int i = 0; i < num; i++) {
-                result += $"({i + 1}) rolled a {dice.Next(1, sides)}\n";
+                result += $"({i + 1}){((i+1 < 10) ? " ":"")} rolled a {dice.Next(Math.Min(1, sides), Math.Max(0, sides))}\n";
             }
 
-            await ReplyAsync(BotUtils.KamtroText(result));
+            await ReplyAsync(BotUtils.KamtroText(result + "\n"));
         }
 
         [Command("roll")]
