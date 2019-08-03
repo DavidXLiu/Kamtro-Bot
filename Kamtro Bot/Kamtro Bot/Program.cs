@@ -149,6 +149,12 @@ namespace Kamtro_Bot
                     File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
                 }
             }
+
+            long date;
+
+            if (long.TryParse(FileManager.ReadFullFile(DataFileNames.LastDateFile), out date)) {
+                BotUtils.LastWeeklyReset = new DateTime(date);
+            }
         }
 
         private static void SetupGeneral() {

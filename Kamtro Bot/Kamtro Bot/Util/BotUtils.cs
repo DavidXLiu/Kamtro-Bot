@@ -30,7 +30,7 @@ namespace Kamtro_Bot
         public static readonly Color White = new Color(255, 255, 255);
         public static readonly Color Kamtro = new Color(137, 232, 249);
 
-        public static DateTime LastWeeklyReset = new DateTime(0, 0, 0);
+        public static DateTime LastWeeklyReset = DateTime.Now.LastSunday();
 
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.  -C
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.  -C
@@ -223,6 +223,8 @@ namespace Kamtro_Bot
 
                 // set the new time
                 LastWeeklyReset = LastWeeklyReset.LastSunday();
+
+                File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
             }
 
             Thread.Sleep(new TimeSpan(0, 20, 0));
