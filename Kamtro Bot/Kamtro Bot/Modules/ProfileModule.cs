@@ -47,6 +47,10 @@ namespace Kamtro_Bot.Modules
 
         #region Helper Methods
         private async Task AddRep(SocketUser user) {
+            if(user.Id == Context.User.Id) {
+                await ReplyAsync(BotUtils.KamtroText("You can't give a repuation point to yourself!"));
+            }
+
             UserDataManager.AddRep(Context.User, user);
 
             await ReplyAsync(BotUtils.KamtroText($"{Context.User.Username} has given a reputation point to {user.Username}"));
