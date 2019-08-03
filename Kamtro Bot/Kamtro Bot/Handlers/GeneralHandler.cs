@@ -26,8 +26,8 @@ namespace Kamtro_Bot.Handlers
 
         public static bool ResetOn = true;
 
-        public static Dictionary<ulong, int> ConsMessages;
-        public static Dictionary<ulong, ulong> LastUser;
+        public static Dictionary<ulong, int> ConsMessages = new Dictionary<ulong, int>();
+        public static Dictionary<ulong, ulong> LastUser = new Dictionary<ulong, ulong>();
 
         #region Event Handlers
         public GeneralHandler(DiscordSocketClient client) {
