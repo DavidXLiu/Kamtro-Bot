@@ -42,6 +42,8 @@ namespace Kamtro_Bot
         public static bool PauseGC = false;
         public static bool GCInProgress = false;
 
+        public static string BadDMResponse = KamtroText("I tried to send the user a message, but they had me blocked and/or disabled direct messages from server members, so I couldn't message them!");
+
         /// <summary>
         /// Formats the message so the text is blue (AKA Kamtro speak)
         /// -C
@@ -349,6 +351,22 @@ namespace Kamtro_Bot
         /// <returns>True if A is higher up than B, false if A is equal to, or lower than B.</returns>
         public static bool HighestUser(SocketGuildUser a, SocketGuildUser b) {
             return a.Hierarchy > b.Hierarchy;
+        }
+
+        /// <summary>
+        /// Attempts to send the specified message to the specified user.
+        /// </summary>
+        /// <param name="user">The user to send the message to</param>
+        /// <param name="e">The embed to send</param>
+        /// <param name="msg">Text to be included in the message</param>
+        /// <returns>True if the message was successfully sent, false otherwise</returns>
+        public static async Task<bool> DMUserAsync(SocketUser user, Embed e = null, string msg = "") {
+            try {
+                await user.SendMessageAsync(msg, false, e);  // try to send the message
+                return true; // if that works, things are fine
+            } catch(Exception) {
+                return false; // otherwise if it fails, say so.
+            }
         }
     }
 
