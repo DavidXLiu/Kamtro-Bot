@@ -22,9 +22,9 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             eb.WithTitle("Ban Scan");
             eb.WithColor(BotUtils.Kamtro);
 
-            eb.AddField("Bans found (total | unique)", $"Kamexico: {KamexTotal}|{KamexUnique}\nRetropolis: {RetroTotal}|{RetroUnique}");
+            eb.AddField("Bans Found (Total | Unique)", $"Kamexico: {KamexTotal}|{KamexUnique}\nRetropolis: {RetroTotal}|{RetroUnique}");
             eb.AddField("Mutual Bans", $"{Mutual}");
-            eb.AddField("Total bans", $"{Total}");
+            eb.AddField("Total Bans", $"{Total}");
 
             return eb.Build(); 
         }
