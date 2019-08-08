@@ -142,11 +142,14 @@ namespace Kamtro_Bot.Handlers
         public async Task OnMessageDelete(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel) {
             IMessage msg = await message.GetOrDownloadAsync();
 
-            if (msg.Source != MessageSource.User || !(msg is SocketMessage) || !(channel is SocketTextChannel)) return;
+            if (msg != null && (msg.Source != MessageSource.User || !(msg is SocketMessage) || !(channel is SocketTextChannel))) return;
 
             SocketMessage sm = msg as SocketMessage;
+            MessageDeleteEmbed mde;
 
-            MessageDeleteEmbed mde = new MessageDeleteEmbed(sm);
+            if (sm == null) mde = new MessageDeleteEmbed(null, channel: channel as SocketTextChannel);
+            else mde = new MessageDeleteEmbed(sm);
+
             await mde.Display(ServerData.AdminChannel);
         }
         #endregion

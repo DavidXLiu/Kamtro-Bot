@@ -14,7 +14,6 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
         private string AuthorName;
         private string Channel;
         private string Text;
-        private string SendTime;
         private string MessageTimestamp;
         private bool TooOld;
 
@@ -25,13 +24,13 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
                 AuthorName = "Unknown User";
                 MessageTimestamp = "Unknown Time";
                 TooOld = true;
-                Channel = channel.Name ?? msg.Channel.Name;
+                Channel = channel == null ? "Unknown Channel" : channel.Name;
             } else {
                 Text = msg.Content;
                 Author = msg.Author;
                 AuthorName = BotUtils.GetFullUsername(msg.Author);
                 MessageTimestamp = msg.Timestamp.LocalDateTime.ToLongDateString();
-                Channel = channel.Name ?? "Unknown Channel";
+                Channel = channel == null ? msg.Channel.Name : channel.Name;
                 TooOld = false;
             }
         }
