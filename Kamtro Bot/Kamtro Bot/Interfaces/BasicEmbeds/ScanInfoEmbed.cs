@@ -14,15 +14,17 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
         public int RetroTotal = 0;
         public int KamexTotal = 0;
         public int Mutual = 0;
+        public int InKamtro = 0;
         public int Total = 0;
 
         public override Embed GetEmbed() {
             EmbedBuilder eb = new EmbedBuilder();
 
-            eb.WithTitle("Ban Scan");
+            eb.WithTitle("Scan Results");
             eb.WithColor(BotUtils.Kamtro);
 
-            eb.AddField("Bans Found (Total | Unique)", $"Kamexico: {KamexTotal}|{KamexUnique}\nRetropolis: {RetroTotal}|{RetroUnique}");
+            eb.AddField("Bans Found", $"Kamexico: {KamexTotal}\nRetropolis: {RetroTotal}");
+            eb.AddField("Unique Bans", $"{KamexUnique}\n{RetroUnique}", true);
             eb.AddField("Mutual Bans", $"{Mutual}");
             eb.AddField("Total Bans", $"{Total}");
 

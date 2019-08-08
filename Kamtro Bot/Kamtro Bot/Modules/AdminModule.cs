@@ -47,15 +47,19 @@ namespace Kamtro_Bot.Modules
 
             ScanInfoEmbed scan = new ScanInfoEmbed();
 
+            await ReplyAsync(BotUtils.KamtroText("Scanning Kamexico for Bans..."));
+             
             foreach(RestBan ban in await ServerData.Kamexico.GetBansAsync()) {
                 scan.KamexTotal++;
-                scan.KamexUnique++;
+                scan.KamexUnique++; 
                 scan.Total++;
 
                 GeneralHandler.CrossBan[ban.User.Id] = new CrossBanDataNode(1, ban.Reason);
             }
 
-            foreach(RestBan ban in await ServerData.Retropolis.GetBansAsync()) {
+            await ReplyAsync(BotUtils.KamtroText("Scanning Kamexico for Bans..."));
+
+            foreach (RestBan ban in await ServerData.Retropolis.GetBansAsync()) {
                 scan.RetroTotal++;
                 scan.Total++;
 
@@ -69,6 +73,20 @@ namespace Kamtro_Bot.Modules
                 }
             }
 
+            int errcount = 0;
+             
+            foreach(ulong id in GeneralHandler.CrossBan.Keys) {
+                if(ServerData.Server.GetUser(id) != null) {
+                    bool sent = await BotUtils.DMUserAsync(ServerData.Server.GetUser(id), new BanNotifyEmbed($"You were banned on {GeneralHandler.CrossBan[id].GetServer()}, and therefore have been auto banned from Kamtro.\nOld ban reason:\n\n{GeneralHandler.CrossBan[id].Reason}").GetEmbed());
+
+                    if (!sent) errcount++;
+                    
+                    await ServerData.Server.AddBanAsync(ServerData.Server.GetUser(id));
+                    scan.InKamtro++;
+                }
+            }
+
+            if (errcount > 0) await ReplyAsync(BotUtils.KamtroText($"{errcount} users could not be messaged."));
             GeneralHandler.SaveList();
 
             await scan.Display(ServerData.AdminChannel);
@@ -77,6 +95,8 @@ namespace Kamtro_Bot.Modules
         private async Task Hacked() {
             // leave all servers
             Console.WriteLine("Bot has been hacked! Leaving all servers...");
+
+            await ReplyAsync(BotUtils.KamtroText("Arrivederci."));
 
             foreach (SocketGuild server in Program.Client.Guilds) {
                 await server.LeaveAsync();

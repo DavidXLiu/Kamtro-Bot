@@ -27,7 +27,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             Path = @"Help";
             Cursor = 0;
             Admin = admin;
-            FileCount = HelpManager.GetDirList(Path).Length;
+            FileCount = HelpManager.GetDirList(Path, Admin).Length;
         }
 
         public async override Task PerformAction(SocketReaction option) {
@@ -41,8 +41,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     break;
 
                 case ReactionHandler.SELECT_STR:
-                    if (HelpManager.GetDirList(Path).Count() < 1) return;
-                    await Select(HelpManager.GetDirList(Path)[Cursor]);
+                    if (HelpManager.GetDirList(Path, Admin).Count() < 1) return;
+                    await Select(HelpManager.GetDirList(Path, Admin)[Cursor]);
                     break;
 
                 case GoBack:
@@ -78,7 +78,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         /// <param name="dirs">The list of Directories</param>
         /// <param name="pos">The cursor position</param>
         /// <returns>The text for the embed</returns>
-        private static string GetDirText(string[] dirs, int pos) {
+        private string GetDirText(string[] dirs, int pos) {
             if (dirs.Length == 0) return "Nothing here.";
 
             string dl = "";
@@ -140,7 +140,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         /// </summary>
         /// <param name="eb">The embed builder</param>
         private void AddDirList(EmbedBuilder eb) {
-            eb.AddField(VirtualPath(), GetDirText(HelpManager.GetDirList(Path), Cursor));
+            eb.AddField(VirtualPath(), GetDirText(HelpManager.GetDirList(Path, Admin), Cursor));
         }
 
         private string VirtualPath() {
@@ -156,7 +156,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             Cursor = 0;
             Path = HelpManager.SelectDir(Path, dir);
-            if (!OnFile()) FileCount = HelpManager.GetDirList(Path).Length;
+            if (!OnFile()) FileCount = HelpManager.GetDirList(Path, Admin).Length;
             else FileCount = 0;
 
             await UpdateEmbed();
@@ -164,7 +164,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
         private async Task Back() {
             Path = HelpManager.BackDir(Path);
-            FileCount = HelpManager.GetDirList(Path).Length;
+            FileCount = HelpManager.GetDirList(Path, Admin).Length;
 
             await UpdateEmbed();
         }
@@ -172,6 +172,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private async Task CursorUp() {
             if (FileCount == 0) return;
             Cursor++;
+
             if (Cursor >= FileCount) Cursor = 0;
 
             await UpdateEmbed();

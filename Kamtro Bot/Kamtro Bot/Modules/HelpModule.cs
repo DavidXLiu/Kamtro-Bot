@@ -17,11 +17,9 @@ namespace Kamtro_Bot.Modules
         [Command("help")]
         [Alias("h", "helpme", "commands")]
         public async Task HelpCommandAsync() {
-            if(ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.MODERATOR)) {
-                // mod help
-            }
+            bool isAdmin = ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.MODERATOR);
 
-            HelpEmbed he = new HelpEmbed(Context);
+            HelpEmbed he = new HelpEmbed(Context, admin: isAdmin);
             await he.Display();
         }
     }
