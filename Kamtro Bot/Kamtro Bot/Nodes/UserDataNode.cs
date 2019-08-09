@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Discord;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace Kamtro_Bot.Nodes
         public int Money;  // Kamtrokens  -C
         public int CurrentTitle;  // The id of user's selected title.  -C
         public List<int> Titles;  // A list of title ids the user has  -C
+        public Color ProfileColor;
+        public string Quote;
         public int Strikes;  // The number of strikes a user has. (This might end up getting removed, since the strike system is already in place) -C
         public bool Nsfw;  // if the user has access to NSFW
 
@@ -34,6 +37,10 @@ namespace Kamtro_Bot.Nodes
             ReputationToGive = repg;
             Strikes = strikes;
             Nsfw = nsfw;
+
+            // TBA
+            ProfileColor = BotUtils.Kamtro;
+            Quote = "Kamtro User";
         }
     }
 }

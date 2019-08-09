@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 using Kamtro_Bot.Managers;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,36 @@ namespace Kamtro_Bot.Modules
             }
         }
 
+        [Command("profile")]
+        [Alias("userprofile", "p")]
+        public async Task ProfileAsync([Remainder] string username = "") {
+            if(username == "") {
+                // user's profile
+                SocketGuildUser usr = Context.Guild.GetUser(Context.User.Id);
+
+                ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(usr), usr);
+                await pe.Display(Context.Channel);
+                return;
+            }
+
+            // else, the requested user's profile
+
+            List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
+
+            if (users.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                return;
+            } else if (users.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
+                return;
+            } else if (users.Count == 1) {
+                await Profile(users[0]);
+            } else {
+                UserSelectionEmbed use = new UserSelectionEmbed(users, Profile, Context.Guild.GetUser(Context.User.Id));
+                await use.Display(Context.Channel);
+            }
+        }
+
         #region Helper Methods
         private async Task AddRep(SocketUser user) {
             if(user.Id == Context.User.Id) {
@@ -54,6 +85,11 @@ namespace Kamtro_Bot.Modules
             UserDataManager.AddRep(Context.User, user);
 
             await ReplyAsync(BotUtils.KamtroText($"{Context.User.Username} has given a reputation point to {user.Username}"));
+        }
+
+        private async Task Profile(SocketGuildUser user) {
+            ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(user), user);
+            await pe.Display(Context.Channel);
         }
         #endregion
     }

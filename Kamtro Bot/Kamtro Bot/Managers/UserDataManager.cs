@@ -46,11 +46,17 @@ namespace Kamtro_Bot.Managers
         /// </remarks>
         /// <param name="user">The User to add</param>
         /// <returns>The data node that was added</returns>
-        public static UserDataNode AddUser(SocketUser user) {
-            UserDataNode node = new UserDataNode($"{user.Username}#{user.Discriminator}");
+        public static UserDataNode AddUser(SocketGuildUser user) {
+            UserDataNode node = new UserDataNode(user.Nickname == null ? user.Username:user.Nickname);
             UserData.Add(user.Id, node);
             SaveUserData();
             return node;
+        }
+
+        public static UserDataNode GetUserData(SocketGuildUser user) {
+            AddUserIfNotExists(user);
+
+            return UserData[user.Id];
         }
 
         /// <summary>
@@ -64,7 +70,9 @@ namespace Kamtro_Bot.Managers
         // public Dictionary<ulong, UserInventoryNode> UserInventories;
         #region Event
         public static void OnChannelMessage(SocketUserMessage message) {
-            bool userAdded = AddUserIfNotExists(message.Author);  // if the user does not have an entry, add it.
+            if ((message.Author as SocketGuildUser) == null) return;  // only count server messages
+
+            bool userAdded = AddUserIfNotExists(message.Author as SocketGuildUser);  // if the user does not have an entry, add it.
             // Add score
             // x = user's consecutive messages
             int x = GeneralHandler.ConsMessages[message.Channel.Id];
@@ -76,9 +84,9 @@ namespace Kamtro_Bot.Managers
             }
             
             if(UserData[message.Author.Id].WeeklyScore > SCORE_NERF) {
-                score = Math.Max(0, 3 - x);
+                score = Math.Max(0, 3 - x);  // If the user has a high enough score, nerf the gain rate
             } else {
-                score = Math.Max(1, 5 - x);
+                score = Math.Max(1, 6 - x);  // give the user a score of 5 if their message comes after another users, else give one less point for each consecutive message down to 1 point per message
             }
 
             UserData[message.Author.Id].Score += score;
@@ -128,7 +136,7 @@ namespace Kamtro_Bot.Managers
         /// <param name="user">The user to add</param>
         /// <returns>True if the user needed to be added, false otherwise.</returns>
         /// -C
-        public static bool AddUserIfNotExists(SocketUser user) {
+        public static bool AddUserIfNotExists(SocketGuildUser user) {
             if(!UserData.ContainsKey(user.Id)) {
                 AddUser(user);
                 return true;

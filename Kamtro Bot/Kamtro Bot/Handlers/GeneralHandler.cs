@@ -49,12 +49,14 @@ namespace Kamtro_Bot.Handlers
         /// <returns></returns>
         public async Task OnMemberJoin(SocketGuildUser user) {
             // For cross ban.
+            if (CrossBan == null) return;
+
             if(CrossBan.ContainsKey(user.Id)) {
                 await BotUtils.AdminLog($"Cross-banned user {BotUtils.GetFullUsername(user)}. " + CrossBan[user.Id].GetInfoText());
                 AdminDataManager.AddBan(user, new BanDataNode(Program.Client.CurrentUser, $"[X-ban | {CrossBan[user.Id].GetServer()}] {CrossBan[user.Id].Reason}"));
                 await ServerData.Server.AddBanAsync(user);
 
-                 KLog.Info($"Cross-banned user {BotUtils.GetFullUsername(user)}");
+                KLog.Info($"Cross-banned user {BotUtils.GetFullUsername(user)}");
             }
         }
 
@@ -147,8 +149,11 @@ namespace Kamtro_Bot.Handlers
             SocketMessage sm = msg as SocketMessage;
             MessageDeleteEmbed mde;
 
-            if (sm == null) mde = new MessageDeleteEmbed(null, channel: channel as SocketTextChannel);
-            else mde = new MessageDeleteEmbed(sm);
+            if (sm == null) {
+                mde = new MessageDeleteEmbed(null, channel: channel as SocketTextChannel);
+            } else {
+                mde = new MessageDeleteEmbed(sm);
+            }
 
             await mde.Display(ServerData.AdminChannel);
         }

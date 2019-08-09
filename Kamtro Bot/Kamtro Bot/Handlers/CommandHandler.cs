@@ -107,9 +107,9 @@ namespace Kamtro_Bot.Handlers
                     }
                 }
 
-                SecurityManager.CheckMessage(message);
+                SecurityManager.CheckMessage(message);  // tba
+                await GeneralHandler.HandleMessage(message); // Evaluate for consecutive messages and autoban
                 UserDataManager.OnChannelMessage(message);  // evaluate the message for user score
-                await GeneralHandler.HandleMessage(message);
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
