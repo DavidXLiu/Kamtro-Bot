@@ -161,7 +161,7 @@ namespace Kamtro_Bot.Handlers
 
         #region Non-Handlers
         public static async Task HandleMessage(SocketUserMessage msg) {
-            if (msg.Channel is ISocketPrivateChannel) return;
+            if (msg.Channel is ISocketPrivateChannel || msg.Source != MessageSource.User) return;
 
             if(!LastUser.ContainsKey(msg.Channel.Id)) {
                 LastUser.Add(msg.Channel.Id, 0);
