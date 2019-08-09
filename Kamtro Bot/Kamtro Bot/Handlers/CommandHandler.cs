@@ -84,8 +84,11 @@ namespace Kamtro_Bot.Handlers
 
             // From here on, only valid commands will get past
             int argPos = 0;  // This is the position of the command character, it should usually be 0. -C
-            if(message.HasStringPrefix(Program.Settings.Prefix, ref argPos)) {
-                // if it's a command  -C
+            //////////////////////////////////////
+            /// Command Checks Here
+            //////////////////////////////////////
+            if (message.HasStringPrefix(Program.Settings.Prefix, ref argPos) && message.Channel.Id == Program.Settings.BotChannelID) {                
+                // if it's a command in the right channel  -C
                 SocketCommandContext context = new SocketCommandContext(_client, message);
                 IResult result = await _service.ExecuteAsync(context, argPos, _provider);
 
@@ -96,6 +99,8 @@ namespace Kamtro_Bot.Handlers
                 }
             } else {
                 // Check for other prefixless commands/features - Arcy
+
+                // Auto-delete commands used in other channel
 
                 // Check if the user is responding to an interface. -C
                 // If the user has an entry in the dict, and their entry isn't null. -C
