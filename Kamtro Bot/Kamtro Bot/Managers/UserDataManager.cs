@@ -70,7 +70,7 @@ namespace Kamtro_Bot.Managers
         // public Dictionary<ulong, UserInventoryNode> UserInventories;
         #region Event
         public static void OnChannelMessage(SocketUserMessage message) {
-            if ((message.Author as SocketGuildUser) == null) return;  // only count server messages
+            if ((message.Author as SocketGuildUser) == null || message.Channel.Id == Program.Settings.BotChannelID) return;  // only count server messages
 
             bool userAdded = AddUserIfNotExists(message.Author as SocketGuildUser);  // if the user does not have an entry, add it.
             // Add score
