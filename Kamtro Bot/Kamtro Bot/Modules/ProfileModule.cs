@@ -121,6 +121,24 @@ namespace Kamtro_Bot.Modules
 
                 // The parameter in the ToString call is for formatting. The x means hexidecimal format.
                 await ReplyAsync(embed: new BasicEmbed("Set Profile Color", $"({c.R}, {c.G}, {c.B})\n#{c.RawValue.ToString("x")}", "Your Profile Color has been set to", UserDataManager.GetUserData(BotUtils.GetGUser(Context)).GetColor()).GetEmbed());
+            } else if(args.Count() == 3) {
+                byte r, g, b;
+
+                bool succ = byte.TryParse(args[0], out r);
+                succ &= byte.TryParse(args[1], out g);
+                succ &= byte.TryParse(args[2], out b);
+
+                if(!succ) {
+                    await ReplyAsync(BotUtils.KamtroText("RGB values must not be less than 0, or larger than 255. They must also be valid numbers, made up of only digits 0-9, and must be seperated by ONLY a space (No commas!)"));
+                    return;
+                }
+
+                Color c = new Color(r, g, b);
+                UserDataManager.GetUserData(BotUtils.GetGUser(Context)).ProfileColor = c.RawValue;
+                UserDataManager.SaveUserData();
+                await ReplyAsync(embed: new BasicEmbed("Set Profile Color", $"({c.R}, {c.G}, {c.B})\n#{c.RawValue.ToString("x")}", "Your Profile Color has been set to", UserDataManager.GetUserData(BotUtils.GetGUser(Context)).GetColor()).GetEmbed());
+            } else {
+                await ReplyAsync(BotUtils.KamtroText("You need to specify all three RGB values, and they must be seperated by a space only. Ex: !setprofilecolor 123, 222, 14 (This is NOT ok); !setprofilecolor 123 222 14 (This is ok)"));
             }
         }
 
