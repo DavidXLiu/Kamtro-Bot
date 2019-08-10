@@ -28,7 +28,7 @@ namespace Kamtro_Bot.Nodes
 
         public UserInventoryNode Inventory;
 
-        public UserDataNode(string username, int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true) {
+        public UserDataNode(string username, int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true, string quote = "") {
             Username = username;
 
             Score = score;
@@ -40,7 +40,7 @@ namespace Kamtro_Bot.Nodes
 
             // TBA
             ProfileColor = BotUtils.Kamtro.RawValue;
-            Quote = "Kamtro User";
+            Quote = quote;
         }
 
         public Color GetColor() {

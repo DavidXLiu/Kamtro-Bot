@@ -15,7 +15,6 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
     /// <remarks>
     /// TODO:
     /// 
-    /// - Add profile colours
     /// - Add Titles
     /// - Add Kamtrokens
     /// - Add Inventory
@@ -46,7 +45,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             eb.AddField("Kamtrokens", "**Coming Soon!**", true);
             eb.AddField("Titles Obtained", "**Coming Soon!**", true);
 
-            eb.WithFooter(Data.Quote);
+            if(!string.IsNullOrWhiteSpace(Data.Quote)) eb.WithFooter(Data.Quote);
 
             return eb.Build();
         }

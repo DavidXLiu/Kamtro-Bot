@@ -78,8 +78,8 @@ namespace Kamtro_Bot.Modules
             }
         }
 
-        [Command("setprofilecolor")]
-        [Alias("setprofilecolour", "spc", "setcolor", "setcolour")]
+        [Command("setcolor")]
+        [Alias("setprofilecolour", "spc", "setprofilecolor", "setcolour")]
         public async Task SetProfileColorAsync([Remainder] string col = "") {
             if(col.Length < 1) {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify a color! Try !setprofilecolor #ffccaa or !setprofilecolor 234 44 120"));
@@ -139,6 +139,19 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(embed: new BasicEmbed("Set Profile Color", $"({c.R}, {c.G}, {c.B})\n#{c.RawValue.ToString("x")}", "Your Profile Color has been set to", UserDataManager.GetUserData(BotUtils.GetGUser(Context)).GetColor()).GetEmbed());
             } else {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify all three RGB values, and they must be seperated by a space only. Ex: !setprofilecolor 123, 222, 14 (This is NOT ok); !setprofilecolor 123 222 14 (This is ok)"));
+            }
+        }
+
+        [Command("setquote")]
+        [Alias("setprofilequote", "sq")]
+        public async Task SetProfileQuoteAsync([Remainder] string quote = "") {
+            UserDataManager.GetUserData(BotUtils.GetGUser(Context)).Quote = quote;
+            UserDataManager.SaveUserData();
+
+            if(string.IsNullOrWhiteSpace(quote)) {
+                await ReplyAsync(BotUtils.KamtroText("Quote has been removed."));
+            } else {
+                await ReplyAsync(BotUtils.KamtroText($"Quote has been set to \"{quote}\"."));
             }
         }
 
