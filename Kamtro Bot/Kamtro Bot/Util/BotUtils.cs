@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 using Discord.WebSocket;
 using Discord;
+using Discord.Commands;
 
 namespace Kamtro_Bot
 {
@@ -368,6 +369,10 @@ namespace Kamtro_Bot
                 return false; // otherwise if it fails, say so.
             }
         }
+
+        public static SocketGuildUser GetGUser(SocketCommandContext ctx) {
+            return ctx.Guild.GetUser(ctx.User.Id);
+        }
     }
 
     /// <summary>
@@ -376,8 +381,12 @@ namespace Kamtro_Bot
     public static class GeneralExtensions
     {
         public static DateTime LastSunday(this DateTime dt) {
-            int diff = (7 + (dt.DayOfWeek - DayOfWeek.Sunday)) % 7;
-            return dt.AddDays(-1 + diff).Date;
+
+
+            int diff = dt.DayOfWeek - DayOfWeek.Sunday;
+
+
+            return dt.AddDays(-1*diff).Date;
         }
     }
 }

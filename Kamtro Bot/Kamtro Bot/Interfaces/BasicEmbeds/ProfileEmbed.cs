@@ -37,14 +37,14 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             eb.WithColor(Data.ProfileColor);
             eb.WithThumbnailUrl(User.GetAvatarUrl());
 
-            eb.AddField("Title:", "**Coming Soon!**");
+            eb.AddField("Title", "**Coming Soon!**");
 
             // eb.AddField("Weekly Activity Rating:", Data.WeeklyScore.ToString()); // TBA eventually probably  -C
-            eb.AddField("Total Activity Rating:", Data.Score.ToString());
-            eb.AddField("Reputation Score:", Data.Reputation.ToString(), true);
+            eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
+            eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
 
-            eb.AddField("Kamtrokens:", "**Coming Soon!**", true);
-            eb.AddField("Titles Obtained:", "**Coming Soon!**", true);
+            eb.AddField("Kamtrokens", "**Coming Soon!**", true);
+            eb.AddField("Titles Obtained", "**Coming Soon!**", true);
 
             eb.WithFooter(Data.Quote);
 
