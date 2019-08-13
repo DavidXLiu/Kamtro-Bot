@@ -149,6 +149,7 @@
   <ItemGroup>
     <Compile Include="Handlers\GeneralHandler.cs" />
     <Compile Include="Handlers\ReactionHandler.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\AddAdminEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Managers\HelpManager.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\ConfigModule.cs" />
     <Compile Include="Modules\FunModule.cs" />
     <Compile Include="Modules\HelpModule.cs" />
     <Compile Include="Modules\MatureModule.cs" />

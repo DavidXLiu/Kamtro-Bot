@@ -161,7 +161,7 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(BotUtils.KamtroText("You can't give a repuation point to yourself!"));
             }
 
-            UserDataManager.AddRep(Context.User, user);
+            UserDataManager.AddRep(BotUtils.GetGUser(Context), Context.Guild.GetUser(user.Id));
 
             await ReplyAsync(BotUtils.KamtroText($"{Context.User.Username} has given a reputation point to {user.Username}"));
         }

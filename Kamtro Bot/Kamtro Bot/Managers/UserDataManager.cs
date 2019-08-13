@@ -110,13 +110,18 @@ namespace Kamtro_Bot.Managers
         /// <param name="from">The user giving the reputation point</param>
         /// <param name="to">The user recieving the reputation point</param>
         /// <returns>True if the donor can give a rep point, false otherwise.</returns>
-        public static bool AddRep(SocketUser from, SocketUser to) {
-            if(UserData[from.Id].ReputationToGive <= 0) {
+        public static bool AddRep(SocketGuildUser from, SocketGuildUser to) {
+            AddUserIfNotExists(from);
+            AddUserIfNotExists(to);
+
+            if (UserData[from.Id].ReputationToGive <= 0) {
                 return false;
             }
 
             UserData[from.Id].ReputationToGive--;
             UserData[to.Id].Reputation++;
+
+            SaveUserData();
 
             return true;
         }
