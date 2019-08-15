@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Interfaces.ActionEmbeds
@@ -29,6 +30,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private List<SocketRole> RoleOptions;
         private List<string> Numbers;
         private string EmbedMessage;
+        private IMessageChannel Channel;
 
         public RoleSelectionEmbed(List<SocketRole> roles, Func<SocketRole, Task> action, SocketGuildUser caller, string message = "There were too many roles with that name") {
             Numbers = new List<string>();
@@ -78,7 +80,16 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 if (chosenIndex >= 0 && chosenIndex <= 10) {
                     await selectedAction(RoleOptions[chosenIndex]); // Call the method passed in.
                 }
+
+                EventQueueManager.RemoveEvent(this); // Remove it from the queue
+                if (Channel == null) return;
+                await Channel.DeleteMessageAsync(Message);
             }
+        }
+
+        public override async Task Display(IMessageChannel channel = null) {
+            Channel = channel;
+            await base.Display(channel);
         }
     }
 }
