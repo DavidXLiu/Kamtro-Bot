@@ -28,7 +28,12 @@ namespace Kamtro_Bot
 
         public static readonly Color Red = new Color(247, 47, 60); 
         public static readonly Color Orange = new Color(250, 148, 80);
+        public static readonly Color Yellow = new Color(245, 245, 66);
+        public static readonly Color Green = new Color(97, 237, 116);
+        public static readonly Color Blue = new Color(97, 193, 237);
+        public static readonly Color Purple = new Color(146, 97, 237);
         public static readonly Color White = new Color(255, 255, 255);
+        public static readonly Color Grey = new Color(185, 200, 203);
         public static readonly Color Kamtro = new Color(137, 232, 249);
 
         public static DateTime LastWeeklyReset = DateTime.Now.LastSunday();

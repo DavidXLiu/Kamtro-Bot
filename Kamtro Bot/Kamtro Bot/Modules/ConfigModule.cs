@@ -117,6 +117,59 @@ namespace Kamtro_Bot.Modules
                 await rse.Display(Context.Channel);
             }
         }
+        
+        [Command("permlevel")]
+        [Alias("pl")]
+        public async Task PermCheckAsync([Remainder] string user = "") {
+            if(string.IsNullOrWhiteSpace(user)) {
+                int perm = 0;
+                SocketGuildUser guser = BotUtils.GetGUser(Context);
+
+                if(ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.USER)) {
+                    perm++;
+
+                    if (ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.TRUSTED)) {
+                        perm++;
+
+                        if (ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.MODERATOR)) {
+                            perm++;
+
+                            if (ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.ADMIN)) {
+                                perm++;
+                            }
+                        }
+                    }
+                }
+
+                BasicEmbed be;
+
+                switch(perm) {
+                    case 1:
+                        be = new BasicEmbed("Permission Level Check", "User", "Permission Level:", BotUtils.Kamtro);
+                        break;
+
+                    case 2:
+                        be = new BasicEmbed("Permission Level Check", "Trusted", "Permission Level:", BotUtils.Green);
+                        break;
+
+                    case 3:
+                        be = new BasicEmbed("Permission Level Check", "Moderator", "Permission Level:", BotUtils.Blue);
+                        break;
+
+                    case 4:
+                        be = new BasicEmbed("Permission Level Check", "Admin", "Permission Level:", BotUtils.Purple);
+                        break;
+
+                    default:
+                        be = new BasicEmbed("Permission Level Check", "Muted", "Permission Level:", BotUtils.Grey);
+                        break;
+                }
+
+                await be.Display(Context.Channel);
+
+                return;
+            }
+        }
         #endregion
 
         #region Moderator
