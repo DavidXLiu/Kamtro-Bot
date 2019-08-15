@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Interfaces.ActionEmbeds;
+using Kamtro_Bot.Interfaces.MessageEmbeds;
 using Kamtro_Bot.Util;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,9 @@ namespace Kamtro_Bot.Modules
             } else if(roles.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
                 return;
+            } else {
+                RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, AddModifyRole, BotUtils.GetGUser(Context));
+                await rse.Display(Context.Channel);
             }
         }
         #endregion
@@ -82,6 +86,11 @@ namespace Kamtro_Bot.Modules
         #endregion
 
         #region non-commands
+        private async Task AddModifyRole(SocketRole role) {
+            RoleAdditionEmbed rae = new RoleAdditionEmbed(Context, role);
+            await rae.Display();
+        }
+
         private async Task AddAdmin(SocketGuildUser user) {
             AddAdminEmbed admin = new AddAdminEmbed(user);
             await admin.Display();

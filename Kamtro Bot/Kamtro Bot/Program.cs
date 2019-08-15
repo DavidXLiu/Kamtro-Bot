@@ -119,6 +119,11 @@ namespace Kamtro_Bot
             }
         }
 
+        public static void SaveSettings() {
+            BotUtils.WriteToJson(Settings, DataFileNames.GeneralConfigFile);
+            KLog.Info("Settings Saved.");
+        }
+
         private static void SetupFiles() {
             // Check for the appropriate directories.
             foreach(string dir in DataFileNames.Folders) {  // Check through all the necessary directories

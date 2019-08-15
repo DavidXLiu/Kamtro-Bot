@@ -126,6 +126,10 @@ namespace Kamtro_Bot.Interfaces
             EventQueueManager.AddEvent(this);  // Add the embed to the event queue with the correct ID
         }
 
+        /// <summary>
+        /// Sets all context variables such as CommandCaller
+        /// </summary>
+        /// <param name="ctx">The SocketCommandContext</param>
         protected void SetCtx(SocketCommandContext ctx) {
             Context = ctx;
             CommandCaller = ctx.User as SocketGuildUser;

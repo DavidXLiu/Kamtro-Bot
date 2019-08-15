@@ -164,6 +164,7 @@
     <Compile Include="Interfaces\MessageEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\BanEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\MessageTestEmbed.cs" />
+    <Compile Include="Interfaces\MessageEmbeds\RoleAdditionEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeLogEditEmbed.cs" />
     <Compile Include="Managers\AdminDataManager.cs" />
