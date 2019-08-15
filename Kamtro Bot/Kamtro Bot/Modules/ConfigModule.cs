@@ -49,8 +49,31 @@ namespace Kamtro_Bot.Modules
 
         [Command("addmodifyablerole")]
         [Alias("amfr")]
-        public async Task AddModifyRoleAsync() {
+        public async Task AddModifyRoleAsync([Remainder] string roleName) {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+            
+            if(string.IsNullOrWhiteSpace(roleName)) {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a role name!"));
+            }
 
+            ulong id;
+
+            if(ulong.TryParse(roleName, out id) && BotUtils.GetRole(id) != null) {
+                // do stuff
+                return;
+            }
+
+            // if it's not a recognized ID, treat it as a name
+
+            List<SocketRole> roles = BotUtils.GetRoles(roleName);
+
+            if(roles.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I couldn't find any roles that matched the name you told me!"));
+                return;
+            } else if(roles.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
+                return;
+            }
         }
         #endregion
 

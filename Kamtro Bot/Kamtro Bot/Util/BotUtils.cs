@@ -375,7 +375,28 @@ namespace Kamtro_Bot
             return ctx.Guild.GetUser(ctx.User.Id);
         }
 
-        public static SocketRole GetRole() {
+        /// <summary>
+        /// Gets a list of roles whose names contain the specified text
+        /// </summary>
+        /// <param name="name">The name of the role</param>
+        /// <returns>The list of roles</returns>
+        public static List<SocketRole> GetRoles(string name) {
+            List<SocketRole> tmp = new List<SocketRole>();
+
+            foreach(SocketRole role in ServerData.Server.Roles) {
+                tmp.Add(role);
+            }
+
+            return tmp;
+        }
+
+        public static SocketRole GetRole(ulong id) {
+            foreach (SocketRole role in ServerData.Server.Roles) {
+                if(role.Id == id) {
+                    return role;
+                }
+            }
+
             return null;
         }
 

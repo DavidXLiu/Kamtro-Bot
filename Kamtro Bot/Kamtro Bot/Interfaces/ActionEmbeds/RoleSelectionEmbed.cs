@@ -37,6 +37,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             RoleOptions = roles;
             EmbedMessage = message;
             CommandCaller = caller;
+            selectedAction = action;
 
             List<MenuOptionNode> nodes = new List<MenuOptionNode>();
 
