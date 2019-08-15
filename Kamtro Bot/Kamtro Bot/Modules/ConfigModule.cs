@@ -36,16 +36,16 @@ namespace Kamtro_Bot.Modules
                 UserSelectionEmbed use = new UserSelectionEmbed(users, AddAdmin, Context.Guild.GetUser(Context.User.Id));
                 await use.Display(Context.Channel);
             }
+
+            Program.ReloadConfig();
         }
 
         [Command("reload")]
         public async Task ReloadConfigAsync() {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
 
-            Program.LoadSettings();
-            ServerData.SetupServerData(Program.Settings);
-
-            await ReplyAsync(BotUtils.KamtroText("Serttings Reloaded."));
+            Program.ReloadConfig();
+            await ReplyAsync(BotUtils.KamtroText("Settings Reloaded."));
         }
 
         [Command("addmodifyablerole")]
@@ -122,52 +122,22 @@ namespace Kamtro_Bot.Modules
         [Alias("pl")]
         public async Task PermCheckAsync([Remainder] string user = "") {
             if(string.IsNullOrWhiteSpace(user)) {
-                int perm = 0;
-                SocketGuildUser guser = BotUtils.GetGUser(Context);
+                await PermCheck(BotUtils.GetGUser(Context));
+            } else {
+                List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
-                if(ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.USER)) {
-                    perm++;
-
-                    if (ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.TRUSTED)) {
-                        perm++;
-
-                        if (ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.MODERATOR)) {
-                            perm++;
-
-                            if (ServerData.HasPermissionLevel(guser, ServerData.PermissionLevel.ADMIN)) {
-                                perm++;
-                            }
-                        }
-                    }
+                if (users.Count == 0) {
+                    await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                    return;
+                } else if (users.Count > 10) {
+                    await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
+                    return;
+                } else if (users.Count == 1) {
+                    await PermCheck(users[0]);
+                } else {
+                    UserSelectionEmbed use = new UserSelectionEmbed(users, PermCheck, Context.Guild.GetUser(Context.User.Id));
+                    await use.Display(Context.Channel);
                 }
-
-                BasicEmbed be;
-
-                switch(perm) {
-                    case 1:
-                        be = new BasicEmbed("Permission Level Check", "User", "Permission Level:", BotUtils.Kamtro);
-                        break;
-
-                    case 2:
-                        be = new BasicEmbed("Permission Level Check", "Trusted", "Permission Level:", BotUtils.Green);
-                        break;
-
-                    case 3:
-                        be = new BasicEmbed("Permission Level Check", "Moderator", "Permission Level:", BotUtils.Blue);
-                        break;
-
-                    case 4:
-                        be = new BasicEmbed("Permission Level Check", "Admin", "Permission Level:", BotUtils.Purple);
-                        break;
-
-                    default:
-                        be = new BasicEmbed("Permission Level Check", "Muted", "Permission Level:", BotUtils.Grey);
-                        break;
-                }
-
-                await be.Display(Context.Channel);
-
-                return;
             }
         }
         #endregion
@@ -190,6 +160,52 @@ namespace Kamtro_Bot.Modules
         private async Task AddAdmin(SocketGuildUser user) {
             AddAdminEmbed admin = new AddAdminEmbed(user);
             await admin.Display();
+        }
+        
+        private async Task PermCheck(SocketGuildUser user) {
+            int perm = 0;
+
+            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.USER)) {
+                perm++;
+
+                if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.TRUSTED)) {
+                    perm++;
+
+                    if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR)) {
+                        perm++;
+
+                        if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.ADMIN)) {
+                            perm++;
+                        }
+                    }
+                }
+            }
+
+            BasicEmbed be;
+
+            switch (perm) {
+                case 1:
+                    be = new BasicEmbed($"Permission Level For User {BotUtils.GetFullUsername(user)}", "User", "Permission Level:", BotUtils.Kamtro, user.GetAvatarUrl());
+                    break;
+
+                case 2:
+                    be = new BasicEmbed($"Permission Level For User {BotUtils.GetFullUsername(user)}", "Trusted", "Permission Level:", BotUtils.Green, user.GetAvatarUrl());
+                    break;
+
+                case 3:
+                    be = new BasicEmbed($"Permission Level For User {BotUtils.GetFullUsername(user)}", "Moderator", "Permission Level:", BotUtils.Blue, user.GetAvatarUrl());
+                    break;
+
+                case 4:
+                    be = new BasicEmbed($"Permission Level For User {BotUtils.GetFullUsername(user)}", "Admin", "Permission Level:", BotUtils.Purple, user.GetAvatarUrl());
+                    break;
+
+                default:
+                    be = new BasicEmbed($"Permission Level For User {BotUtils.GetFullUsername(user)}", "Muted", "Permission Level:", BotUtils.Grey, user.GetAvatarUrl());
+                    break;
+            }
+
+            await be.Display(Context.Channel);
         }
         #endregion
     }

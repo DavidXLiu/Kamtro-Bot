@@ -42,6 +42,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Added user {BotUtils.GetFullUsername(User)} as an admin."));
                     KLog.Important($"User {BotUtils.GetFullUsername(User)} added as an admin");
+
+                    EventQueueManager.RemoveEvent(this);
+                    await Message.DeleteAsync();
                     break;
 
                 case ReactionHandler.DECLINE_STR:

@@ -119,6 +119,11 @@ namespace Kamtro_Bot
             }
         }
 
+        public static void ReloadConfig() {
+            LoadSettings();
+            ServerData.SetupServerData(Settings);
+            KLog.Info("Settings Reloaded");
+        }
         public static void SaveSettings() {
             BotUtils.WriteToJson(Settings, DataFileNames.GeneralConfigFile);
             KLog.Info("Settings Saved.");

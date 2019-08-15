@@ -39,6 +39,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     } else {
                         await AddRole();
                     }
+
+                    Program.ReloadConfig();
+
+                    EventQueueManager.RemoveEvent(this);
+                    await Message.DeleteAsync();
                     break;
 
                 case ReactionHandler.DECLINE_STR:

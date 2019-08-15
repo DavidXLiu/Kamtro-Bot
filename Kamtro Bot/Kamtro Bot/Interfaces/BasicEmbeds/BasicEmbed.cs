@@ -19,12 +19,14 @@ namespace Kamtro_Bot.Interfaces
         public string Text;
         public string FieldName;
         public Color Col;
+        public string Url;
 
-        public BasicEmbed(string title, string text, string fieldName, Color col) {
+        public BasicEmbed(string title, string text, string fieldName, Color col, string url = "") {
             Title = title;
             Text = text;
             FieldName = fieldName;
             Col = col;
+            Url = url;
         }
 
         public override Embed GetEmbed() {
@@ -33,6 +35,8 @@ namespace Kamtro_Bot.Interfaces
             builder.WithTitle(Title);
             builder.WithColor(Col);
             builder.AddField(FieldName, Text);
+
+            if (!string.IsNullOrWhiteSpace(Url)) builder.WithThumbnailUrl(Url);
 
             return builder.Build();
         }
