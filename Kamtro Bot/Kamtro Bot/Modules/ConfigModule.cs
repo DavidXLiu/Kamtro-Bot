@@ -49,8 +49,8 @@ namespace Kamtro_Bot.Modules
         }
 
         [Command("addmodifyablerole")]
-        [Alias("amfr")]
-        public async Task AddModifyRoleAsync([Remainder] string roleName) {
+        [Alias("amfr", "addmfr")]
+        public async Task AddModifyRoleAsync([Remainder] string roleName = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
             
             if(string.IsNullOrWhiteSpace(roleName)) {
@@ -60,7 +60,7 @@ namespace Kamtro_Bot.Modules
             ulong id;
 
             if(ulong.TryParse(roleName, out id) && BotUtils.GetRole(id) != null) {
-                // do stuff
+                await AddModifyRole(BotUtils.GetRole(id));
                 return;
             }
 
@@ -79,6 +79,44 @@ namespace Kamtro_Bot.Modules
                 await rse.Display(Context.Channel);
             }
         }
+       
+        [Command("removemodifyablerole")]
+        [Alias("rmfr", "removemfr")]
+        public async Task RemModifyRoleAsync([Remainder] string roleName = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            if (string.IsNullOrWhiteSpace(roleName)) {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a role name!"));
+            }
+
+            ulong id;
+
+            if (ulong.TryParse(roleName, out id) && BotUtils.GetRole(id) != null) {
+                await AddModifyRole(BotUtils.GetRole(id));
+                return;
+            }
+
+            // if it's not a recognized ID, treat it as a name
+
+            List<SocketRole> roles = new List<SocketRole>();
+
+            foreach(SocketRole r in BotUtils.GetRoles(roleName)) {
+                if(Program.Settings.ModifiableRoles.Contains(r.Id)) {
+                    roles.Add(r);
+                }
+            }
+
+            if (roles.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I couldn't find any roles on the list that matched the name you told me!"));
+                return;
+            } else if (roles.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
+                return;
+            } else {
+                RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, RemModifyRole, BotUtils.GetGUser(Context));
+                await rse.Display(Context.Channel);
+            }
+        }
         #endregion
 
         #region Moderator
@@ -88,6 +126,11 @@ namespace Kamtro_Bot.Modules
         #region non-commands
         private async Task AddModifyRole(SocketRole role) {
             RoleAdditionEmbed rae = new RoleAdditionEmbed(Context, role);
+            await rae.Display();
+        }
+
+        private async Task RemModifyRole(SocketRole role) {
+            RoleAdditionEmbed rae = new RoleAdditionEmbed(Context, role, true);
             await rae.Display();
         }
 

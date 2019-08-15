@@ -19,11 +19,13 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public string Description;
 
         private SocketRole Role;
+        private bool Remove;
 
-        public RoleAdditionEmbed(SocketCommandContext ctx, SocketRole role) {
+        public RoleAdditionEmbed(SocketCommandContext ctx, SocketRole role, bool remove = false) {
             SetCtx(ctx);
 
             Role = role;
+            Remove = remove;
 
             AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE);
             RegisterMenuFields();
@@ -32,15 +34,19 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public override async Task ButtonAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.CHECK_STR:
-                    Program.Settings.ModifiableRoles.Add(Role.Id);
-                    Program.Settings.RoleDescriptions.Add(Role.Id, new RoleInfoNode(Role.Name, Description, Role.Color.ToString()));
-                    Program.SaveSettings();
-
-                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Role {Role.Name} has been added to the list of modifyable roles."));
+                    if(Remove) {
+                        await RemRole();
+                    } else {
+                        await AddRole();
+                    }
                     break;
 
                 case ReactionHandler.DECLINE_STR:
-                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Role addition has been cancelled."));
+                    if (Remove) {
+                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Role deletion has been cancelled."));
+                    } else {
+                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Role addition has been cancelled."));
+                    }
 
                     EventQueueManager.RemoveMessageEvent(this);
                     await Context.Channel.DeleteMessageAsync(Message);
@@ -51,7 +57,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public override Embed GetEmbed() {
             EmbedBuilder eb = new EmbedBuilder();
 
-            eb.WithTitle("Add Modifiable Role");
+            eb.WithTitle($"{(Remove ? "Remove":"Add")} Modifiable Role");
             eb.WithColor(BotUtils.Orange);
 
             eb.AddField("Role", Role.Mention);
@@ -60,6 +66,22 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             AddMenu(eb);
 
             return eb.Build();
+        }
+
+        private async Task AddRole() {
+            Program.Settings.ModifiableRoles.Add(Role.Id);
+            Program.Settings.RoleDescriptions.Add(Role.Id, new RoleInfoNode(Role.Name, Description, Role.Color.ToString()));
+            Program.SaveSettings();
+
+            await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Role {Role.Name} has been added to the list of modifiable roles."));
+        }
+
+        private async Task RemRole() {
+            Program.Settings.ModifiableRoles.Remove(Role.Id);
+            Program.Settings.RoleDescriptions.Remove(Role.Id);
+            Program.SaveSettings();
+
+            await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Role {Role.Name} has been removed from the list of modifiable roles."));
         }
     }
 }
