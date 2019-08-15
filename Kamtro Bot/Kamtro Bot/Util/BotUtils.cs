@@ -45,6 +45,7 @@ namespace Kamtro_Bot
 
         public static string BadDMResponse = KamtroText("I tried to send the user a message, but they had me blocked and/or disabled direct messages from server members, so I couldn't message them!");
 
+        #region Text Utils
         /// <summary>
         /// Formats the message so the text is blue (AKA Kamtro speak)
         /// -C
@@ -118,7 +119,7 @@ namespace Kamtro_Bot
             string ext = filename.Substring(filename.LastIndexOf('.') + 1);
             return ext;
         }
-
+        #endregion
         #region Threads
         /// <summary>
         /// This method is to optimize saving the user data files.
@@ -233,7 +234,7 @@ namespace Kamtro_Bot
             Thread.Sleep(new TimeSpan(0, 20, 0));
         }
         #endregion
-
+        #region Server Utils
         /// <summary>
         /// Finds the <see cref="SocketGuildUser"/> in the given message and returns it in the list. If a user cannot be distinguished by the given message, a list of users are put out containing the possible users.
         /// <para></para>
@@ -373,6 +374,12 @@ namespace Kamtro_Bot
         public static SocketGuildUser GetGUser(SocketCommandContext ctx) {
             return ctx.Guild.GetUser(ctx.User.Id);
         }
+
+        public static SocketRole GetRole() {
+            return null;
+        }
+
+        #endregion
     }
 
     /// <summary>

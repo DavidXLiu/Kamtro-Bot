@@ -151,6 +151,7 @@
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\AddAdminEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\RoleSelectionEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\MessageDeleteEmbed.cs" />

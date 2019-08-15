@@ -108,6 +108,17 @@ namespace Kamtro_Bot
             KLog.Important("Ready!");
         }
 
+        public static void LoadSettings() {
+            // We need a special case for the config
+            if (!File.Exists(DataFileNames.GeneralConfigFile)) {  // If there isn't a config
+                File.CreateText(DataFileNames.GeneralConfigFile).Close();
+                Settings = new BotSettings("!");  // Create a default one
+                Settings.SaveJson();  // Save it
+            } else {
+                Settings = JsonConvert.DeserializeObject<BotSettings>(FileManager.ReadFullFile(DataFileNames.GeneralConfigFile));  // Load from the file
+            }
+        }
+
         private static void SetupFiles() {
             // Check for the appropriate directories.
             foreach(string dir in DataFileNames.Folders) {  // Check through all the necessary directories
@@ -116,14 +127,7 @@ namespace Kamtro_Bot
                 } 
             }
 
-            // We need a special case for the config
-            if(!File.Exists(DataFileNames.GeneralConfigFile)) {  // If there isn't a config
-                File.CreateText(DataFileNames.GeneralConfigFile).Close();
-                Settings = new BotSettings("!");  // Create a default one
-                Settings.SaveJson();  // Save it
-            } else {
-                Settings = JsonConvert.DeserializeObject<BotSettings>(FileManager.ReadFullFile(DataFileNames.GeneralConfigFile));  // Load from the file
-            }
+            LoadSettings();
 
             // Special case for Excel files.
             // Only used for admin stuff atm

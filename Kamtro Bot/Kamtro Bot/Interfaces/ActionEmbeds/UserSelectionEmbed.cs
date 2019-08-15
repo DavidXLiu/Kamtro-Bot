@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Interfaces
@@ -35,7 +36,7 @@ namespace Kamtro_Bot.Interfaces
         private List<string> Numbers;
 
         private Color EmbedColor = Color.Blue;
-
+        private IMessageChannel Channel = null;
         private bool hasContext;
         private string EmbedMessage;
 
@@ -124,9 +125,16 @@ namespace Kamtro_Bot.Interfaces
                         await selectedAction(su); // Call the method passed in.
                     }
 
-                    // EventQueueManager.RemoveEvent(this, Context.User.Id); // Remove it from the queue
+                    EventQueueManager.RemoveEvent(this); // Remove it from the queue
+                    if (Channel == null) return;
+                    await Channel.DeleteMessageAsync(Message);
                 }
             }
+        }
+
+        public override async Task Display(IMessageChannel channel = null) {
+            Channel = channel;
+            await base.Display(channel);
         }
 
         public void SetColor(uint color) {

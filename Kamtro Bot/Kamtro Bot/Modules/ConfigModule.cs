@@ -36,9 +36,26 @@ namespace Kamtro_Bot.Modules
                 await use.Display(Context.Channel);
             }
         }
+
+        [Command("reload")]
+        public async Task ReloadConfigAsync() {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            Program.LoadSettings();
+            ServerData.SetupServerData(Program.Settings);
+
+            await ReplyAsync(BotUtils.KamtroText("Serttings Reloaded."));
+        }
+
+        [Command("addmodifyablerole")]
+        [Alias("amfr")]
+        public async Task AddModifyRoleAsync() {
+
+        }
         #endregion
 
         #region Moderator
+
         #endregion
 
         #region non-commands
