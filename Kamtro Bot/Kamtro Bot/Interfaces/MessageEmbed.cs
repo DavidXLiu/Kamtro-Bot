@@ -162,7 +162,7 @@ namespace Kamtro_Bot.Interfaces
 
             if(arrows) {
                 // if there is more than one field, add up and down buttons
-                AddMenuOptions(ReactionHandler.DOWN, ReactionHandler.UP);
+                AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN);
             }
 
             PageCount = InputFields.Values.Count(); // set the number of pages

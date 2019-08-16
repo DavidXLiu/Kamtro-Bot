@@ -106,6 +106,8 @@ namespace Kamtro_Bot.Handlers
                     if (reaction.Emote.ToString() == DONE_EM.ToString()) {
                         // The user has indicated that they no longer need the Interface,
                         // So remove it from the dict
+                        await action.EventAction.Message.ModifyAsync(x => x.Content = BotUtils.KamtroText("This embed is no longer in use.")); // Notify the user that the embed is disabled
+                        await action.EventAction.Message.ModifyAsync(x => x.Embed = null); // Remove embed
                         awaitingActions.Remove(action);
                         return;  // Also exit the method
                     }

@@ -57,7 +57,6 @@ namespace Kamtro_Bot
             Console.WriteLine("║       By:      ║");
             Console.WriteLine("║      Arcy      ║");
             Console.WriteLine("║     Carbon     ║");
-            Console.WriteLine("║     Lumina     ║");
             Console.WriteLine("╚════════════════╝");
             Console.WriteLine("\n------------------\n");
 

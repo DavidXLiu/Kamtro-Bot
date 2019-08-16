@@ -131,7 +131,9 @@ namespace Kamtro_Bot.Managers
         /// </summary>
         /// <param name="user">The user to test</param>
         /// <returns>True if the user can give rep, false otherwise</returns>
-        public static bool CanAddRep(SocketUser user) {
+        public static bool CanAddRep(SocketGuildUser user) {
+            AddUserIfNotExists(user);
+
             return UserData[user.Id].ReputationToGive > 0;
         }
 

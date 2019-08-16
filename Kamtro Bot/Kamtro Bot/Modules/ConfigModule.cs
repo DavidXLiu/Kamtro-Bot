@@ -159,7 +159,7 @@ namespace Kamtro_Bot.Modules
 
         private async Task AddAdmin(SocketGuildUser user) {
             AddAdminEmbed admin = new AddAdminEmbed(user);
-            await admin.Display();
+            await admin.Display(Context.Channel);
         }
         
         private async Task PermCheck(SocketGuildUser user) {

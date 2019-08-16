@@ -31,6 +31,22 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             RegisterMenuFields();
         }
 
+        public override async Task PerformAction(SocketReaction action)
+        {
+            switch (action.Emote.ToString())
+            {
+                case ReactionHandler.DECLINE_STR:
+                    EventQueueManager.RemoveMessageEvent(this);
+                    await Message.DeleteAsync();
+                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"The strike on {BotUtils.GetFullUsername(Target)} has been cancelled."));
+                    break;
+
+                default:
+                    await ButtonAction(action);  // if none of the predefined actions were used, it must be a custom action.
+                    break;
+            }
+        }
+
         public override async Task ButtonAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.CHECK_STR:
@@ -46,10 +62,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         break;
                     }
 
-                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Added strike for {BotUtils.GetFullUsername(Target)}, they now have {strikes} strike{((strikes == 1) ? "":"s")}"));
+                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Added strike for {BotUtils.GetFullUsername(Target)}. They now have {strikes} strike{((strikes == 1) ? "":"s")}."));
 
                     if(notifyUser) {
-                        bool sent = await BotUtils.DMUserAsync(Target, new BanNotifyEmbed(str.Reason).GetEmbed());
+                        bool sent = await BotUtils.DMUserAsync(Target, new StrikeNotifyEmbed(str.Reason, strikes).GetEmbed());
 
                         if (!sent) await Context.Channel.SendMessageAsync(BotUtils.BadDMResponse);
                     }

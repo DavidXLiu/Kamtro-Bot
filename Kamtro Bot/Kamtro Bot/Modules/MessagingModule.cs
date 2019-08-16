@@ -127,7 +127,7 @@ namespace Kamtro_Bot.Modules
         [Name("MessageRelay")]
         [Summary("Sends a message to the specified channel.")]
         /// Arcy
-        public async Task MessageRelayAsync([Remainder]string message)
+        public async Task MessageRelayAsync([Remainder]string message = "")
         {
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
@@ -137,10 +137,12 @@ namespace Kamtro_Bot.Modules
                 // Check if in relay users collection
                 if (ServerData.RelayUsers.Contains(user))
                 {
+                    await ReplyAsync(BotUtils.KamtroText("You will no longer receive direct messages sent to Kamtro bot."));
                     ServerData.RelayUsers.Remove(user);
                 }
                 else
                 {
+                    await ReplyAsync(BotUtils.KamtroText("You will receive direct messages sent to Kamtro bot."));
                     ServerData.RelayUsers.Add(user);
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,8 +38,13 @@ namespace Kamtro_Bot.Modules
             string[] s = args.Split('d');
             int num, sides;
 
-            if (!int.TryParse(s[0], out num) || !int.TryParse(s[1], out sides)) {
-                await ReplyAsync(BotUtils.KamtroText("Invalid Arguments. Make sure you specify parameters as <num>d<sides>"));
+            if (s.Length != 2 || !int.TryParse(s[0], out num) || !int.TryParse(s[1], out sides)) {
+                BigInteger bigNum, bigSides;
+                // Exceeds maximum int value
+                if (BigInteger.TryParse(s[0], out bigNum) || BigInteger.TryParse(s[0], out bigSides))
+                    await ReplyAsync(BotUtils.KamtroText("That number is waaaaay too big. Please try a smaller number!"));
+                else
+                    await ReplyAsync(BotUtils.KamtroText("Invalid Arguments. Make sure you specify parameters as <num>d<sides>"));
                 return;
             }
 
@@ -57,7 +63,7 @@ namespace Kamtro_Bot.Modules
                 return;
             }
 
-            if (sides == 0 || sides == 1) {
+            if (sides >= -1 && sides <= 1) {
                 await ReplyAsync(BotUtils.KamtroText($"Every dice landed on {sides}. What did you expect?"));
                 return;
             }

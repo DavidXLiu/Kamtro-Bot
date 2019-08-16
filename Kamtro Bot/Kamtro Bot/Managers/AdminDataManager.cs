@@ -68,6 +68,9 @@ namespace Kamtro_Bot.Managers
             worksheet.Cells[headerRange].Style.Font.Bold = true;
             worksheet.Cells[headerRange].Style.Font.Size = 14;
 
+            // Set auto fit
+            worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
             // Save the file
             FileInfo file = new FileInfo(StrikeLogPath);
             ex.SaveAs(file);
@@ -134,6 +137,8 @@ namespace Kamtro_Bot.Managers
             // Now add the strike
             ExcelRange er = cells[$"D{pos}:F{pos}"];
             er.LoadFromArrays(strike.GetStrikeForExcel());
+            // Set auto fit
+            cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             StrikeLog.Save();
             KLog.Info($"Added strike for {BotUtils.GetFullUsername(target)} in cell range D{pos}:F{pos}");
 
@@ -157,6 +162,8 @@ namespace Kamtro_Bot.Managers
             // User doesn't have an entry, so is likely just a troll.
             GenUserStrike(pos, target);
             cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+            // Set auto fit
+            cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
             SaveExcel();
         }
@@ -178,6 +185,8 @@ namespace Kamtro_Bot.Managers
             // User doesn't have an entry, so is likely just a troll.
             GenUserStrike(pos, id);
             cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+            // Set auto fit
+            cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             KLog.Info($"Banned user {(username == "" ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
             SaveExcel();
         }
@@ -225,7 +234,8 @@ namespace Kamtro_Bot.Managers
             // 68 = ASCII for capital D. 
             string range = char.ConvertFromUtf32(68 + GetStrikes(targetId) * 3) + pos + ":" + char.ConvertFromUtf32(70 + GetStrikes(targetId) * 3) + pos;
             cells[range].LoadFromArrays(strike.GetStrikeForExcel());
-
+            // Set auto fit
+            cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             StrikeLog.Save();
             KLog.Info($"Added strike for {(username == "" ? targetId.ToString() : username)} in cell range D{pos}:F{pos}");
 
@@ -237,20 +247,20 @@ namespace Kamtro_Bot.Managers
         /// </summary>
         /// <param name="pos">Row in the spreadsheet</param>
         /// <param name="target">Target user for entry</param>
-        private static void GenUserStrike(int pos, SocketUser target) {
+        private static void GenUserStrike(int pos, SocketUser target, int strikes = 1) {
             KLog.Info($"User {BotUtils.GetFullUsername(target)} doesn't have a strike entry, creating one...");
             List<string[]> entry = new List<string[]>();
 
-            entry.Add(new string[] { target.Id.ToString(), BotUtils.GetFullUsername(target), "1" });
+            entry.Add(new string[] { target.Id.ToString(), BotUtils.GetFullUsername(target), strikes.ToString() });
 
             StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
         }
 
-        private static void GenUserStrike(int pos, ulong target, string username = "") {
+        private static void GenUserStrike(int pos, ulong target, string username = "", int strikes = 1) {
             KLog.Info($"User {(username == "" ? target.ToString() : username)} doesn't have a strike entry, creating one...");
             List<string[]> entry = new List<string[]>();
 
-            entry.Add(new string[] { target.ToString(), username, "1" });
+            entry.Add(new string[] { target.ToString(), username, strikes.ToString() });
 
             StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells[$"A{pos}:C{pos}"].LoadFromArrays(entry);
         }
@@ -292,6 +302,8 @@ namespace Kamtro_Bot.Managers
                 cells[$"L{GetEntryPos(id)}"].Value = reason;
             }
 
+            // Set auto fit
+            cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             SaveExcel();
         }
 
@@ -320,7 +332,7 @@ namespace Kamtro_Bot.Managers
                 pos++;
             }
 
-            GenUserStrike(pos, id);
+            GenUserStrike(pos, id, "", 0);
             SaveExcel();
             return 0;
         }
@@ -361,7 +373,8 @@ namespace Kamtro_Bot.Managers
             }
 
             cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) - 1).ToString();
-
+            // Set auto fit
+            cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             KLog.Info($"Removed entry for user {id}: {(strike == 3 ? "Ban" : $"Strike {strike}")}");
 
             SaveExcel();

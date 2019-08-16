@@ -94,7 +94,7 @@ namespace Kamtro_Bot.Handlers
 
                 if(!result.IsSuccess && result.Error != CommandError.UnknownCommand) {
                     // if there was an error with the valid command  -C
-                    await message.Channel.SendMessageAsync($"An error occured! {result.ErrorReason}");
+                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"An error occured! {result.ErrorReason}"));
                     //Console.WriteLine(result.Error);
                 }
             } else {

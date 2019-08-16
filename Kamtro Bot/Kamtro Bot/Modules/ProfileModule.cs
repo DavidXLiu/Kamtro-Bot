@@ -21,8 +21,8 @@ namespace Kamtro_Bot.Modules
             TimeSpan ts = new TimeSpan(7, 0, 0, 0);
             ts -= DateTime.Now - DateTime.Now.LastSunday();
 
-            if (!UserDataManager.CanAddRep(Context.User)) {
-                await ReplyAsync(BotUtils.KamtroText($"You have no more reputation left to give! Resets in {ts.Days} day{((ts.Days == 1) ? "":"s")}, {ts.Hours} hour{((ts.Hours == 1) ? "" : "s")}, {ts.Minutes} minute{((ts.Minutes == 1) ? "" : "s")}, and {ts.Seconds} second{((ts.Seconds == 1) ? "" : "s")}"));
+            if (!UserDataManager.CanAddRep(BotUtils.GetGUser(Context))) {
+                await ReplyAsync(BotUtils.KamtroText($"You have no more reputation points left to give! Resets in {ts.Days} day{((ts.Days == 1) ? "":"s")}, {ts.Hours} hour{((ts.Hours == 1) ? "" : "s")}, {ts.Minutes} minute{((ts.Minutes == 1) ? "" : "s")}, and {ts.Seconds} second{((ts.Seconds == 1) ? "" : "s")}"));
                 return;
             }
 
@@ -35,7 +35,7 @@ namespace Kamtro_Bot.Modules
             List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
             if (users.Count == 0) {
-                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name. Make sure the name is spelt correctly!"));
                 return;
             } else if (users.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
@@ -82,7 +82,15 @@ namespace Kamtro_Bot.Modules
         [Alias("setprofilecolour", "spc", "setprofilecolor", "setcolour")]
         public async Task SetProfileColorAsync([Remainder] string col = "") {
             if(col.Length < 1) {
-                await ReplyAsync(BotUtils.KamtroText("You need to specify a color! Try !setprofilecolor #ffccaa or !setprofilecolor 234 44 120"));
+                // Add some random flavor - Arcy
+                Random rnd = new Random();
+                int r, g, b, h;
+                r = rnd.Next(0, 256);
+                g = rnd.Next(0, 256);
+                b = rnd.Next(0, 256);
+                h = rnd.Next(0, 16777216);
+
+                await ReplyAsync(BotUtils.KamtroText($"You need to specify a color! Try !setprofilecolor #{h.ToString("X")} or !setprofilecolor {r} {g} {b}"));
                 return;
             }
 
@@ -138,13 +146,27 @@ namespace Kamtro_Bot.Modules
                 UserDataManager.SaveUserData();
                 await ReplyAsync(embed: new BasicEmbed("Set Profile Color", $"({c.R}, {c.G}, {c.B})\n#{c.RawValue.ToString("x")}", "Your Profile Color has been set to", UserDataManager.GetUserData(BotUtils.GetGUser(Context)).GetColor()).GetEmbed());
             } else {
-                await ReplyAsync(BotUtils.KamtroText("You need to specify all three RGB values, and they must be seperated by a space only. Ex: !setprofilecolor 123, 222, 14 (This is NOT ok); !setprofilecolor 123 222 14 (This is ok)"));
+                // Add some random flavor - Arcy
+                Random rnd = new Random();
+                int r, g, b;
+                r = rnd.Next(0, 256);
+                g = rnd.Next(0, 256);
+                b = rnd.Next(0, 256);
+
+                await ReplyAsync(BotUtils.KamtroText($"You need to specify all three RGB values, and they must be seperated by a space only.\nEx: !setprofilecolor {r} {g} {b}"));
             }
         }
 
         [Command("setquote")]
         [Alias("setprofilequote", "sq")]
         public async Task SetProfileQuoteAsync([Remainder] string quote = "") {
+            // Quotes cannot be too long
+            if (quote.Length > 100)
+            {
+                await ReplyAsync(BotUtils.KamtroText("Quotes cannot exceed 100 characters in length."));
+                return;
+            }
+
             UserDataManager.GetUserData(BotUtils.GetGUser(Context)).Quote = quote;
             UserDataManager.SaveUserData();
 
@@ -159,6 +181,7 @@ namespace Kamtro_Bot.Modules
         private async Task AddRep(SocketUser user) {
             if(user.Id == Context.User.Id) {
                 await ReplyAsync(BotUtils.KamtroText("You can't give a repuation point to yourself!"));
+                return;
             }
 
             UserDataManager.AddRep(BotUtils.GetGUser(Context), Context.Guild.GetUser(user.Id));

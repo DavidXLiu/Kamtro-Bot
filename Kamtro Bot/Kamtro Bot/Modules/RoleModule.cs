@@ -54,19 +54,19 @@ namespace Kamtro_Bot.Modules
                             // First person response if DMs - Arcy
                             if (Context.Channel is IDMChannel) {
                                 await ReplyAsync(BotUtils.KamtroText($"You already have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                break;
+                                return;
                             }
                             // Third person response elsewhere - Arcy
                             else {
                                 // Reply using nickname - Arcy
                                 if (user.Nickname != null) {
                                     await ReplyAsync(BotUtils.KamtroText($"{user.Nickname} already has the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                    break;
+                                    return;
                                 }
                                 // Reply using username - Arcy
                                 else {
                                     await ReplyAsync(BotUtils.KamtroText($"{user.Username} already has the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                    break;
+                                    return;
                                 }
                             }
                         }
@@ -77,7 +77,7 @@ namespace Kamtro_Bot.Modules
                             // Catch instance that the role is higher in heirarchy than bot role - Arcy
                             if (role.Position >= ServerData.KamtroBotRole.Position) {
                                 await ReplyAsync(BotUtils.KamtroText($"Uh oh! I cannot manage that role! Please contact {ServerData.PrimaryContactUser.Username}#{ServerData.PrimaryContactUser.Discriminator} and let them know about this!"));
-                                break;
+                                return;
                             } else {
                                 // Add the role! Woohoo! - Arcy
                                 await user.AddRoleAsync(role);
@@ -85,19 +85,19 @@ namespace Kamtro_Bot.Modules
                                 // First person response if DMs - Arcy
                                 if (Context.Channel is IDMChannel) {
                                     await ReplyAsync(BotUtils.KamtroText($"You now have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                    break;
+                                    return;
                                 }
                                 // Third person response elsewhere - Arcy
                                 else {
                                     // Reply using nickname - Arcy
                                     if (user.Nickname != null) {
                                         await ReplyAsync(BotUtils.KamtroText($"{user.Nickname} now has the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                        break;
+                                        return;
                                     }
                                     // Reply using username - Arcy
                                     else {
                                         await ReplyAsync(BotUtils.KamtroText($"{user.Username} now has the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                        break;
+                                        return;
                                     }
                                 }
                             }
@@ -111,29 +111,29 @@ namespace Kamtro_Bot.Modules
                                 // First person response if DMs - Arcy
                                 if (Context.Channel is IDMChannel) {
                                     await ReplyAsync(BotUtils.KamtroText($"Nice try."));
-                                    break;
+                                    return;
                                 }
                                 // Third person response elsewhere - Arcy
                                 else {
                                     // Reply using nickname - Arcy
                                     if (user.Nickname != null) {
                                         await ReplyAsync(BotUtils.KamtroText($"Nice try, {user.Nickname}."));
-                                        break;
+                                        return;
                                     }
                                     // Reply using username - Arcy
                                     else {
                                         await ReplyAsync(BotUtils.KamtroText($"Nice try, {user.Username}."));
-                                        break;
+                                        return;
                                     }
                                 }
                             }
                             // And more flavor for the bot role - Arcy
                             else if (role == ServerData.KamtroBotRole) {
                                 await ReplyAsync(BotUtils.KamtroText($"There can only be one."));
-                                break;
+                                return;
                             } else {
                                 await ReplyAsync(BotUtils.KamtroText($"The {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role cannot be added."));
-                                break;
+                                return;
                             }
                         }
                     }
@@ -148,7 +148,7 @@ namespace Kamtro_Bot.Modules
         [Name("RemoveRole")]
         [RequireBotPermission(ChannelPermission.ManageRoles)]
         [Summary("Removes an allowed role to the user, unless they already don't have it or are restricted from removing it.")]
-        public async Task RemoveRoleAsync([Remainder]string message) {
+        public async Task RemoveRoleAsync([Remainder]string message = "") {
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             // Find if user entered a role
@@ -178,19 +178,19 @@ namespace Kamtro_Bot.Modules
                             // First person response if DMs - Arcy
                             if (Context.Channel is IDMChannel) {
                                 await ReplyAsync(BotUtils.KamtroText($"You already do not have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                break;
+                                return;
                             }
                             // Third person response elsewhere - Arcy
                             else {
                                 // Reply using nickname - Arcy
                                 if (user.Nickname != null) {
                                     await ReplyAsync(BotUtils.KamtroText($"{user.Nickname} already does not have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                    break;
+                                    return;
                                 }
                                 // Reply using username - Arcy
                                 else {
                                     await ReplyAsync(BotUtils.KamtroText($"{user.Username} already does not have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                    break;
+                                    return;
                                 }
                             }
                         }
@@ -209,19 +209,19 @@ namespace Kamtro_Bot.Modules
                                 // First person response if DMs - Arcy
                                 if (Context.Channel is IDMChannel) {
                                     await ReplyAsync(BotUtils.KamtroText($"You no longer have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                    break;
+                                    return;
                                 }
                                 // Third person response elsewhere - Arcy
                                 else {
                                     // Reply using nickname - Arcy
                                     if (user.Nickname != null) {
                                         await ReplyAsync(BotUtils.KamtroText($"{user.Nickname} no longer has the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                        break;
+                                        return;
                                     }
                                     // Reply using username - Arcy
                                     else {
                                         await ReplyAsync(BotUtils.KamtroText($"{user.Username} no longer has the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
-                                        break;
+                                        return;
                                     }
                                 }
                             }
@@ -235,24 +235,24 @@ namespace Kamtro_Bot.Modules
                                 // First person response if DMs - Arcy
                                 if (Context.Channel is IDMChannel) {
                                     await ReplyAsync(BotUtils.KamtroText($"Just ask Kamex or Retro."));
-                                    break;
+                                    return;
                                 }
                                 // Third person response elsewhere - Arcy
                                 else {
                                     // Reply using nickname - Arcy
                                     if (user.Nickname != null) {
                                         await ReplyAsync(BotUtils.KamtroText($"Just ask Kamex or Retro, {user.Nickname}."));
-                                        break;
+                                        return;
                                     }
                                     // Reply using username - Arcy
                                     else {
                                         await ReplyAsync(BotUtils.KamtroText($"Just ask Kamex or Retro, {user.Username}."));
-                                        break;
+                                        return;
                                     }
                                 }
                             } else {
                                 await ReplyAsync(BotUtils.KamtroText($"The {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role cannot be removed."));
-                                break;
+                                return;
                             }
                         }
                     }

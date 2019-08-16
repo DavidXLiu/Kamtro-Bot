@@ -136,8 +136,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 BackMap.Add(14, 1);
             }
 
-            AddMenuOptions(new MenuOptionNode(BACK, "Go Back"), ReactionHandler.CHECK, ReactionHandler.DECLINE);
             RegisterMenuFields();
+            AddMenuOptions(new MenuOptionNode(BACK, "Go Back"), ReactionHandler.CHECK, ReactionHandler.DECLINE);
         }
 
         public async override Task PerformAction(SocketReaction action) {
@@ -325,33 +325,33 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         bool strike2Added = false;
 
                         if(!string.IsNullOrWhiteSpace(Strike1Reason) && Strike1Reason != DefaultText) {
-                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
+                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(Context.User));
                             strike1Added = true;
                         }
 
                         if(!string.IsNullOrWhiteSpace(Strike2Reason) && Strike2Reason != DefaultText) {
                             if(!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
                                 // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
-                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
+                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(Context.User));
                                 strike1Added = true;
                             }
 
                             // Add strike 2
-                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason));
+                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason), BotUtils.GetFullUsername(Context.User));
                             strike2Added = true;
                         }
 
                         if(!string.IsNullOrWhiteSpace(BanReason) && BanReason != DefaultText) {
                             if (!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
                                 // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
-                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason));
+                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(Context.User));
                             }
 
                             if (!strike2Added && AdminDataManager.GetStrikes(id) == 1) {
-                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason));
+                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason), BotUtils.GetFullUsername(Context.User));
                             }
 
-                            AdminDataManager.AddBan(id, new Nodes.BanDataNode(Context.User, BanReason));
+                            AdminDataManager.AddBan(id, new Nodes.BanDataNode(Context.User, BanReason), BotUtils.GetFullUsername(Context.User));
                         }
 
                         PageNum = 14;

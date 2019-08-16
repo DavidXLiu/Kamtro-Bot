@@ -32,13 +32,31 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             RegisterMenuFields();
         }
 
+        public override async Task PerformAction(SocketReaction action)
+        {
+            switch (action.Emote.ToString())
+            {
+                case ReactionHandler.DECLINE_STR:
+                    EventQueueManager.RemoveMessageEvent(this);
+                    await Message.DeleteAsync();
+                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"The ban on {BotUtils.GetFullUsername(Target)} has been cancelled."));
+                    break;
+
+                default:
+                    await ButtonAction(action);  // if none of the predefined actions were used, it must be a custom action.
+                    break;
+            }
+        }
+
         public override async Task ButtonAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.CHECK_STR:
                     // Time for security checks
 
+                    /// These checks were done when the command was called - Arcy
+
                     // First, the classic null check
-                    if(Context.Guild.GetUser(Target.Id) == null) {
+                    /*if(Context.Guild.GetUser(Target.Id) == null) {
                         await Context.Channel.SendMessageAsync(BotUtils.KamtroText("That user does not exist!"));
                         KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban non-existant member {BotUtils.GetFullUsername(Target)}");
                         break;
@@ -56,7 +74,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher than you, and as such you cannot ban them."));
                         KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(Target)} of higher status than caller");
                         break;
-                    }
+                    }*/
 
                     BanDataNode ban = new BanDataNode(Context.User, Reason);
 
@@ -71,7 +89,6 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         
                     await Context.Guild.AddBanAsync(Target.Id);
                     break;
-
                 case diamond:
                     notifyTarget = !notifyTarget;
                     await UpdateEmbed();

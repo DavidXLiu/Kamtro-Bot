@@ -60,7 +60,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 eb.WithTitle("Command Info"); // If it's on a file, it's command info
                 AddHelpPage(eb);
             } else {
-                eb.WithTitle("Help"); // If the page is on the directory select, it's the help menu
+                //eb.WithTitle("Help"); // If the page is on the directory select, it's the help menu
                 AddDirList(eb);
             }
 

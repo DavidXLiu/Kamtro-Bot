@@ -166,7 +166,7 @@ namespace Kamtro_Bot.Modules
             List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
             if(users.Count == 0) {
-                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name. Make sure the name is spelt correctly!"));
                 return;
             } else if(users.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
@@ -237,7 +237,7 @@ namespace Kamtro_Bot.Modules
             List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
             if (users.Count == 0) {
-                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name. Make sure the name is spelt correctly!"));
                 return;
             } else if (users.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
@@ -252,7 +252,41 @@ namespace Kamtro_Bot.Modules
 
         #region Helper Methods
         private async Task StrikeUser(SocketUser user) {
-            if(AdminDataManager.GetStrikes(user) >= 2) {
+            // First, the classic null check
+            if (Context.Guild.GetUser(user.Id) == null)
+            {
+                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("That user does not exist!"));
+                KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike non-existant member {BotUtils.GetFullUsername(user)}");
+                return;
+            }
+
+            // Flavor text for trying to strike yourself
+            if (user.Id == Context.User.Id)
+            {
+                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("We would like to save the strikes for those that deserve it."));
+                return;
+            }
+
+            // next, check to see if Kamtro has perms to ban the user
+            if (!BotUtils.HighestUser(Context.Guild.GetUser(Context.Client.CurrentUser.Id), Context.Guild.GetUser(Context.User.Id)))
+            {
+                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot strike them."));
+                KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than bot");
+                return;
+            }
+
+            // next, check if the caller can ban the user
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN))
+            {
+                if (BotUtils.HighestUser(Context.Guild.GetUser(user.Id), Context.Guild.GetUser(Context.User.Id), true))
+                {
+                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher or equal than you, and as such, you cannot strike them."));
+                    KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than caller");
+                    return;
+                }
+            }
+
+            if (AdminDataManager.GetStrikes(user) >= 2) {
                 await BanUser(user);
                 return;
             }
@@ -269,6 +303,13 @@ namespace Kamtro_Bot.Modules
                 return;
             }
 
+            // Flavor text for trying to ban yourself
+            if (user.Id == Context.User.Id)
+            {
+                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Sorry, but we still need you."));
+                return;
+            }
+
             // next, check to see if Kamtro has perms to ban the user
             if (!BotUtils.HighestUser(Context.Guild.GetUser(Context.Client.CurrentUser.Id), Context.Guild.GetUser(Context.User.Id))) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot ban them."));
@@ -277,10 +318,14 @@ namespace Kamtro_Bot.Modules
             }
 
             // next, check if the caller can ban the user
-            if (!BotUtils.HighestUser(Context.Guild.GetUser(Context.User.Id), Context.Guild.GetUser(user.Id)) && !ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.ADMIN)) {
-                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher than you, and as such you cannot ban them."));
-                KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(user)} of higher status than caller");
-                return;
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN))
+            {
+                if (BotUtils.HighestUser(Context.Guild.GetUser(user.Id), Context.Guild.GetUser(Context.User.Id), true))
+                {
+                    await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher or equal than you, and as such, you cannot ban them."));
+                    KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(user)} of higher status than caller");
+                    return;
+                }
             }
 
             BanEmbed be = new BanEmbed(Context, user);

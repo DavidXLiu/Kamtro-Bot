@@ -20,7 +20,7 @@ namespace Kamtro_Bot.Modules
             bool isAdmin = ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.MODERATOR);
 
             HelpEmbed he = new HelpEmbed(Context, admin: isAdmin);
-            await he.Display();
+            await he.Display(Context.User.GetOrCreateDMChannelAsync().Result);
         }
     }
 }

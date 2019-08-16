@@ -248,7 +248,7 @@ namespace Kamtro_Bot
         /// <param name="message"></param>
         /// <returns>User found from the message.</returns>
         /// Arcy
-        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "") {
+        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "", float threshold = 0.5f) {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
 
             // Find mentions
@@ -264,9 +264,9 @@ namespace Kamtro_Bot
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
-                if (user.Username.ToLower().Contains(remainder)) {
+                if (UtilStringComparison.CompareWordScore(user.Username, remainder) > threshold) {
                     users.Add(user);
-                } else if (user.Nickname != null && user.Nickname.Contains(remainder)) {
+                } else if (user.Nickname != null && UtilStringComparison.CompareWordScore(user.Nickname, remainder) > threshold) {
                     users.Add(user);
                 } else if (remainder.Contains(user.Id.ToString())) {
                     users.Add(user);
@@ -276,16 +276,16 @@ namespace Kamtro_Bot
             return users;
         }
 
-        public static List<SocketGuildUser> GetUsers(string name) {
+        public static List<SocketGuildUser> GetUsers(string name, float threshold = 0.5f) {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
 
             name = name.ToLower();
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
-                if (user.Username.ToLower().Contains(name)) {
+                if (UtilStringComparison.CompareWordScore(user.Username, name) > threshold) {
                     users.Add(user);
-                } else if (user.Nickname != null && user.Nickname.Contains(name)) {
+                } else if (user.Nickname != null && UtilStringComparison.CompareWordScore(user.Nickname, name) > threshold) {
                     users.Add(user);
                 } else if (name.Contains(user.Id.ToString())) {
                     users.Add(user);
@@ -303,7 +303,7 @@ namespace Kamtro_Bot
         /// <param name="message"></param>
         /// <returns>User found from the message.</returns>
         /// Arcy
-        public static SocketGuildUser GetUser(string text)
+        public static SocketGuildUser GetUser(string text, float threshold = 0.5f)
         {
             // Check through all users and determine the best user found
             SocketGuildUser bestUser = null;
@@ -340,7 +340,7 @@ namespace Kamtro_Bot
             }
 
             // Check if match is reasonably close
-            if (bestScore > 0.66f)
+            if (bestScore > threshold)
             {
                 return bestUser;
             }
@@ -356,8 +356,11 @@ namespace Kamtro_Bot
         /// <param name="a">The first user</param>
         /// <param name="b">The user to compare</param>
         /// <returns>True if A is higher up than B, false if A is equal to, or lower than B.</returns>
-        public static bool HighestUser(SocketGuildUser a, SocketGuildUser b) {
-            return a.Hierarchy > b.Hierarchy;
+        public static bool HighestUser(SocketGuildUser a, SocketGuildUser b, bool orEqual = false) {
+            if (orEqual)
+                return a.Hierarchy >= b.Hierarchy;
+            else
+                return a.Hierarchy > b.Hierarchy;
         }
 
         /// <summary>
