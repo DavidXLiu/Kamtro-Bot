@@ -154,6 +154,7 @@
     <Compile Include="Interfaces\ActionEmbeds\RoleSelectionEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\ErrorReportEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\MessageDeleteEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\MessageEditEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\NameChangeEmbed.cs" />

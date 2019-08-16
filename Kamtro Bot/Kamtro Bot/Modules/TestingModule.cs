@@ -67,6 +67,11 @@ namespace Kamtro_Bot.Modules
                 Console.WriteLine($"[{server.Name}] Owned by: {BotUtils.GetFullUsername(server.Owner)}");
             }
         }
+
+        [Command("throw")]
+        public async Task ThrowAsync() {
+            throw new Exception();
+        }
         #endregion
     }
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -94,8 +95,26 @@ namespace Kamtro_Bot.Handlers
 
                 if(!result.IsSuccess && result.Error != CommandError.UnknownCommand) {
                     // if there was an error with the valid command  -C
-                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"An error occured! {result.ErrorReason}"));
-                    //Console.WriteLine(result.Error);
+                    
+                    switch(result.Error) {
+                        case CommandError.BadArgCount:
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText("Your parameters were invalid, and no special case was handled for this command. Please ping Arcy or Carbon, or DM one of them with a screenshot of this. (Make sure you get the command you used in the screenshot!)"));
+                            break;
+
+                        case CommandError.Exception:
+                            if(result is ExecuteResult execRes) {
+                                string st = execRes.Exception.StackTrace.Substring(0, execRes.Exception.StackTrace.IndexOf("---")).Trim('\n', '\r', ' ');
+
+                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Something went wrong in that command! Please ping Arcy or Carbon.\n\nStack Trace:\n{st}"));
+                                // ErrorReportEmbed er = new ErrorReportEmbed(execRes.Exception);
+                                // await er.Display(message.Channel);
+                            }
+                            break;
+
+                        default:
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText($"An error occured! {result.ErrorReason}"));
+                            break;
+                    }
                 }
             } else {
                 // Check for other prefixless commands/features - Arcy
