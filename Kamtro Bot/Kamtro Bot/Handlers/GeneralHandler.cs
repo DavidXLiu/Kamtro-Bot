@@ -67,7 +67,12 @@ namespace Kamtro_Bot.Handlers
         /// <param name="server">The server they were unbanned from</param>
         /// <returns></returns>
         public async Task OnMemberUnban(SocketUser user, SocketGuild server) {
-            if(CrossBan.ContainsKey(user.Id) && server.Id == ServerData.Server.Id) {
+            if(CrossBan == null) {
+                CrossBan = new Dictionary<ulong, CrossBanDataNode>();
+                SaveList();
+            }
+
+            if (CrossBan.ContainsKey(user.Id) && server.Id == ServerData.Server.Id) {
                 CrossBan.Remove(user.Id);
                 KLog.Info($"Removed user {BotUtils.GetFullUsername(user)} from cross-ban list");
                 SaveList();
