@@ -116,10 +116,10 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// <returns></returns>
         /// <param name="channel">The channel to display the message in. If left empty, it will be displayed in the channel the command was called in</param>
-        public override async Task Display(IMessageChannel channel = null) {
+        public override async Task Display(IMessageChannel channel = null, string message = "") {
             if (channel == null) channel = Context.Channel;
 
-            await base.Display(channel);
+            await base.Display(channel, message);
 
             await AddReactions();  // Add the reactions
 

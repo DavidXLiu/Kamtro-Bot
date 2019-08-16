@@ -91,20 +91,21 @@ namespace Kamtro_Bot.Handlers
             if(BotUtils.GetFullUsername(before) != BotUtils.GetFullUsername(after)) {
                 // If the user changed their name.
                 NameChangeEmbed nce = new NameChangeEmbed(before, after);
-                await nce.Display(ServerData.AdminChannel);
+                await nce.Display(ServerData.LogChannel, after.Username + "#" + after.Discriminator);
             }
 
             if (before.Nickname != after.Nickname) {
                 // If the nickame changed
                 NameChangeEmbed nce = new NameChangeEmbed(before, after, true);
-                await nce.Display(ServerData.AdminChannel);
+                await nce.Display(ServerData.LogChannel, after.Username + "#" + after.Discriminator);
             }
 
             if(before.GetAvatarUrl() != after.GetAvatarUrl()) {
                 AvatarUpdateEmbed emb = new AvatarUpdateEmbed(before, after);
-                await emb.Display();
+                await emb.Display(ServerData.LogChannel, after.Username + "#" + after.Discriminator);
             }
 
+            // Remove mature role on silence
             if(before.Roles.Count != after.Roles.Count) {
                 // role update
                 foreach(SocketRole role in after.Roles) {
@@ -132,7 +133,7 @@ namespace Kamtro_Bot.Handlers
             SocketMessage sm = msg as SocketMessage;
 
             MessageEditEmbed messageEdit = new MessageEditEmbed(sm, updated);
-            await messageEdit.Display(ServerData.AdminChannel);
+            await messageEdit.Display(ServerData.LogChannel, updated.Author.Username + "#" + updated.Author.Discriminator);
         }
         
         /// <summary>
@@ -155,7 +156,7 @@ namespace Kamtro_Bot.Handlers
                 mde = new MessageDeleteEmbed(sm);
             }
 
-            await mde.Display(ServerData.AdminChannel);
+            await mde.Display(ServerData.LogChannel, message.Value.Author.Username + "#" + message.Value.Author.Discriminator);
         }
         #endregion
 
@@ -190,7 +191,7 @@ namespace Kamtro_Bot.Handlers
                 await BotUtils.AdminLog($"User {BotUtils.GetFullUsername(auth)} was autobanned for spam");
                 await ServerData.Server.AddBanAsync(auth);
 
-                AdminDataManager.AddBan(msg.Author, new BanDataNode(Program.Client.CurrentUser, "Autobanned for spam"));
+                AdminDataManager.AddBan(msg.Author, new BanDataNode(Program.Client.CurrentUser, "Autobanned for spam."));
 
                 KLog.Info($"Autobanned user {BotUtils.GetFullUsername(auth)} for spam.");
             }

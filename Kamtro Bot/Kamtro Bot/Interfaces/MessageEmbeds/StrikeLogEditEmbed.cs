@@ -41,7 +41,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("User ID (Required)", 3, 1, Type = FieldDataType.ULONG)]
         public string UserId;
 
-        [InputField("Full Username + Descriminator", 3, 2)]
+        [InputField("Full Username + Discriminator", 3, 2)]
         public string FullUsername;
 
         [InputField("Strike 1 Reason", 3, 3)]
@@ -191,7 +191,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             eb.WithColor(BotUtils.Kamtro);
 
             if(PageNum == 14) {
-                eb.AddField("Thank you for editing the stirke log", "Press the back button to return to the start, or press cancel if you have no more edits to make.");
+                eb.AddField("Thank you for editing the stirke log.", "Press the back button to return to the start, or press cancel if you have no more edits to make.");
                 AddMenu(eb);
                 return eb.Build();
             }

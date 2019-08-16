@@ -44,7 +44,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (RoleOptions.Count <= 10) {
                 for (int i = 0; i < RoleOptions.Count; i++) {
                     Numbers.Add(NUMBERS[i]);  // Add to the reaction options
-                    nodes.Add(new MenuOptionNode(NUMBERS[i], $"Select user {i + 1}"));  // Add the menu node
+                    nodes.Add(new MenuOptionNode(NUMBERS[i], $"Select role {i + 1}"));  // Add the menu node
                 }
 
                 AddMenuOptions(nodes.GetRange(0, RoleOptions.Count).ToArray());  // Add the menu options
@@ -54,7 +54,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         public override Embed GetEmbed() {
             EmbedBuilder builder = new EmbedBuilder();
 
-            builder.WithTitle("Select a User");
+            builder.WithTitle("Select a Role");
             builder.WithColor(BotUtils.Kamtro);
 
             if (RoleOptions.Count > 10) {
@@ -88,9 +88,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             }
         }
 
-        public override async Task Display(IMessageChannel channel = null) {
+        public override async Task Display(IMessageChannel channel = null, string message = "") {
             Channel = channel;
-            await base.Display(channel);
+            await base.Display(channel, message);
         }
     }
 }

@@ -132,9 +132,9 @@ namespace Kamtro_Bot.Interfaces
             }
         }
 
-        public override async Task Display(IMessageChannel channel = null) {
+        public override async Task Display(IMessageChannel channel = null, string message = "") {
             Channel = channel;
-            await base.Display(channel);
+            await base.Display(channel, message);
         }
 
         public void SetColor(uint color) {

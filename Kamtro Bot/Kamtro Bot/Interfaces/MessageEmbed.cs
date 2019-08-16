@@ -357,8 +357,8 @@ namespace Kamtro_Bot.Interfaces
         /// -C
         /// <param name="channel">The channel to display the embed in</param>
         /// <returns></returns>
-        public override async Task Display(IMessageChannel channel = null) {
-            await base.Display(channel);
+        public override async Task Display(IMessageChannel channel = null, string message = "") {
+            await base.Display(channel, message);
 
             EventQueueManager.AddMessageEvent(this);
         }
