@@ -67,7 +67,12 @@ namespace Kamtro_Bot.Handlers
         /// <param name="server">The server they were unbanned from</param>
         /// <returns></returns>
         public async Task OnMemberUnban(SocketUser user, SocketGuild server) {
-            if(CrossBan.ContainsKey(user.Id) && server.Id == ServerData.Server.Id) {
+            if(CrossBan == null) {
+                CrossBan = new Dictionary<ulong, CrossBanDataNode>();
+                SaveList();
+            }
+
+            if (CrossBan.ContainsKey(user.Id) && server.Id == ServerData.Server.Id) {
                 CrossBan.Remove(user.Id);
                 KLog.Info($"Removed user {BotUtils.GetFullUsername(user)} from cross-ban list");
                 SaveList();
@@ -86,8 +91,8 @@ namespace Kamtro_Bot.Handlers
         /// <param name="after">User after</param>
         /// <returns></returns>
         public async Task OnMemberUpdate(SocketGuildUser before, SocketGuildUser after) {
-            if (before.Guild != ServerData.Server) return; // If it's not on kamtro, ignore it
-
+            if (before.Guild != ServerData.Server || before.Status != after.Status) return; // If it's not on kamtro, or it was just a status update (online to AFK, etc), ignore it
+            
             if(BotUtils.GetFullUsername(before) != BotUtils.GetFullUsername(after)) {
                 // If the user changed their name.
                 NameChangeEmbed nce = new NameChangeEmbed(before, after);

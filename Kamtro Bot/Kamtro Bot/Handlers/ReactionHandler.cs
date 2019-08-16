@@ -118,6 +118,15 @@ namespace Kamtro_Bot.Handlers
         }
 
         private async Task RemoveReaction(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction) {
+            if (reaction.User.Value.IsBot) return;  // More Robophobia (no bots allowed)
+
+            if ((await msg.GetOrDownloadAsync()).Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null)
+            {
+                // if it's the role select message
+                await OnRoleMessageRemoveReaction(channel as SocketTextChannel, reaction);
+                return;
+            }
+
             if ((await msg.GetOrDownloadAsync()).Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null && RoleMap.ContainsKey(reaction.Emote.Name)) {
                 SocketTextChannel chan = channel as SocketTextChannel;
                 // this method only checks for this message. Ignore in other cases
@@ -135,6 +144,18 @@ namespace Kamtro_Bot.Handlers
                 if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
 
                 await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
+            }
+        }
+
+        private async Task OnRoleMessageRemoveReaction(SocketTextChannel channel, SocketReaction reaction)
+        {
+            if (RoleMap.ContainsKey(reaction.Emote.Name))
+            {
+                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.Name]);
+
+                if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already don't have the role, don't bother removing it again
+
+                await channel.Guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
             }
         }
 
