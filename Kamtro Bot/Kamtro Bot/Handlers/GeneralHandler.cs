@@ -91,8 +91,8 @@ namespace Kamtro_Bot.Handlers
         /// <param name="after">User after</param>
         /// <returns></returns>
         public async Task OnMemberUpdate(SocketGuildUser before, SocketGuildUser after) {
-            if (before.Guild != ServerData.Server) return; // If it's not on kamtro, ignore it
-
+            if (before.Guild != ServerData.Server || before.Status != after.Status) return; // If it's not on kamtro, or it was just a status update (online to AFK, etc), ignore it
+            
             if(BotUtils.GetFullUsername(before) != BotUtils.GetFullUsername(after)) {
                 // If the user changed their name.
                 NameChangeEmbed nce = new NameChangeEmbed(before, after);
