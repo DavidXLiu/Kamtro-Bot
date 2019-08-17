@@ -30,6 +30,8 @@ namespace Kamtro_Bot
         public const string Version = "0.5.0";
         private const string TokenFile = "token.txt";
 
+        public static bool Ready = false;
+
         public static BotSettings Settings;
 
         public static Thread Autosave;
@@ -104,6 +106,7 @@ namespace Kamtro_Bot
 
         public async Task OnReady() {
             SetupGeneral();
+            Ready = true;
             KLog.Important("Ready!");
         }
 

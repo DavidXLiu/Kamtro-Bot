@@ -29,7 +29,7 @@ namespace Kamtro_Bot.Handlers
         private DiscordSocketClient _client;
         private CommandService _service;
         private IServiceProvider _provider;
-        
+
         public CommandHandler(DiscordSocketClient c) {
             _client = c;
 
@@ -49,7 +49,7 @@ namespace Kamtro_Bot.Handlers
         }
 
         public async Task HandleCommandAsync(SocketMessage m) {
-
+            if (!Program.Ready) return;  // wait until program is ready
             #region Message Relay
             if (m.Channel is SocketDMChannel && !m.Author.IsBot)
             {

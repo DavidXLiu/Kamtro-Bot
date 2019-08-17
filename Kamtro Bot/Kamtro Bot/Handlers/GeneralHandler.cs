@@ -64,7 +64,8 @@ namespace Kamtro_Bot.Handlers
                 return;
             }
             // welcome user 
-            await BotUtils.DMUserAsync(user, new BasicEmbed("Welcome to Kamtro!", Program.Settings.WelcomeMessageTemplate, "Welcome to Kamtropolis!", BotUtils.Kamtro).GetEmbed());
+            Embed e = new EmbedBuilder().WithTitle("Welcome to Kamtro!").WithColor(BotUtils.Kamtro).WithDescription(Program.Settings.WelcomeMessageTemplate).Build();
+            await BotUtils.DMUserAsync(user, e);
         }
 
         /// <summary>
