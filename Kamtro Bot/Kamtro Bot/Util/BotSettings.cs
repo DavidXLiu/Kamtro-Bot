@@ -60,6 +60,9 @@ namespace Kamtro_Bot
 
         public ulong PrimaryContactUserId; // Should always be Arcy, but made it just in case it needs to be changed - Arcy
 
+        // Misc
+        public string WelcomeMessageTemplate;
+
         /// <summary>
         /// Constructor for the BotSettings Class. 
         /// </summary>
@@ -90,6 +93,7 @@ namespace Kamtro_Bot
 
             RelayUsers = new List<ulong>();
             AdminUsers = new List<ulong>();
+            WelcomeMessageTemplate = "Welcome ?";
         }
 
         /// <summary>

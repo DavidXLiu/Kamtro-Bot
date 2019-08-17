@@ -20,13 +20,15 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private int FileCount;
         private string Path;
         private bool Admin;
+        private bool Mod;
 
-        public HelpEmbed(SocketCommandContext ctx, bool admin = false) {
+        public HelpEmbed(SocketCommandContext ctx, bool mod = false, bool admin = false) {
             AddMenuOptions(ReactionHandler.SELECT, new MenuOptionNode(GoBack, "Go back"), ReactionHandler.UP, ReactionHandler.DOWN);
             SetCtx(ctx);
             Path = @"Help";
             Cursor = 0;
             Admin = admin;
+            Mod = mod;
             FileCount = HelpManager.GetDirList(Path, Admin).Length;
         }
 
@@ -156,7 +158,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             Cursor = 0;
             Path = HelpManager.SelectDir(Path, dir);
-            if (!OnFile()) FileCount = HelpManager.GetDirList(Path, Admin).Length;
+            if (!OnFile()) FileCount = HelpManager.GetDirList(Path, Admin, Mod).Length;
             else FileCount = 0;
 
             await UpdateEmbed();
@@ -164,7 +166,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
         private async Task Back() {
             Path = HelpManager.BackDir(Path);
-            FileCount = HelpManager.GetDirList(Path, Admin).Length;
+            FileCount = HelpManager.GetDirList(Path, Admin, Mod).Length;
 
             await UpdateEmbed();
         }

@@ -13,7 +13,7 @@ namespace Kamtro_Bot.Managers
     {
         public const string EmptyDirMsg = "Nothing here.";
 
-        public static string[] GetDirList(string dir, bool admin) {
+        public static string[] GetDirList(string dir, bool admin, bool mod) {
            List<string> dirs = new List<string>();
 
             dirs.AddRange(Directory.GetDirectories(dir));
@@ -27,6 +27,10 @@ namespace Kamtro_Bot.Managers
 
                 foreach (string d in dirs) {
                     if (d.ToLower().Contains("admin")) {
+                        toRem.Add(d);
+                    }
+
+                    if(!mod && d.ToLower().Contains("moderator") && !toRem.Contains(d)) {
                         toRem.Add(d);
                     }
                 }

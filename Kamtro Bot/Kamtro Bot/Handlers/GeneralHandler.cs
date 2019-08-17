@@ -12,6 +12,7 @@ using System.Threading;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
 using Discord;
+using Kamtro_Bot.Interfaces;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -48,13 +49,13 @@ namespace Kamtro_Bot.Handlers
         /// <param name="user">The user that joined</param>
         /// <returns></returns>
         public async Task OnMemberJoin(SocketGuildUser user) {
-            // For cross ban.
+            // Add default roles
             await user.AddRoleAsync(ServerData.Kamexican);
             await user.AddRoleAsync(ServerData.Retropolitan);
 
-            if (CrossBan == null) return;
 
-            if(CrossBan.ContainsKey(user.Id)) {
+            // For cross ban.
+            if(CrossBan != null && CrossBan.ContainsKey(user.Id)) {
                 await BotUtils.AdminLog($"Cross-banned user {BotUtils.GetFullUsername(user)}. " + CrossBan[user.Id].GetInfoText());
                 AdminDataManager.AddBan(user, new BanDataNode(Program.Client.CurrentUser, $"[X-ban | {CrossBan[user.Id].GetServer()}] {CrossBan[user.Id].Reason}"));
                 await ServerData.Server.AddBanAsync(user);
@@ -62,6 +63,8 @@ namespace Kamtro_Bot.Handlers
                 KLog.Info($"Cross-banned user {BotUtils.GetFullUsername(user)}");
                 return;
             }
+            // welcome user 
+            await BotUtils.DMUserAsync(user, new BasicEmbed("Welcome to Kamtro!", Program.Settings.WelcomeMessageTemplate, "Welcome to Kamtropolis!", BotUtils.Kamtro).GetEmbed());
         }
 
         /// <summary>
