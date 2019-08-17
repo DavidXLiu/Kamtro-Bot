@@ -49,6 +49,9 @@ namespace Kamtro_Bot.Handlers
         /// <returns></returns>
         public async Task OnMemberJoin(SocketGuildUser user) {
             // For cross ban.
+            await user.AddRoleAsync(ServerData.Kamexican);
+            await user.AddRoleAsync(ServerData.Retropolitan);
+
             if (CrossBan == null) return;
 
             if(CrossBan.ContainsKey(user.Id)) {
@@ -57,6 +60,7 @@ namespace Kamtro_Bot.Handlers
                 await ServerData.Server.AddBanAsync(user);
 
                 KLog.Info($"Cross-banned user {BotUtils.GetFullUsername(user)}");
+                return;
             }
         }
 
@@ -113,6 +117,21 @@ namespace Kamtro_Bot.Handlers
             // Remove mature role on silence
             if(before.Roles.Count != after.Roles.Count) {
                 // role update
+
+                if (!before.Roles.Contains(ServerData.Lurker) && after.Roles.Contains(ServerData.Lurker)) return; // if it was just a lurker update, don worry bout it.  -C
+
+                if(after.Roles.Contains(ServerData.Lurker) && (after.Roles.Contains(ServerData.Kamexican) || after.Roles.Contains(ServerData.Retropolitan))) {
+                    await after.RemoveRoleAsync(ServerData.Lurker); 
+                }
+
+                // for lurker
+                if (!after.Roles.Contains(ServerData.Kamexican) && !after.Roles.Contains(ServerData.Retropolitan) && !after.Roles.Contains(ServerData.Lurker)) {
+                    await after.AddRoleAsync(ServerData.Lurker);
+                    return;
+                }
+
+
+                // for nsfw remove
                 foreach(SocketRole role in after.Roles) {
                     if(ServerData.SilencedRoles.Contains(role)) {
                         // remove mature role if user has it

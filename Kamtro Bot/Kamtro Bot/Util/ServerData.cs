@@ -37,6 +37,9 @@ namespace Kamtro_Bot.Util
 
         public static SocketRole KamtroBotRole;
         public static SocketRole NSFWRole;
+        public static SocketRole Kamexican;
+        public static SocketRole Retropolitan;
+        public static SocketRole Lurker;
 
         // Users
         public static List<SocketGuildUser> AdminUsers;
@@ -132,6 +135,9 @@ namespace Kamtro_Bot.Util
             #region Individual Roles
             KamtroBotRole = Server.GetRole(bs.KamtroBotRoleId);
             NSFWRole = Server.GetRole(bs.NSFWRole);
+            Kamexican = Server.GetRole(bs.KamexicanID);
+            Retropolitan = Server.GetRole(bs.RetropolitanID);
+            Lurker = Server.GetRole(bs.LurkerID);
             #endregion
 
             #region Admin Users

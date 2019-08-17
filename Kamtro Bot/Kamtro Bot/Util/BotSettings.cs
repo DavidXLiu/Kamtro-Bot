@@ -48,6 +48,9 @@ namespace Kamtro_Bot
 
         public ulong KamtroBotRoleId;
         public ulong NSFWRole;
+        public ulong KamexicanID;
+        public ulong RetropolitanID;
+        public ulong LurkerID;
 
         // Users
         public List<ulong> AdminUsers;
