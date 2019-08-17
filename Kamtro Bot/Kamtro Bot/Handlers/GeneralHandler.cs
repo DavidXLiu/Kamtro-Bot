@@ -138,7 +138,7 @@ namespace Kamtro_Bot.Handlers
             SocketMessage sm = msg as SocketMessage;
 
             MessageEditEmbed messageEdit = new MessageEditEmbed(sm, updated);
-            await messageEdit.Display(ServerData.LogChannel, updated.Author.Username + "#" + updated.Author.Discriminator);
+            await messageEdit.Display(ServerData.LogChannel);
         }
         
         /// <summary>
@@ -161,7 +161,7 @@ namespace Kamtro_Bot.Handlers
                 mde = new MessageDeleteEmbed(sm);
             }
 
-            await mde.Display(ServerData.LogChannel, message.Value.Author.Username + "#" + message.Value.Author.Discriminator);
+            await mde.Display(ServerData.LogChannel);
         }
         #endregion
 
