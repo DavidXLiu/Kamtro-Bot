@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
@@ -14,8 +15,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
     {
         private SocketUser User;
 
-        public AddAdminEmbed(SocketUser user) {
+        public AddAdminEmbed(SocketCommandContext ctx, SocketUser user) {
             User = user;
+            SetCtx(ctx);
             AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE);
         }
 

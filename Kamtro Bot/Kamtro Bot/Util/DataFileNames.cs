@@ -18,6 +18,7 @@ namespace Kamtro_Bot
         // Config Files  -C
         public const string GeneralConfigFile = @"Config\settings.json";
         public const string TitleListFile = @"Config\Titles.json";
+        public const string RoleSelectMapFile = @"Config\RoleMap.json";
 
         // User Data  -C
         public const string UserDataFile = @"User Data\UserData.json";

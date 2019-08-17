@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Interfaces.ActionEmbeds;
 using Kamtro_Bot.Interfaces.MessageEmbeds;
@@ -74,6 +75,8 @@ namespace Kamtro_Bot.Modules
             } else if(roles.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
                 return;
+            } else if (roles.Count == 1) {
+                await AddModifyRole(roles[0]);
             } else {
                 RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, AddModifyRole, BotUtils.GetGUser(Context));
                 await rse.Display(Context.Channel);
@@ -112,6 +115,8 @@ namespace Kamtro_Bot.Modules
             } else if (roles.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
                 return;
+            } else if (roles.Count == 1) {
+                await RemModifyRole(roles[0]);
             } else {
                 RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, RemModifyRole, BotUtils.GetGUser(Context));
                 await rse.Display(Context.Channel);
@@ -121,7 +126,8 @@ namespace Kamtro_Bot.Modules
         [Command("permlevel")]
         [Alias("pl")]
         public async Task PermCheckAsync([Remainder] string user = "") {
-            if(string.IsNullOrWhiteSpace(user)) {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+            if (string.IsNullOrWhiteSpace(user)) {
                 await PermCheck(BotUtils.GetGUser(Context));
             } else {
                 List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
@@ -138,6 +144,41 @@ namespace Kamtro_Bot.Modules
                     UserSelectionEmbed use = new UserSelectionEmbed(users, PermCheck, Context.Guild.GetUser(Context.User.Id));
                     await use.Display(Context.Channel);
                 }
+            }
+        }
+        
+        [Command("addroleemote")]
+        [Alias("are")]
+        public async Task AddEmoteRoleAsync([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+            
+            if(string.IsNullOrWhiteSpace(args)) {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a role!"));
+                return;
+            }
+
+            ulong id;
+
+            if (ulong.TryParse(args, out id) && BotUtils.GetRole(id) != null) {
+                await AddModifyRole(BotUtils.GetRole(id));
+                return;
+            }
+
+            // if it's not a recognized ID, treat it as a name
+
+            List<SocketRole> roles = BotUtils.GetRoles(args);
+
+            if (roles.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I couldn't find any roles that matched the name you told me!"));
+                return;
+            } else if (roles.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
+                return;
+            } else if (roles.Count == 1) {
+                await AddRoleEmote(roles[0]);
+            } else {
+                RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, AddRoleEmote, BotUtils.GetGUser(Context));
+                await rse.Display(Context.Channel);
             }
         }
         #endregion
@@ -158,7 +199,7 @@ namespace Kamtro_Bot.Modules
         }
 
         private async Task AddAdmin(SocketGuildUser user) {
-            AddAdminEmbed admin = new AddAdminEmbed(user);
+            AddAdminEmbed admin = new AddAdminEmbed(Context, user);
             await admin.Display(Context.Channel);
         }
         
@@ -206,6 +247,26 @@ namespace Kamtro_Bot.Modules
             }
 
             await be.Display(Context.Channel);
+        }
+        
+        private async Task AddRoleEmote(SocketRole role) {
+            RoleEmoteEmbed ree = new RoleEmoteEmbed(Context, role); // REEEEEEEEE
+            await ree.Display();
+        }
+
+        private async Task RemRoleEmote(SocketRole role) {
+            string key = "";
+
+            foreach(KeyValuePair<string, ulong> kvp in ReactionHandler.RoleMap) {
+                if (kvp.Value == role.Id) key = kvp.Key;
+            }
+
+            if(key == "") {
+                await ReplyAsync(BotUtils.KamtroText("That role has no emote attached to it!"));
+            } else {
+                ReactionHandler.RoleMap.Remove(key);
+                ReactionHandler.SaveRoleMap();
+            }
         }
         #endregion
     }

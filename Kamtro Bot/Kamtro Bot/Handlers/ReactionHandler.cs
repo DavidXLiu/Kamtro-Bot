@@ -4,8 +4,10 @@ using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,7 +71,7 @@ namespace Kamtro_Bot.Handlers
         /// </summary>
         /// <param name="client">The Client Object</param>
         public ReactionHandler(DiscordSocketClient client) {
-            SetupDict();
+            SetupRoleMap();
 
             client.ReactionAdded += HandleReactionAsync;
             client.ReactionRemoved += HandleReactionAsync;
@@ -159,8 +161,16 @@ namespace Kamtro_Bot.Handlers
             }
         }
 
-        private void SetupDict() {
-            RoleMap.Add("OwO", 535627110153191427);
+        public static void SetupRoleMap() {
+            string json = FileManager.ReadFullFile(DataFileNames.RoleSelectMapFile);
+            RoleMap = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(json);
+
+            if (string.IsNullOrWhiteSpace(json)) SaveRoleMap();
+        }
+
+        public static void SaveRoleMap() {
+            string json = JsonConvert.SerializeObject(RoleMap, Formatting.Indented);
+            File.WriteAllText(DataFileNames.RoleSelectMapFile, json);
         }
         #endregion
     }
