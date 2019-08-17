@@ -46,6 +46,8 @@ namespace Kamtro_Bot.Modules
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
 
             Program.ReloadConfig();
+            ReactionHandler.SetupRoleMap();
+
             await ReplyAsync(BotUtils.KamtroText("Settings Reloaded."));
         }
 
