@@ -140,8 +140,8 @@ namespace Kamtro_Bot.Handlers
         #endregion
         #region Helper Methods
         private async Task OnRoleMessageReaction(SocketTextChannel channel, SocketReaction reaction) { 
-            if (RoleMap.ContainsKey(reaction.Emote.Name)) {
-                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.Name]);
+            if (RoleMap.ContainsKey(reaction.Emote.ToString())) {
+                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
 
                 if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
 
@@ -151,9 +151,9 @@ namespace Kamtro_Bot.Handlers
 
         private async Task OnRoleMessageRemoveReaction(SocketTextChannel channel, SocketReaction reaction)
         {
-            if (RoleMap.ContainsKey(reaction.Emote.Name))
+            if (RoleMap.ContainsKey(reaction.Emote.ToString()))
             {
-                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.Name]);
+                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
 
                 if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already don't have the role, don't bother removing it again
 

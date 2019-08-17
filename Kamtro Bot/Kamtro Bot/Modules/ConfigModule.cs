@@ -32,6 +32,13 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
                 return;
             } else if (users.Count == 1) {
+                // Check if the user is already an admin
+                if (Program.Settings.AdminUsers.Contains(users[0].Id))
+                {
+                    await ReplyAsync(BotUtils.KamtroText(users[0].Username + "#" + users[0].Discriminator + " is already an admin!"));
+                    return;
+                }
+
                 await AddAdmin(users[0]);
             } else {
                 UserSelectionEmbed use = new UserSelectionEmbed(users, AddAdmin, Context.Guild.GetUser(Context.User.Id));
@@ -160,7 +167,7 @@ namespace Kamtro_Bot.Modules
             ulong id;
 
             if (ulong.TryParse(args, out id) && BotUtils.GetRole(id) != null) {
-                await AddModifyRole(BotUtils.GetRole(id));
+                await AddRoleEmote(BotUtils.GetRole(id));
                 return;
             }
 
@@ -195,7 +202,7 @@ namespace Kamtro_Bot.Modules
             ulong id;
 
             if (ulong.TryParse(args, out id) && BotUtils.GetRole(id) != null) {
-                await AddModifyRole(BotUtils.GetRole(id));
+                await AddRoleEmote(BotUtils.GetRole(id));
                 return;
             }
 
@@ -234,6 +241,13 @@ namespace Kamtro_Bot.Modules
         }
 
         private async Task AddAdmin(SocketGuildUser user) {
+            // Check if the user is already an admin
+            if (Program.Settings.AdminUsers.Contains(user.Id))
+            {
+                await ReplyAsync(BotUtils.KamtroText(user.Username + "#" + user.Discriminator + " is already an admin!"));
+                return;
+            }
+
             AddAdminEmbed admin = new AddAdminEmbed(Context, user);
             await admin.Display(Context.Channel);
         }
@@ -290,18 +304,26 @@ namespace Kamtro_Bot.Modules
         }
 
         private async Task RemRoleEmote(SocketRole role) {
-            string key = "";
+            List<string> roleKeys = new List<string>();
 
             foreach(KeyValuePair<string, ulong> kvp in ReactionHandler.RoleMap) {
-                if (kvp.Value == role.Id) key = kvp.Key;
+                if (kvp.Value == role.Id)
+                {
+                    // Add the role for removal with each reaction attached to it
+                    roleKeys.Add(kvp.Key);
+                }
             }
 
-            if(key == "") {
+            // Remove the role
+            for (int i = 0; i < roleKeys.Count; i++)
+            {
+                ReactionHandler.RoleMap.Remove(roleKeys[i]);
+            }
+            ReactionHandler.SaveRoleMap();
+
+            if (roleKeys.Count == 0) {
                 await ReplyAsync(BotUtils.KamtroText("That role has no emote attached to it!"));
             } else {
-                ReactionHandler.RoleMap.Remove(key);
-                ReactionHandler.SaveRoleMap();
-
                 await ReplyAsync(BotUtils.KamtroText("Role emote association removed."));
             }
         }

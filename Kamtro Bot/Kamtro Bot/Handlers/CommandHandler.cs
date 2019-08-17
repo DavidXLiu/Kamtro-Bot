@@ -137,8 +137,12 @@ namespace Kamtro_Bot.Handlers
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
-                if (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().Contains("kamtro"))
+                if (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro"))
                 {
+                    #region Ping Ask
+                    /// Ping Ask is a feature for users to check the latency on Kamtro.
+                    /// Depending on certain strings, this should detect if a user is asking Kamtro if they are running well.
+                    /// Author: Arcy
                     // Check for similar ping command strings - Arcy
                     string[] pingStrings = { "you there", "you up", "you running", "you ok", "you good", "you doing ok" };
 
@@ -186,6 +190,42 @@ namespace Kamtro_Bot.Handlers
                             // Code execution should not continue past this point. - Arcy
                         }
                     }
+                    #endregion
+
+                    #region Question Ask
+                    /// Question Ask is a feature for users to get a random response to their question.
+                    /// These responses are usually in the forms of yes, no, or maybe.
+                    /// Author: Arcy
+                    if (message.Content.EndsWith("?"))
+                    {
+                        // Array of all the responses
+                        string[] responseStrings = {
+                            // Yes
+                            "Of course.", "Beep Boop. My algorithms predict that is probably true.", "Yes...?", "Could be.",
+                            "Most likely.", "Tomorrow it will be.", "Fortunately, yes.", "Yeah!", "Yep.", "Certainly.",
+                            "Yes but not always.", "Totally.",
+
+                            // No
+                            "No.", "Not really.", "Unlikely.", "Yeah, no.", "Absolutely not.", "No way!", "Not a chance.",
+                            "Nah.",
+
+                            // Maybe
+                            "Possibly.", "Maybe.", "It's probably better not to answer.", "Only if you believe in it.",
+                            "Flip a coin to find out.", "If there is a will, there is a way.", "Are you sure you want to know?",
+
+                            // Jokes
+                            "Only on Tuesdays.", "What was the question again?", "o3o", "I do not know. I am just a robotic dragon.",
+                            "Idk ask Arcy.", "Only after a trip to Olive Garden.", "I should be asking you that question.",
+                            "I am a bot. I cannot tell.", "...", "Maybe someday.", "Error 404: Response not found.",
+                            "Let me think about that.", "Soon."
+                        };
+                        Random rnd = new Random();
+
+                        // Send a random response from the array
+                        await message.Channel.SendMessageAsync(BotUtils.KamtroText(responseStrings[rnd.Next(0, responseStrings.Length)]));
+                        return;
+                    }
+                    #endregion
                 }
                 /// END
             }
