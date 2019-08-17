@@ -4,6 +4,7 @@ using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Interfaces.ActionEmbeds;
 using Kamtro_Bot.Interfaces.MessageEmbeds;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
 using System;
 using System.Collections.Generic;
@@ -223,6 +224,21 @@ namespace Kamtro_Bot.Modules
             } else {
                 RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, RemRoleEmote, BotUtils.GetGUser(Context));
                 await rse.Display(Context.Channel);
+            }
+        }
+        
+        [Command("save")]
+        public async Task SaveAsync([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            if(BotUtils.SaveInProgress) {
+                await ReplyAsync(BotUtils.KamtroText("User data is already being saved!"));
+            } else {
+                BotUtils.PauseSave = true;
+                UserDataManager.SaveUserData();
+                BotUtils.PauseSave = false;
+
+                await ReplyAsync(BotUtils.KamtroText("User data saved."));
             }
         }
         #endregion

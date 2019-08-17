@@ -35,8 +35,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             eb.WithColor(Role.Color);
 
             eb.AddField("Role", Role.Mention);
-            eb.AddField(BotUtils.ZeroSpace, "React with an emote to assign that emote to this role.");
+            //eb.AddField(BotUtils.ZeroSpace, "React with an emote to assign that emote to this role.");
             eb.AddField("Emote", Emote);
+
+            eb.WithDescription("React with an emote to assign that emote to this role.");
 
             AddMenu(eb);
 
