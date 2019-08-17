@@ -14,6 +14,7 @@ namespace Kamtro_Bot.Nodes
     public class UserDataNode
     {
         public string Username;
+        public string Nickname;
         public int Score;  // Message score  -C
         public int WeeklyScore;
         public int Reputation;  // Reputation points  -C
@@ -29,8 +30,9 @@ namespace Kamtro_Bot.Nodes
 
         public UserInventoryNode Inventory;
 
-        public UserDataNode(string username, int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true, string quote = "", bool ps = false) {
+        public UserDataNode(string username, string nickname = "", int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true, string quote = "", bool ps = false) {
             Username = username;
+            Nickname = nickname;
 
             Score = score;
             WeeklyScore = weeklyscore;

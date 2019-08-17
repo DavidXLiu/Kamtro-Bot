@@ -53,6 +53,13 @@ namespace Kamtro_Bot.Managers
             return node;
         }
 
+        public static UserDataNode AddUser(ulong id, string username, string nickname = null) {
+            UserDataNode node = new UserDataNode(username, nickname ?? "");
+            UserData.Add(id, node);
+            SaveUserData();
+            return node;
+        }
+
         public static UserDataNode GetUserData(SocketGuildUser user) {
             AddUserIfNotExists(user);
 

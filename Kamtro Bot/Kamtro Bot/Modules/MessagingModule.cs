@@ -23,6 +23,8 @@ namespace Kamtro_Bot.Modules
         [Summary("Sends a direct message to the specified user.")]
         public async Task DirectMessageAsync([Remainder]string args = null)
         {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
+
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             // Check if admin
@@ -111,6 +113,8 @@ namespace Kamtro_Bot.Modules
         [Summary("Sends a message to the specified channel.")]
         public async Task MessageChannelAsync([Remainder]string message)
         {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
+
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             // Check if admin
@@ -129,6 +133,8 @@ namespace Kamtro_Bot.Modules
         /// Arcy
         public async Task MessageRelayAsync([Remainder]string message = "")
         {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
+
             SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
 
             // Check if admin
