@@ -241,6 +241,25 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(BotUtils.KamtroText("User data saved."));
             }
         }
+        
+        [Command("setwelcomemessage")]
+        [Alias("welcomemessage", "swm")]
+        public async Task SetWelcomeMessageAsync([Remainder] string message = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            string msg;
+
+            if(string.IsNullOrWhiteSpace(message)) {
+                msg = BotUtils.ZeroSpace;
+            } else {
+                msg = message;
+            }
+
+            Program.Settings.WelcomeMessageTemplate = msg;
+            Program.SaveSettings();
+
+            await ReplyAsync(BotUtils.KamtroText($"Welcome message set to '{msg}'"));
+        }
         #endregion
 
         #region Moderator

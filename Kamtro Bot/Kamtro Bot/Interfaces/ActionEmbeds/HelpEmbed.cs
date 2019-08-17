@@ -29,7 +29,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             Cursor = 0;
             Admin = admin;
             Mod = mod;
-            FileCount = HelpManager.GetDirList(Path, Admin).Length;
+            FileCount = HelpManager.GetDirList(Path, Admin, mod).Length;
         }
 
         public async override Task PerformAction(SocketReaction option) {
@@ -43,8 +43,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     break;
 
                 case ReactionHandler.SELECT_STR:
-                    if (HelpManager.GetDirList(Path, Admin).Count() < 1) return;
-                    await Select(HelpManager.GetDirList(Path, Admin)[Cursor]);
+                    if (HelpManager.GetDirList(Path, Admin, Mod).Count() < 1) return;
+                    await Select(HelpManager.GetDirList(Path, Admin, Mod)[Cursor]);
                     break;
 
                 case GoBack:
@@ -142,7 +142,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         /// </summary>
         /// <param name="eb">The embed builder</param>
         private void AddDirList(EmbedBuilder eb) {
-            eb.AddField(VirtualPath(), GetDirText(HelpManager.GetDirList(Path, Admin), Cursor));
+            eb.AddField(VirtualPath(), GetDirText(HelpManager.GetDirList(Path, Admin, Mod), Cursor));
         }
 
         private string VirtualPath() {
