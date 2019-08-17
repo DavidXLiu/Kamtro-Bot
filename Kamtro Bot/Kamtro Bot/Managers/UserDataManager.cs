@@ -47,7 +47,7 @@ namespace Kamtro_Bot.Managers
         /// <param name="user">The User to add</param>
         /// <returns>The data node that was added</returns>
         public static UserDataNode AddUser(SocketGuildUser user) {
-            UserDataNode node = new UserDataNode(user.Nickname == null ? user.Username:user.Nickname);
+            UserDataNode node = new UserDataNode(user.Username, user.Nickname ?? "");
             UserData.Add(user.Id, node);
             SaveUserData();
             return node;
