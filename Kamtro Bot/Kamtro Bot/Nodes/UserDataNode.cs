@@ -9,7 +9,7 @@ namespace Kamtro_Bot.Nodes
 {
     /// <summary>
     /// This is the node that will contain a user's stats
-    /// -C
+    /// -C 
     /// </summary>
     public class UserDataNode
     {
@@ -25,10 +25,11 @@ namespace Kamtro_Bot.Nodes
         public string Quote;
         public int Strikes;  // The number of strikes a user has. (This might end up getting removed, since the strike system is already in place) -C
         public bool Nsfw;  // if the user has access to NSFW
+        public bool PorterSupporter; // if the user donated to porter  -C
 
         public UserInventoryNode Inventory;
 
-        public UserDataNode(string username, int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true, string quote = "") {
+        public UserDataNode(string username, int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true, string quote = "", bool ps = false) {
             Username = username;
 
             Score = score;
@@ -37,10 +38,11 @@ namespace Kamtro_Bot.Nodes
             ReputationToGive = repg;
             Strikes = strikes;
             Nsfw = nsfw;
+            Quote = quote;
+            PorterSupporter = ps;
 
             // TBA
             ProfileColor = BotUtils.Kamtro.RawValue;
-            Quote = quote;
         }
 
         public Color GetColor() {
