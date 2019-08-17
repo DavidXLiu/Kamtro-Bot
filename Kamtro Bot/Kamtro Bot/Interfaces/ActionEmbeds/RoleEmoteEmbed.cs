@@ -18,11 +18,14 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
         private SocketRole Role;
         private string Emote;
-        private bool Remove;
 
         public RoleEmoteEmbed(SocketCommandContext ctx, SocketRole role) {
+            SetCtx(ctx);
+
             Role = role;
             Emote = BotUtils.ZeroSpace;
+
+            AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE);
         }
 
         public override Embed GetEmbed() {
@@ -34,6 +37,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             eb.AddField("Role", Role.Mention);
             eb.AddField("Emote", Emote);
 
+            AddMenu(eb);
+
             return eb.Build();
         }
 
@@ -42,8 +47,14 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             switch (opt) {
                 case ReactionHandler.CHECK_STR:
-                    if(ReactionHandler.RoleMap.ContainsKey(opt)) {
-                        Emote = $"The role {ServerData.Server.GetRole(ReactionHandler.RoleMap[opt]).Mention} already has that emote!";
+                    if(Emote == BotUtils.ZeroSpace || Emote == EmptyOrInvalidEmote) {
+                        Emote = EmptyOrInvalidEmote;
+                        await UpdateEmbed();
+                        return;
+                    }
+
+                    if(ReactionHandler.RoleMap.ContainsKey(Emote)) {
+                        Emote = $"The role {ServerData.Server.GetRole(ReactionHandler.RoleMap[Emote]).Mention} already has that emote!";
                         await UpdateEmbed();
                         break;
                     }

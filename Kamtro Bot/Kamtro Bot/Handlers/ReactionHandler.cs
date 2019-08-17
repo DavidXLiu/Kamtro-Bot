@@ -63,7 +63,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly MenuOptionNode DOWN = new MenuOptionNode(DOWN_STR, "Cursor Down");
         public static readonly MenuOptionNode SELECT = new MenuOptionNode(SELECT_STR, "Select");
 
-        public static Dictionary<string, ulong> RoleMap = new Dictionary<string, ulong>();
+        public static Dictionary<string, ulong> RoleMap = null;
 
         /// <summary>
         /// Constructor for the handler, called on startup. 
@@ -164,6 +164,8 @@ namespace Kamtro_Bot.Handlers
         public static void SetupRoleMap() {
             string json = FileManager.ReadFullFile(DataFileNames.RoleSelectMapFile);
             RoleMap = JsonConvert.DeserializeObject<Dictionary<string, ulong>>(json);
+
+            if(RoleMap == null) RoleMap = new Dictionary<string, ulong>();
 
             if (string.IsNullOrWhiteSpace(json)) SaveRoleMap();
         }

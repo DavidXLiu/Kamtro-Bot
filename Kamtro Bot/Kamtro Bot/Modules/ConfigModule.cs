@@ -181,6 +181,41 @@ namespace Kamtro_Bot.Modules
                 await rse.Display(Context.Channel);
             }
         }
+        
+        [Command("remroleemote")]
+        [Alias("ree", "removeroleemote")]
+        public async Task RemEmoteRoleAsync([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            if (string.IsNullOrWhiteSpace(args)) {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a role!"));
+                return;
+            }
+
+            ulong id;
+
+            if (ulong.TryParse(args, out id) && BotUtils.GetRole(id) != null) {
+                await AddModifyRole(BotUtils.GetRole(id));
+                return;
+            }
+
+            // if it's not a recognized ID, treat it as a name
+
+            List<SocketRole> roles = BotUtils.GetRoles(args);
+
+            if (roles.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I couldn't find any roles that matched the name you told me!"));
+                return;
+            } else if (roles.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("There were too many roles with that name! Please be more specific, or use the role ID"));
+                return;
+            } else if (roles.Count == 1) {
+                await RemRoleEmote(roles[0]);
+            } else {
+                RoleSelectionEmbed rse = new RoleSelectionEmbed(roles, RemRoleEmote, BotUtils.GetGUser(Context));
+                await rse.Display(Context.Channel);
+            }
+        }
         #endregion
 
         #region Moderator
@@ -266,6 +301,8 @@ namespace Kamtro_Bot.Modules
             } else {
                 ReactionHandler.RoleMap.Remove(key);
                 ReactionHandler.SaveRoleMap();
+
+                await ReplyAsync(BotUtils.KamtroText("Role emote association removed."));
             }
         }
         #endregion

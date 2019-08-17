@@ -392,7 +392,7 @@ namespace Kamtro_Bot
             List<SocketRole> tmp = new List<SocketRole>();
 
             foreach(SocketRole role in ServerData.Server.Roles) {
-                tmp.Add(role);
+                if(role.Name.ToLower().Contains(name.ToLower())) tmp.Add(role);
             }
 
             return tmp;
