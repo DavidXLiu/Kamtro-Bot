@@ -27,7 +27,7 @@ namespace Kamtro_Bot
     /// </remarks>
     public class Program
     {
-        public const string Version = "0.5.0";
+        public const string Version = "0.5.1";
         private const string TokenFile = "token.txt";
 
         public static bool Ready = false;

@@ -63,10 +63,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         break;
                     }
 
-                    // Remove a in animated strings
-                    if (option.Emote.ToString()[1] == 'a')
-                        Emote = option.Emote.ToString().Remove(1, 1);
-
                     ReactionHandler.RoleMap.Add(Emote, Role.Id);
                     ReactionHandler.SaveRoleMap();
 

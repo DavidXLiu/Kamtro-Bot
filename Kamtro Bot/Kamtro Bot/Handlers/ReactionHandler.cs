@@ -140,26 +140,63 @@ namespace Kamtro_Bot.Handlers
         #endregion
         #region Helper Methods
         private async Task OnRoleMessageReaction(SocketTextChannel channel, SocketReaction reaction) {
-            Console.WriteLine(reaction.Emote.ToString());
-            if (RoleMap.ContainsKey(reaction.Emote.ToString())) {
-                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
+            foreach (KeyValuePair<string, ulong> pair in RoleMap)
+            {
+                // check if custom emote
+                if (reaction.Emote.ToString().Contains(':') && pair.Key.Contains(':'))
+                {
+                    // Parse string to avoid animated emotes from not catching
+                    string pairId = pair.Key.Substring(pair.Key.LastIndexOf(':') + 1, (pair.Key.Length - 1) - (pair.Key.LastIndexOf(':') + 1));
+                    string reactionId = reaction.Emote.ToString().Substring(reaction.Emote.ToString().LastIndexOf(':') + 1, (reaction.Emote.ToString().Length - 1) - (reaction.Emote.ToString().LastIndexOf(':') + 1));
 
-                if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+                    if (pairId == reactionId)
+                    {
+                        SocketRole role = ServerData.Server.GetRole(pair.Value);
 
-                await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
+                        if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+
+                        await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
+                    }
+                }
+                else if (pair.Key == reaction.Emote.ToString())
+                {
+                    SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
+
+                    if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+
+                    await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
+                }
             }
         }
 
         private async Task OnRoleMessageRemoveReaction(SocketTextChannel channel, SocketReaction reaction)
         {
-            Console.WriteLine(reaction.Emote.ToString());
-            if (RoleMap.ContainsKey(reaction.Emote.ToString()))
+            foreach (KeyValuePair<string, ulong> pair in RoleMap)
             {
-                SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
+                // check if custom emote
+                if (reaction.Emote.ToString().Contains(':') && pair.Key.Contains(':'))
+                {
+                    // Parse string to avoid animated emotes from not catching
+                    string pairId = pair.Key.Substring(pair.Key.LastIndexOf(':') + 1, (pair.Key.Length - 1) - (pair.Key.LastIndexOf(':') + 1));
+                    string reactionId = reaction.Emote.ToString().Substring(reaction.Emote.ToString().LastIndexOf(':') + 1, (reaction.Emote.ToString().Length - 1) - (reaction.Emote.ToString().LastIndexOf(':') + 1));
 
-                if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already don't have the role, don't bother removing it again
+                    if (pairId == reactionId)
+                    {
+                        SocketRole role = ServerData.Server.GetRole(pair.Value);
 
-                await channel.Guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
+                        if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+
+                        await channel.Guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
+                    }
+                }
+                else if (pair.Key == reaction.Emote.ToString())
+                {
+                    SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
+
+                    if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+
+                    await channel.Guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
+                }
             }
         }
 
