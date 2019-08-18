@@ -88,7 +88,7 @@ namespace Kamtro_Bot.Handlers
             //////////////////////////////////////
             /// Command Checks Here
             //////////////////////////////////////
-            if (message.HasStringPrefix(Program.Settings.Prefix, ref argPos) && message.Channel.Id == Program.Settings.BotChannelID) {                
+            if (message.HasStringPrefix(Program.Settings.Prefix, ref argPos) && (message.Channel.Id == Program.Settings.BotChannelID || message.Channel is IPrivateChannel)) {                
                 // if it's a command in the right channel  -C
                 SocketCommandContext context = new SocketCommandContext(_client, message);
                 IResult result = await _service.ExecuteAsync(context, argPos, _provider);
