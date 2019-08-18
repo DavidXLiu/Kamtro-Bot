@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Nodes;
@@ -20,7 +21,7 @@ namespace Kamtro_Bot.Interfaces
         private bool boldNoverride = false;
         private ulong boldId = 0;
 
-        public RoleEmbed(SocketGuildUser user) {
+        public RoleEmbed(SocketCommandContext ctx, SocketGuildUser user) {
             // This method call adds all of the menu options to the array (Located in the base class)
             // Each option is added as a new MenuOptionNode object.
             // The last node passed in this specific call is one that's located in the ReactionHandler class
@@ -28,7 +29,7 @@ namespace Kamtro_Bot.Interfaces
             AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN,
                 ReactionHandler.SELECT, ReactionHandler.DONE);
 
-            CommandCaller = user;
+            SetCtx(ctx);
         }
 
         public override Embed GetEmbed() {
@@ -58,7 +59,7 @@ namespace Kamtro_Bot.Interfaces
                 }
 
                 onId = ServerData.ModifiableRoles[i].Id == boldId;
-                shouldBeBold = CommandCaller.Roles.Contains(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
+                shouldBeBold = BotUtils.GetGUser(Context).Roles.Contains(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
                 shouldBeBold = shouldBeBold || (boldOverride && onId);
                 shouldBeBold = shouldBeBold && (!boldNoverride || !onId);
 
@@ -102,13 +103,13 @@ namespace Kamtro_Bot.Interfaces
                     break;
 
                 case ReactionHandler.SELECT_STR:
-                    if (!CommandCaller.Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
+                    if (!BotUtils.GetGUser(Context).Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
                         // If the user doesn't have the role
-                        await CommandCaller.AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
+                        await BotUtils.GetGUser(Context).AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
                         boldOverride = true;
                     } else {
                         // If the user does have the role
-                        await CommandCaller.RemoveRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Remove it
+                        await BotUtils.GetGUser(Context).RemoveRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Remove it
                         boldNoverride = true;
                     }
                     boldId = ServerData.ModifiableRoles[cursorPos].Id;

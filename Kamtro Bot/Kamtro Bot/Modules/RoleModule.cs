@@ -35,7 +35,7 @@ namespace Kamtro_Bot.Modules
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
                 SocketGuildUser _user = BotUtils.GetGUser(Context);
-                RoleEmbed embed = new RoleEmbed(_user);
+                RoleEmbed embed = new RoleEmbed(Context, _user);
 
                 await embed.Display(Context.Channel);
 
@@ -154,7 +154,7 @@ namespace Kamtro_Bot.Modules
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
                 SocketGuildUser _user = BotUtils.GetGUser(Context);
-                RoleEmbed embed = new RoleEmbed(_user);
+                RoleEmbed embed = new RoleEmbed(Context, _user);
 
                 await embed.Display(Context.Channel);
 
@@ -268,7 +268,7 @@ namespace Kamtro_Bot.Modules
         [Summary("Displays an embed showing the modifiable roles that can be added/removed by users.")]
         public async Task RolesAsync() {
             SocketGuildUser _user = BotUtils.GetGUser(Context);
-            RoleEmbed embed = new RoleEmbed(_user);
+            RoleEmbed embed = new RoleEmbed(Context, _user);
 
             await embed.Display(Context.Channel);
         }

@@ -52,7 +52,7 @@ namespace Kamtro_Bot.Interfaces
                     await option.Channel.SendMessageAsync(BotUtils.KamtroText("You can now see the lewd owo"));
                     EventQueueManager.RemoveEvent(this);
 
-                    await CommandCaller.AddRoleAsync(ServerData.NSFWRole);
+                    await BotUtils.GetGUser(Context).AddRoleAsync(ServerData.NSFWRole);
                     break;
                 case DECLINE:
                     await option.Channel.SendMessageAsync(BotUtils.KamtroText("Understood."));

@@ -25,7 +25,7 @@ namespace Kamtro_Bot.Interfaces
     /// </remarks>
     public abstract class ActionEmbed : KamtroEmbedBase
     {
-        public SocketGuildUser CommandCaller;
+        public SocketUser CommandCaller;
         protected List<MenuOptionNode> MenuOptions;  // This should stay null. If there are no options, then it's value doesn't matter.
                                                      // This should be assigned in the constructor of the class.
 
@@ -132,7 +132,7 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="ctx">The SocketCommandContext</param>
         protected void SetCtx(SocketCommandContext ctx) {
             Context = ctx;
-            CommandCaller = ctx.User as SocketGuildUser;
+            CommandCaller = ctx.User;
         }
 
         /// <summary>
