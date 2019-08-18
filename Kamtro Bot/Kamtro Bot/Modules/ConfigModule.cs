@@ -1,5 +1,7 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Discord.Rest;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Interfaces.ActionEmbeds;
@@ -192,8 +194,8 @@ namespace Kamtro_Bot.Modules
             }
         }
         
-        [Command("remroleemote")]
-        [Alias("ree", "removeroleemote")]
+        [Command("removeroleemote")]
+        [Alias("ree", "remroleemote")]
         public async Task RemEmoteRoleAsync([Remainder] string args = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
 
@@ -373,8 +375,29 @@ namespace Kamtro_Bot.Modules
             if (roleKeys.Count == 0) {
                 await ReplyAsync(BotUtils.KamtroText("That role has no emote attached to it!"));
             } else {
+                await UpdateRoleMessage();
                 await ReplyAsync(BotUtils.KamtroText("Role emote association removed."));
             }
+        }
+
+        /// <summary>
+        /// Method used to update the bot message that contains the list of modifiable roles.
+        /// Users can react to this message to get or remove a role with its corresponding reaction.
+        /// Call this method whenever the list of modifiable roles changes.
+        /// Author: Arcy
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateRoleMessage()
+        {
+            IMessage roleMessage = await ServerData.Server.GetTextChannel(Program.Settings.RoleSelectChannelID).GetMessageAsync(Program.Settings.RoleSelectMessageID);
+
+            // Form message with each pair in the role map
+            string message = BotUtils.ZeroSpace;
+            foreach (KeyValuePair<string, ulong> pair in ReactionHandler.RoleMap)
+            {
+                message += ServerData.Server.GetRole(pair.Value).Mention + " - " + pair.Key + "\n";
+            }
+            await (roleMessage as RestUserMessage).ModifyAsync(x => x.Content = message);
         }
         #endregion
     }

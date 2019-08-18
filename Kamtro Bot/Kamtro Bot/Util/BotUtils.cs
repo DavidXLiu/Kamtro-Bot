@@ -248,7 +248,7 @@ namespace Kamtro_Bot
         /// <param name="message"></param>
         /// <returns>User found from the message.</returns>
         /// Arcy
-        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "", float threshold = 0.5f) {
+        public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "") {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
 
             // Find mentions
@@ -264,32 +264,30 @@ namespace Kamtro_Bot
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
-                if (UtilStringComparison.CompareWordScore(user.Username, remainder) > threshold) {
+                if (user.Username.ToLower().Contains(remainder))
                     users.Add(user);
-                } else if (user.Nickname != null && UtilStringComparison.CompareWordScore(user.Nickname, remainder) > threshold) {
+                else if (user.Nickname != null && user.Nickname.ToLower().Contains(remainder))
                     users.Add(user);
-                } else if (remainder.Contains(user.Id.ToString())) {
-                    users.Add(user);
-                }
+                else if (remainder.Contains(user.Id.ToString()))
+                    users.Add(user);             
             }
 
             return users;
         }
 
-        public static List<SocketGuildUser> GetUsers(string name, float threshold = 0.5f) {
+        public static List<SocketGuildUser> GetUsers(string name) {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
 
             name = name.ToLower();
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
-                if (UtilStringComparison.CompareWordScore(user.Username, name) > threshold) {
+                if (user.Username.ToLower().Contains(name))
                     users.Add(user);
-                } else if (user.Nickname != null && UtilStringComparison.CompareWordScore(user.Nickname, name) > threshold) {
+                else if (user.Nickname != null && user.Nickname.ToLower().Contains(name))
                     users.Add(user);
-                } else if (name.Contains(user.Id.ToString())) {
+                else if (name.Contains(user.Id.ToString()))
                     users.Add(user);
-                }
             }
 
             return users;

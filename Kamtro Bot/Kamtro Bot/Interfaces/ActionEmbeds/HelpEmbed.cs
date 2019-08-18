@@ -87,12 +87,14 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             for (int i = 0; i < dirs.Length; i++) {
                 if (!dirs[i].Contains('.')) {
-                    if (i == pos) dl += "> ";
+                    if (i == pos) dl += CustomEmotes.CursorAnimated;
+                    else dl += CustomEmotes.CursorBlankSpace;
 
                     // if it's a folder, make it bold
                     dl += $"**{HelpManager.StripExtraDirs(dirs[i])}**\n";
                 } else {
-                    if (i == pos) dl += "> ";
+                    if (i == pos) dl += CustomEmotes.CursorAnimated;
+                    else dl += CustomEmotes.CursorBlankSpace;
 
                     // else it's a file (no extension)
                     dl += HelpManager.StripExtraDirs(dirs[i].Substring(0, dirs[i].LastIndexOf('.'))) + "\n"; //  add it and trim off the end
@@ -111,7 +113,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 // Interpret JSON
                 HelpPageNode page = HelpManager.GetNode(Path);
 
-                eb.AddField("Command Name", $"!{page.Name}");
+                eb.AddField("Command Name", $"{page.Name}");
 
                 if(page.Alias.Length > 0) {
                     string alias = "!" + page.Alias[0];

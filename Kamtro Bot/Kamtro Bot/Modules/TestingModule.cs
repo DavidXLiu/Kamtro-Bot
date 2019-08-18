@@ -78,6 +78,7 @@ namespace Kamtro_Bot.Modules
         [Command("transfer")]
         public async Task TransferAsync()
         {
+            BotUtils.PauseSave = true;
             string line = "";
             bool active = true;
             foreach (string file in Directory.GetFiles("OldUserFiles"))
@@ -144,6 +145,8 @@ namespace Kamtro_Bot.Modules
             }
 
             await ReplyAsync(BotUtils.KamtroText("Finished transfer!"));
+
+            BotUtils.PauseSave = true;
         }
         #endregion
     }

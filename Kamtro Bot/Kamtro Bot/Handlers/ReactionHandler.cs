@@ -139,7 +139,8 @@ namespace Kamtro_Bot.Handlers
         }
         #endregion
         #region Helper Methods
-        private async Task OnRoleMessageReaction(SocketTextChannel channel, SocketReaction reaction) { 
+        private async Task OnRoleMessageReaction(SocketTextChannel channel, SocketReaction reaction) {
+            Console.WriteLine(reaction.Emote.ToString());
             if (RoleMap.ContainsKey(reaction.Emote.ToString())) {
                 SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
 
@@ -151,6 +152,7 @@ namespace Kamtro_Bot.Handlers
 
         private async Task OnRoleMessageRemoveReaction(SocketTextChannel channel, SocketReaction reaction)
         {
+            Console.WriteLine(reaction.Emote.ToString());
             if (RoleMap.ContainsKey(reaction.Emote.ToString()))
             {
                 SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);

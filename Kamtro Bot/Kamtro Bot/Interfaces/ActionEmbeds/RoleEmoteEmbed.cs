@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord.Rest;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
@@ -62,8 +63,14 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         break;
                     }
 
+                    // Remove a in animated strings
+                    if (option.Emote.ToString()[1] == 'a')
+                        Emote = option.Emote.ToString().Remove(1, 1);
+
                     ReactionHandler.RoleMap.Add(Emote, Role.Id);
                     ReactionHandler.SaveRoleMap();
+
+                    await UpdateRoleMessage();
 
                     EventQueueManager.RemoveEvent(this);
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Emote Association Added."));
@@ -81,6 +88,26 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     await UpdateEmbed();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Method used to update the bot message that contains the list of modifiable roles.
+        /// Users can react to this message to get or remove a role with its corresponding reaction.
+        /// Call this method whenever the list of modifiable roles changes.
+        /// Author: Arcy
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateRoleMessage()
+        {
+            IMessage roleMessage = await ServerData.Server.GetTextChannel(Program.Settings.RoleSelectChannelID).GetMessageAsync(Program.Settings.RoleSelectMessageID);
+
+            // Form message with each pair in the role map
+            string message = "";
+            foreach (KeyValuePair<string, ulong> pair in ReactionHandler.RoleMap)
+            {
+                message += ServerData.Server.GetRole(pair.Value).Mention + " - " + pair.Key + "\n";
+            }
+            await (roleMessage as RestUserMessage).ModifyAsync(x => x.Content = message);
         }
     }
 }

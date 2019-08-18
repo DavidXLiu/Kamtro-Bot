@@ -144,7 +144,7 @@ namespace Kamtro_Bot.Modules
             }
         }
 
-        [Command("removerole"), Alias("remove", "de", "de-", "give me")]
+        [Command("removerole"), Alias("remove", "de", "de-")]
         [Name("RemoveRole")]
         [RequireBotPermission(ChannelPermission.ManageRoles)]
         [Summary("Removes an allowed role to the user, unless they already don't have it or are restricted from removing it.")]
