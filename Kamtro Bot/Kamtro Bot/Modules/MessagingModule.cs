@@ -25,7 +25,7 @@ namespace Kamtro_Bot.Modules
         {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
 
             // Check if admin
             if (user.GuildPermissions.Administrator || ServerData.AdminUsers.Contains(user))
@@ -115,7 +115,7 @@ namespace Kamtro_Bot.Modules
         {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
 
             // Check if admin
             if (user.GuildPermissions.Administrator || ServerData.AdminUsers.Contains(user))
@@ -135,7 +135,7 @@ namespace Kamtro_Bot.Modules
         {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
 
             // Check if admin
             if (user.GuildPermissions.Administrator || ServerData.AdminUsers.Contains(user))

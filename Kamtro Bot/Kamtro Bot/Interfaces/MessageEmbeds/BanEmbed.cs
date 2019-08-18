@@ -55,27 +55,6 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                     /// These checks were done when the command was called - Arcy
 
-                    // First, the classic null check
-                    /*if(Context.Guild.GetUser(Target.Id) == null) {
-                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("That user does not exist!"));
-                        KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban non-existant member {BotUtils.GetFullUsername(Target)}");
-                        break;
-                    }
-
-                    // next, check to see if Kamtro has perms to ban the user
-                    if (!BotUtils.HighestUser(Context.Guild.GetUser(Context.Client.CurrentUser.Id), Context.Guild.GetUser(Context.User.Id))) {
-                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot ban them."));
-                        KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(Target)} of higher status than bot");
-                        break;
-                    }
-
-                    // next, check if the caller can ban the user
-                    if(!BotUtils.HighestUser(Context.Guild.GetUser(Context.User.Id), Context.Guild.GetUser(Target.Id)) && !ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.ADMIN)) {
-                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher than you, and as such you cannot ban them."));
-                        KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(Target)} of higher status than caller");
-                        break;
-                    }*/
-
                     BanDataNode ban = new BanDataNode(Context.User, Reason);
 
                     if (notifyTarget) {
@@ -87,7 +66,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     AdminDataManager.AddBan(Target, ban);
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroAngry($"User {BotUtils.GetFullUsername(Target)} has been banned."));
                         
-                    await Context.Guild.AddBanAsync(Target.Id);
+                    await ServerData.Server.AddBanAsync(Target.Id);
                     break;
                 case diamond:
                     notifyTarget = !notifyTarget;

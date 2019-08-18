@@ -380,7 +380,7 @@ namespace Kamtro_Bot
         }
 
         public static SocketGuildUser GetGUser(SocketCommandContext ctx) {
-            return ctx.Guild.GetUser(ctx.User.Id);
+            return ServerData.Server.GetUser(ctx.User.Id);
         }
 
         /// <summary>

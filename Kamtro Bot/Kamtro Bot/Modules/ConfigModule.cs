@@ -42,7 +42,7 @@ namespace Kamtro_Bot.Modules
 
                 await AddAdmin(users[0]);
             } else {
-                UserSelectionEmbed use = new UserSelectionEmbed(users, AddAdmin, Context.Guild.GetUser(Context.User.Id));
+                UserSelectionEmbed use = new UserSelectionEmbed(users, AddAdmin, BotUtils.GetGUser(Context));
                 await use.Display(Context.Channel);
             }
 
@@ -151,7 +151,7 @@ namespace Kamtro_Bot.Modules
                 } else if (users.Count == 1) {
                     await PermCheck(users[0]);
                 } else {
-                    UserSelectionEmbed use = new UserSelectionEmbed(users, PermCheck, Context.Guild.GetUser(Context.User.Id));
+                    UserSelectionEmbed use = new UserSelectionEmbed(users, PermCheck, BotUtils.GetGUser(Context));
                     await use.Display(Context.Channel);
                 }
             }

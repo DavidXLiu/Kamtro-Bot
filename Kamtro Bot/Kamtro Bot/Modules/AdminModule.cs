@@ -23,7 +23,7 @@ namespace Kamtro_Bot.Modules
     {
         [Command("hacked")]
         public async Task HackedAsync() {
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
 
             if (user.GuildPermissions.Administrator || ServerData.IsAdmin(user) || ServerData.IsModerator(user)) {
                 await Hacked();
@@ -33,7 +33,7 @@ namespace Kamtro_Bot.Modules
         [Command("offline")]
         [Alias("off", "sleep")]
         public async Task OfflineAsync() {
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
             if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR)) {
                 await ReplyAsync(BotUtils.KamtroText("Goodnight 💤"));
                 await Program.Client.LogoutAsync();
@@ -43,7 +43,7 @@ namespace Kamtro_Bot.Modules
         [Command("crossbanscan")]
         [Alias("cbs", "xbs", "xscan")]
         public async Task GenerateCrossBansAsync() {
-            if (!ServerData.HasPermissionLevel(Context.Guild.GetUser(Context.User.Id), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
 
             ScanInfoEmbed scan = new ScanInfoEmbed();
 

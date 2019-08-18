@@ -44,7 +44,7 @@ namespace Kamtro_Bot.Modules
             } else if (users.Count == 1) {
                 await AddRep(users[0]);
             } else {
-                UserSelectionEmbed use = new UserSelectionEmbed(users, AddRep, Context.Guild.GetUser(Context.User.Id));
+                UserSelectionEmbed use = new UserSelectionEmbed(users, AddRep, BotUtils.GetGUser(Context));
                 await use.Display(Context.Channel);
             }
         }
@@ -54,7 +54,7 @@ namespace Kamtro_Bot.Modules
         public async Task ProfileAsync([Remainder] string username = "") {
             if(username == "") {
                 // user's profile
-                SocketGuildUser usr = Context.Guild.GetUser(Context.User.Id);
+                SocketGuildUser usr = BotUtils.GetGUser(Context);
 
                 ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(usr), usr);
                 await pe.Display(Context.Channel);
@@ -74,7 +74,7 @@ namespace Kamtro_Bot.Modules
             } else if (users.Count == 1) {
                 await Profile(users[0]);
             } else {
-                UserSelectionEmbed use = new UserSelectionEmbed(users, Profile, Context.Guild.GetUser(Context.User.Id));
+                UserSelectionEmbed use = new UserSelectionEmbed(users, Profile, BotUtils.GetGUser(Context));
                 await use.Display(Context.Channel);
             }
         }
@@ -185,7 +185,7 @@ namespace Kamtro_Bot.Modules
                 return;
             }
 
-            UserDataManager.AddRep(BotUtils.GetGUser(Context), Context.Guild.GetUser(user.Id));
+            UserDataManager.AddRep(BotUtils.GetGUser(Context), BotUtils.GetGUser(Context));
 
             // Change formatting based on nicknames and channel
             SocketGuildUser targetGuildUser = ServerData.Server.GetUser(user.Id);

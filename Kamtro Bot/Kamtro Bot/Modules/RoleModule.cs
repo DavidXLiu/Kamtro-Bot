@@ -30,11 +30,11 @@ namespace Kamtro_Bot.Modules
         [RequireBotPermission(ChannelPermission.ManageRoles)]
         [Summary("Adds an allowed role to the user, unless they already have it or are restricted from obtaining it.")]
         public async Task AddRoleAsync([Remainder]string message = "") {
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
 
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
-                SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
+                SocketGuildUser _user = BotUtils.GetGUser(Context);
                 RoleEmbed embed = new RoleEmbed(_user);
 
                 await embed.Display(Context.Channel);
@@ -149,11 +149,11 @@ namespace Kamtro_Bot.Modules
         [RequireBotPermission(ChannelPermission.ManageRoles)]
         [Summary("Removes an allowed role to the user, unless they already don't have it or are restricted from removing it.")]
         public async Task RemoveRoleAsync([Remainder]string message = "") {
-            SocketGuildUser user = Context.Guild.GetUser(Context.User.Id);
+            SocketGuildUser user = BotUtils.GetGUser(Context);
 
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
-                SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
+                SocketGuildUser _user = BotUtils.GetGUser(Context);
                 RoleEmbed embed = new RoleEmbed(_user);
 
                 await embed.Display(Context.Channel);
@@ -267,7 +267,7 @@ namespace Kamtro_Bot.Modules
         [Name("Roles")]
         [Summary("Displays an embed showing the modifiable roles that can be added/removed by users.")]
         public async Task RolesAsync() {
-            SocketGuildUser _user = Context.Guild.GetUser(Context.Message.Author.Id);
+            SocketGuildUser _user = BotUtils.GetGUser(Context);
             RoleEmbed embed = new RoleEmbed(_user);
 
             await embed.Display(Context.Channel);
