@@ -216,7 +216,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     if(i == OpCursor) {
                         text += $"{CustomEmotes.CursorAnimated} {i+1}. {Options[PageNum - 1][i]}\n";
                     } else {
-                        text += $"{i + 1}. {Options[PageNum - 1][i]}\n";
+                        text += $"{CustomEmotes.CursorBlankSpace} {i + 1}. {Options[PageNum - 1][i]}\n";
                     }
                 }
 

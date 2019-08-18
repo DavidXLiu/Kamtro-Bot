@@ -49,12 +49,12 @@ namespace Kamtro_Bot.Interfaces
             for(int i = 0; i < ServerData.ModifiableRoles.Count; i++) {
                 if(cursorPos == i) {
                     // If the cursor is on this line
-                    //cursor = CustomEmotes.CursorAnimated; // Show it
-                    cursor = ">";
+                    cursor = CustomEmotes.CursorAnimated; // Show it
+                    //cursor = ">";
                 } else {
                     // otherwise
-                    //cursor = CustomEmotes.CursorBlankSpace;  // Don't 
-                    cursor = " ";
+                    cursor = CustomEmotes.CursorBlankSpace;  // Don't 
+                    //cursor = " ";
                 }
 
                 onId = ServerData.ModifiableRoles[i].Id == boldId;

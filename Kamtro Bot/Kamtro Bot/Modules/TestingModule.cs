@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 using Kamtro_Bot.Interfaces.MessageEmbeds;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Modules
 {
@@ -71,6 +73,77 @@ namespace Kamtro_Bot.Modules
         [Command("throw")]
         public async Task ThrowAsync() {
             throw new Exception();
+        }
+
+        [Command("transfer")]
+        public async Task TransferAsync()
+        {
+            string line = "";
+            bool active = true;
+            foreach (string file in Directory.GetFiles("OldUserFiles"))
+            {
+                // Loop through file once to check if user was ever active
+                StreamReader sr = new StreamReader(file);
+                while (!String.IsNullOrWhiteSpace(line = sr.ReadLine()))
+                {
+                    if (line.StartsWith("Activity Rating All Time:"))
+                    {
+                        if (line.Substring(line.IndexOf(':') + 1) != "0")
+                        {
+                            active = true;
+                            break;
+                        }
+                        else
+                        {
+                            active = false;
+                            break;
+                        }
+                    }
+                }
+                sr.Close();
+
+                if (active)
+                {
+                    // Start reading again
+                    sr = new StreamReader(file);
+
+                    Console.WriteLine(file.Substring(file.LastIndexOf('\\') + 1, file.IndexOf('.') - (file.LastIndexOf('\\') + 1)));
+                    ulong userId = ulong.Parse(file.Substring(file.LastIndexOf('\\') + 1, file.IndexOf('.') - (file.LastIndexOf('\\') + 1)));
+
+                    line = sr.ReadLine();
+                    Console.WriteLine(line);
+                    string substr = line.Substring(line.IndexOf(':') + 2);
+                    UserDataManager.AddUser(userId, line.Substring(line.IndexOf(':') + 2));
+                    while (!String.IsNullOrWhiteSpace(line = sr.ReadLine()))
+                    {
+                        // Activity Rating
+                        if (line.StartsWith("Activity Rating All Time:"))
+                            UserDataManager.UserData[userId].Score = int.Parse(line.Substring(line.IndexOf(':') + 1));
+                        // Rep
+                        if (line.StartsWith("ReputationPoints"))
+                            UserDataManager.UserData[userId].Reputation = int.Parse(line.Substring(line.IndexOf(':') + 1));
+                        // Profile Color
+                        if (line.StartsWith("ProfileColor"))
+                        {
+                            // Parse string and get color
+                            string[] strValues = line.Substring(line.IndexOf(':') + 1).Split(',');
+                            int[] values = { int.Parse(strValues[0]), int.Parse(strValues[1]), int.Parse(strValues[2]) };
+                            Color color = new Color(values[0], values[1], values[2]);
+
+                            UserDataManager.UserData[userId].ProfileColor = color.RawValue;
+                        }
+                        // Quote
+                        if (line.StartsWith("Logo"))
+                            UserDataManager.UserData[userId].Quote = line.Substring(line.IndexOf(':') + 1);
+                    }
+
+                    // Porter
+                    if (File.Exists("OldUserFiles/Exclusive/" + userId + ".txt"))
+                        UserDataManager.UserData[userId].PorterSupporter = true;
+                }
+            }
+
+            await ReplyAsync(BotUtils.KamtroText("Finished transfer!"));
         }
         #endregion
     }

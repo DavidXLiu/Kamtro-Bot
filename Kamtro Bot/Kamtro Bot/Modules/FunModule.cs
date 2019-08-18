@@ -35,7 +35,7 @@ namespace Kamtro_Bot.Modules
                 return;
             }
 
-            string[] s = args.Split('d');
+            string[] s = args.ToLower().Split('d');
             int num, sides;
 
             if (s.Length != 2 || !int.TryParse(s[0], out num) || !int.TryParse(s[1], out sides)) {

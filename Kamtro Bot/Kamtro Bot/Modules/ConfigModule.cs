@@ -59,7 +59,7 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText("Settings Reloaded."));
         }
 
-        [Command("addmodifyablerole")]
+        [Command("addmodifiablerole")]
         [Alias("amfr", "addmfr")]
         public async Task AddModifyRoleAsync([Remainder] string roleName = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
@@ -93,7 +93,7 @@ namespace Kamtro_Bot.Modules
             }
         }
        
-        [Command("removemodifyablerole")]
+        [Command("removemodifiablerole")]
         [Alias("rmfr", "removemfr")]
         public async Task RemModifyRoleAsync([Remainder] string roleName = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
@@ -105,7 +105,7 @@ namespace Kamtro_Bot.Modules
             ulong id;
 
             if (ulong.TryParse(roleName, out id) && BotUtils.GetRole(id) != null) {
-                await AddModifyRole(BotUtils.GetRole(id));
+                await RemModifyRole(BotUtils.GetRole(id));
                 return;
             }
 
@@ -268,11 +268,23 @@ namespace Kamtro_Bot.Modules
 
         #region non-commands
         private async Task AddModifyRole(SocketRole role) {
+            // Check if already a modifiable role
+            if (Program.Settings.ModifiableRoles.Contains(role.Id))
+            {
+                await ReplyAsync(BotUtils.KamtroText("That role is already a modifiable role."));
+                return;
+            }
             RoleAdditionEmbed rae = new RoleAdditionEmbed(Context, role);
             await rae.Display();
         }
 
         private async Task RemModifyRole(SocketRole role) {
+            // Check if already not a modifiable role
+            if (!Program.Settings.ModifiableRoles.Contains(role.Id))
+            {
+                await ReplyAsync(BotUtils.KamtroText("That role is not a modifiable role."));
+                return;
+            }
             RoleAdditionEmbed rae = new RoleAdditionEmbed(Context, role, true);
             await rae.Display();
         }

@@ -32,7 +32,10 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
         public override Embed GetEmbed() {
             EmbedBuilder eb = new EmbedBuilder();
 
-            eb.WithTitle(Data.Username);
+            if (!String.IsNullOrWhiteSpace(Data.Nickname))
+                eb.WithTitle(Data.Nickname);
+            else
+                eb.WithTitle(Data.Username);
             eb.WithColor(Data.ProfileColor);
             eb.WithThumbnailUrl(User.GetAvatarUrl());
 

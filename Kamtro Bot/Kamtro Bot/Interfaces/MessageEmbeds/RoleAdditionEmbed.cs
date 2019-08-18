@@ -27,6 +27,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             Role = role;
             Remove = remove;
 
+            // Show description of the role
+            if (remove)
+                Description = Program.Settings.RoleDescriptions[role.Id].Description;
+
             AddMenuOptions(ReactionHandler.CHECK, ReactionHandler.DECLINE);
             RegisterMenuFields();
         }
@@ -67,8 +71,14 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
             eb.AddField("Role", Role.Mention);
 
-            AddEmbedFields(eb);
-            AddMenu(eb);
+            // Just display the description if it is removing
+            if (Remove)
+                eb.AddField("Role Description", Description);
+            else
+            {
+                AddEmbedFields(eb);
+                AddMenu(eb);
+            }
 
             return eb.Build();
         }

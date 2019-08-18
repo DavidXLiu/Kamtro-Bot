@@ -185,9 +185,9 @@ namespace Kamtro_Bot.Interfaces
                 MessageFieldNode mfn = InputFields[PageNum][index];
 
                 if(index == CursorPos) {
-                    builder.AddField($"> {mfn.Name}", mfn.GetValue());
+                    builder.AddField($"{CustomEmotes.CursorAnimated} {mfn.Name}", mfn.GetValue());
                 } else {
-                    builder.AddField(mfn.Name, mfn.GetValue());
+                    builder.AddField(CustomEmotes.CursorBlankSpace + mfn.Name, mfn.GetValue());
                 }
             }
         }

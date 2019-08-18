@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Util;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -186,7 +187,34 @@ namespace Kamtro_Bot.Modules
 
             UserDataManager.AddRep(BotUtils.GetGUser(Context), Context.Guild.GetUser(user.Id));
 
-            await ReplyAsync(BotUtils.KamtroText($"{Context.User.Username} has given a reputation point to {user.Username}"));
+            // Change formatting based on nicknames and channel
+            SocketGuildUser targetGuildUser = ServerData.Server.GetUser(user.Id);
+            if (Context.Channel is SocketDMChannel)
+            {
+                if (targetGuildUser.Nickname != null)
+                    await ReplyAsync(BotUtils.KamtroText($"You have given a reputation point to {targetGuildUser.Nickname}."));
+                else
+                    await ReplyAsync(BotUtils.KamtroText($"You have given a reputation point to {targetGuildUser.Username}."));
+            }
+            else
+            {
+                SocketGuildUser guildUser = BotUtils.GetGUser(Context);
+
+                if (guildUser.Nickname != null)
+                {
+                    if (targetGuildUser.Nickname != null)
+                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Nickname} has given a reputation point to {targetGuildUser.Nickname}."));
+                    else
+                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Nickname} has given a reputation point to {targetGuildUser.Username}."));
+                }
+                else
+                {
+                    if (targetGuildUser.Nickname != null)
+                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Username} has given a reputation point to {targetGuildUser.Nickname}."));
+                    else
+                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Username} has given a reputation point to {targetGuildUser.Username}."));
+                }
+            }
         }
 
         private async Task Profile(SocketGuildUser user) {
