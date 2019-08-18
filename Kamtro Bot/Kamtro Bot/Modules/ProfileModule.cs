@@ -56,6 +56,8 @@ namespace Kamtro_Bot.Modules
                 // user's profile
                 SocketGuildUser usr = BotUtils.GetGUser(Context);
 
+                UpdateUserNames(usr);
+
                 ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(usr), usr);
                 await pe.Display(Context.Channel);
                 return;
@@ -185,10 +187,11 @@ namespace Kamtro_Bot.Modules
                 return;
             }
 
-            UserDataManager.AddRep(BotUtils.GetGUser(Context), BotUtils.GetGUser(Context));
-
             // Change formatting based on nicknames and channel
             SocketGuildUser targetGuildUser = ServerData.Server.GetUser(user.Id);
+
+            UserDataManager.AddRep(BotUtils.GetGUser(Context), targetGuildUser);
+
             if (Context.Channel is SocketDMChannel)
             {
                 if (targetGuildUser.Nickname != null)
@@ -218,8 +221,23 @@ namespace Kamtro_Bot.Modules
         }
 
         private async Task Profile(SocketGuildUser user) {
+            UpdateUserNames(user);
+
             ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(user), user);
             await pe.Display(Context.Channel);
+        }
+
+        /// <summary>
+        /// Updates the User Info data file to save the user's current username and nickname.
+        /// Call this method when profiles are being checked.
+        /// Author: Arcy
+        /// </summary>
+        /// <param name="user"></param>
+        private void UpdateUserNames(SocketGuildUser user)
+        {
+            UserDataManager.UserData[user.Id].Username = user.Username + "#" + user.Discriminator;
+            if (user.Nickname != null)
+                UserDataManager.UserData[user.Id].Nickname = user.Nickname;
         }
         #endregion
     }

@@ -262,6 +262,19 @@ namespace Kamtro_Bot.Modules
 
             await ReplyAsync(BotUtils.KamtroText($"Welcome message set to '{msg}'"));
         }
+
+        [Command("userdata")]
+        [Alias("ud", "userdatafile")]
+        public async Task UserDataAsync([Remainder] string message = "")
+        {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            // Check if the file is being used
+            if (!BotUtils.SaveInProgress)
+                await Context.Channel.SendFileAsync("User Data/UserData.json");
+            else
+                await ReplyAsync(BotUtils.KamtroText("The user data file is currently being saved."));
+        }
         #endregion
 
         #region Moderator

@@ -23,6 +23,10 @@ namespace Kamtro_Bot.Handlers
     /// </remarks>
     public class GeneralHandler
     {
+        private const int MESSAGE_WARNING_COUNT = 5;
+        private const int MESSAGE_BAN_COUNT = 7;
+        private const int MESSAGE_TIME = 3;
+
         public static Dictionary<ulong, CrossBanDataNode> CrossBan;
 
         public static bool ResetOn = true;
@@ -211,11 +215,11 @@ namespace Kamtro_Bot.Handlers
                 ConsMessages[msg.Channel.Id]++;
             }
             
-            if(ConsMessages[msg.Channel.Id] == 3 && !ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
+            if(ConsMessages[msg.Channel.Id] == MESSAGE_WARNING_COUNT && !ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
                 await msg.Channel.SendMessageAsync(BotUtils.KamtroAngry($"Please slow down {BotUtils.GetFullUsername(msg.Author)}, or you will be autobanned for spam."));
             }
 
-            if(ConsMessages[msg.Channel.Id] >= 5 && !ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
+            if(ConsMessages[msg.Channel.Id] >= MESSAGE_BAN_COUNT && !ServerData.HasPermissionLevel(auth, ServerData.PermissionLevel.TRUSTED)) {
                 await BotUtils.AdminLog($"User {BotUtils.GetFullUsername(auth)} was autobanned for spam");
                 await ServerData.Server.AddBanAsync(auth);
 
@@ -253,7 +257,7 @@ namespace Kamtro_Bot.Handlers
                     ConsMessages[key] = 0;
                 }
 
-                Thread.Sleep(new TimeSpan(0, 0, 10));
+                Thread.Sleep(new TimeSpan(0, 0, MESSAGE_TIME));
             }
         }
         #endregion

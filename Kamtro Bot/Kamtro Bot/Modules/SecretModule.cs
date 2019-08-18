@@ -92,5 +92,20 @@ namespace Kamtro_Bot.Modules
             if (num == 0) await Context.Channel.SendFileAsync("Images/Snokbutt2.png");
             else await Context.Channel.SendFileAsync("Images/Snokbutt.png");
         }
+
+        /// <summary>
+        /// Vore secret command
+        /// 20% chance to send the Arcy emote.
+        /// Author: Arcy
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        [Command("vore")]
+        public async Task VoreAsync([Remainder] string message = "")
+        {
+            Random random = new Random();
+            int num = random.Next(0, 5);
+            if (num == 0) await ReplyAsync(CustomEmotes.Arcy);
+        }
     }
 }
