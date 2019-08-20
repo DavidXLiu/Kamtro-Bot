@@ -56,8 +56,8 @@ namespace Kamtro_Bot.Handlers
                 // Relay to each user
                 foreach (SocketGuildUser user in ServerData.RelayUsers)
                 {
-                    // Make sure bot is able to send to user
-                    if (!user.GetOrCreateDMChannelAsync().IsFaulted)
+                    // Make sure bot is able to send to user and don't send same user messages
+                    if (!user.GetOrCreateDMChannelAsync().IsFaulted && m.Author.Id != user.Id)
                     {
                         // Check for attachments
                         if (m.Attachments.Count > 0)

@@ -9,6 +9,7 @@ using Kamtro_Bot.Interfaces.MessageEmbeds;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -228,7 +229,34 @@ namespace Kamtro_Bot.Modules
                 await rse.Display(Context.Channel);
             }
         }
-        
+
+        [Command("replacesettingsfile")]
+        [Alias("rsf")]
+        public async Task ReplaceSettingsFileAsync([Remainder] string message = "")
+        {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            if (Context.Message.Attachments.Count == 1)
+            {
+                Attachment file = Context.Message.Attachments.ElementAt(0);
+
+                if (file.Filename != "settings.json")
+                {
+                    await ReplyAsync(BotUtils.KamtroText("The settings file must be a json file named settings.json!"));
+                    return;
+                }
+
+                // At this point, the file is valid
+                string url = file.Url;
+
+                WebClient wc = new WebClient();
+                wc.DownloadFile(url, AdminDataManager.StrikeLogPath);
+
+                KLog.Info($"Settings file updated by {BotUtils.GetFullUsername(Context.User)}");
+                await ReplyAsync(BotUtils.KamtroText("The settings file has been updated!"));
+            }
+        }
+
         [Command("save")]
         public async Task SaveAsync([Remainder] string args = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
@@ -243,7 +271,17 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(BotUtils.KamtroText("User data saved."));
             }
         }
-        
+
+        [Command("settingsfile")]
+        [Alias("sf")]
+        public async Task SettingsFileAsync([Remainder] string message = "")
+        {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // This is an admin only command
+
+            // Check if the file is being used
+            await Context.Channel.SendFileAsync("Config/settings.json");
+        }
+
         [Command("setwelcomemessage")]
         [Alias("welcomemessage", "swm")]
         public async Task SetWelcomeMessageAsync([Remainder] string message = "") {

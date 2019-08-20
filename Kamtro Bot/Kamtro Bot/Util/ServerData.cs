@@ -98,15 +98,6 @@ namespace Kamtro_Bot.Util
 
             // Loop through each role id and add the SocketRole to the collection it is in. - Arcy
             foreach (SocketRole role in Server.Roles) {
-                // Modifiable Roles
-                foreach (ulong roleId in bs.ModifiableRoles) {
-                    // When finding a match, add to the collection. - Arcy
-                    if (role.Id == roleId) {
-                        ModifiableRoles.Add(role);
-                        break;
-                    }
-                }
-
                 // Moderator Roles
                 foreach (ulong roleId in bs.ModeratorRoles) {
                     // When finding a match, add to the collection. - Arcy
@@ -127,6 +118,21 @@ namespace Kamtro_Bot.Util
                 foreach(ulong roleId in bs.SilencedRoles) {
                     if(role.Id == roleId) {
                         SilencedRoles.Add(role);
+                    }
+                }
+            }
+
+            // Order matters for modifiable roles - Arcy
+            // Modifiable Roles
+            foreach (ulong roleId in bs.ModifiableRoles)
+            {
+                foreach (SocketRole role in Server.Roles)
+                {
+                    // When finding a match, add to the collection. - Arcy
+                    if (role.Id == roleId)
+                    {
+                        ModifiableRoles.Add(role);
+                        break;
                     }
                 }
             }

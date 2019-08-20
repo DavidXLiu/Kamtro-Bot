@@ -13,6 +13,7 @@ namespace Kamtro_Bot.Managers
 {
     public class AdminDataManager {
         public const string StrikeLogPath = @"Admin\strikelog.xlsx";
+        public const string SettingsJsonPath = @"Config\settings.json";
         private const string StrikeLogPage = "Strike Log";
 
         private const string IDColumn = "A";
