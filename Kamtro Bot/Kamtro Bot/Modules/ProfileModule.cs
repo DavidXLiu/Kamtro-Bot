@@ -56,9 +56,8 @@ namespace Kamtro_Bot.Modules
                 // user's profile
                 SocketGuildUser usr = BotUtils.GetGUser(Context);
 
-                UpdateUserNames(usr);
-
                 ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(usr), usr);
+                UpdateUserNames(usr);
                 await pe.Display(Context.Channel);
                 return;
             }
@@ -221,9 +220,8 @@ namespace Kamtro_Bot.Modules
         }
 
         private async Task Profile(SocketGuildUser user) {
-            UpdateUserNames(user);
-
             ProfileEmbed pe = new ProfileEmbed(UserDataManager.GetUserData(user), user);
+            UpdateUserNames(user);
             await pe.Display(Context.Channel);
         }
 

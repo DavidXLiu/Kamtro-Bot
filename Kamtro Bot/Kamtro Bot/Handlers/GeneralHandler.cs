@@ -25,7 +25,7 @@ namespace Kamtro_Bot.Handlers
     {
         private const int MESSAGE_WARNING_COUNT = 5;
         private const int MESSAGE_BAN_COUNT = 7;
-        private const int MESSAGE_TIME = 3;
+        private const int MESSAGE_TIME = 5;
 
         public static Dictionary<ulong, CrossBanDataNode> CrossBan;
 
@@ -253,7 +253,10 @@ namespace Kamtro_Bot.Handlers
         #region Threads
         public static void ResetThread() {
             while(ResetOn) {
-                foreach(ulong key in ConsMessages.Keys) {
+
+                // Must make a list of the keys to prevent exception of collection change in a loop
+                List<ulong> keys = ConsMessages.Keys.ToList();
+                foreach(ulong key in keys) {
                     ConsMessages[key] = 0;
                 }
 

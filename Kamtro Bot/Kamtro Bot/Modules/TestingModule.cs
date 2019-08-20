@@ -121,7 +121,7 @@ namespace Kamtro_Bot.Modules
                         if (line.StartsWith("Activity Rating All Time:"))
                             UserDataManager.UserData[userId].Score = int.Parse(line.Substring(line.IndexOf(':') + 1));
                         // Rep
-                        if (line.StartsWith("ReputationPoints"))
+                        if (line.StartsWith("ReputationPoints:"))
                             UserDataManager.UserData[userId].Reputation = int.Parse(line.Substring(line.IndexOf(':') + 1));
                         // Profile Color
                         if (line.StartsWith("ProfileColor"))

@@ -191,6 +191,10 @@ namespace Kamtro_Bot
 
                     if (span > action.Value.Interface.Timeout) {
                         toRemoveMsg.Add(action.Key);
+
+                        // Let user know embed is disabled
+                        action.Value.Interface.Message.ModifyAsync(x => x.Content = KamtroText("This embed is no longer in use."));
+                        action.Value.Interface.Message.ModifyAsync(x => x.Embed = null);
                     }
                 }
 
@@ -205,6 +209,10 @@ namespace Kamtro_Bot
 
                         if (span > node.EventAction.Timeout || node.IsAlone && span > node.EventAction.Timeout) {
                             toRemove.Add(node);
+
+                            // Let user know embed is disabled
+                            node.EventAction.Message.ModifyAsync(x => x.Content = KamtroText("This embed is no longer in use."));
+                            node.EventAction.Message.ModifyAsync(x => x.Embed = null);
                         }
                     }
 
@@ -268,6 +276,8 @@ namespace Kamtro_Bot
                     users.Add(user);
                 else if (user.Nickname != null && user.Nickname.ToLower().Contains(remainder))
                     users.Add(user);
+                else if (remainder == user.Username.ToLower() + "#" + user.Discriminator)
+                    users.Add(user);
                 else if (remainder.Contains(user.Id.ToString()))
                     users.Add(user);             
             }
@@ -285,6 +295,8 @@ namespace Kamtro_Bot
                 if (user.Username.ToLower().Contains(name))
                     users.Add(user);
                 else if (user.Nickname != null && user.Nickname.ToLower().Contains(name))
+                    users.Add(user);
+                else if (name == user.Username.ToLower() + "#" + user.Discriminator)
                     users.Add(user);
                 else if (name.Contains(user.Id.ToString()))
                     users.Add(user);
