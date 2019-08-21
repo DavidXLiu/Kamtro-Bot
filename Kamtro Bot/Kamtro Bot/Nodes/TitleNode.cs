@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Nodes
 {
@@ -23,10 +23,14 @@ namespace Kamtro_Bot.Nodes
         /// This variable stores title nodes as values, and their corresponding IDs as keys.
         /// Dictionaries serialize quite well into JSON.
         /// </summary>
-        public static Dictionary<int, TitleNode> NodeMap;  // This is the map that stores the nodes and their corresponding ID values
 
         public string Name;  // The name of the title -C
-        public ColorNode Color;  // The color of the title -C
+        public string Description; // Description of the title
+        public int PermRepReward; // On achieving, increaces the user's 
+        public int TempRepReward;
+        public int KamtrokenReward;
+        public bool Secret;
+
         
         /// <summary>
         /// This is the constructor for a TitleNode.
@@ -35,14 +39,9 @@ namespace Kamtro_Bot.Nodes
         /// <param name="id">The ID of the</param>
         /// <param name="title"></param>
         /// <param name="color"></param>
-        public TitleNode(int id, string title, ColorNode color) {
+        public TitleNode(int id, string title) {
             Name = title;  // set the name
-            Color = color; // set the color
-            NodeMap.Add(id, this);  // Add it to the list of nodes.
-        }
-
-        public static void SaveNodeMap() {
-            BotUtils.WriteToJson(NodeMap, DataFileNames.TitleListFile);  // Save the file
+            AchievementManager.NodeMap.Add(id, this);  // Add it to the list of nodes.
         }
     }
 }

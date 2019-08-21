@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Kamtro_Bot.Nodes
 {
@@ -19,6 +20,7 @@ namespace Kamtro_Bot.Nodes
         public int WeeklyScore;
         public int Reputation;  // Reputation points  -C
         public int ReputationToGive; // Rep they have left to give to others
+        public int MaxReputation = 3; // Max rep to give
         public int Money;  // Kamtrokens  -C
         public int CurrentTitle;  // The id of user's selected title.  -C
         public List<int> Titles;  // A list of title ids the user has  -C
@@ -30,21 +32,20 @@ namespace Kamtro_Bot.Nodes
 
         public UserInventoryNode Inventory;
 
-        public UserDataNode(string username, string nickname = "", int score = 0, int weeklyscore = 0, int rep = 0, int repg = 3, int strikes = 0, bool nsfw = true, string quote = "", bool ps = false) {
+        public UserDataNode(string username, string nickname = "", int score = 0, int weeklyscore = 0, int reputation = 0, int reputationtogive = 3, int strikes = 0, bool nsfw = true, string quote = "", bool portersupporter = false) {
             Username = username;
             Nickname = nickname;
 
             Score = score;
             WeeklyScore = weeklyscore;
-            Reputation = rep;
-            ReputationToGive = repg;
+            Reputation = reputation;
+            ReputationToGive = reputationtogive;
             Strikes = strikes;
             Nsfw = nsfw;
             Quote = quote;
-            PorterSupporter = ps;
-
-            // TBA
+            PorterSupporter = portersupporter;
             ProfileColor = BotUtils.Kamtro.RawValue;
+            MaxReputation = 3;
         }
 
         public Color GetColor() {

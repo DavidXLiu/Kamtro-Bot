@@ -205,7 +205,7 @@ namespace Kamtro_Bot.Managers
 
         public static void ResetRep() {
             foreach (ulong key in UserData.Keys) {
-                UserData[key].ReputationToGive = 3;
+                UserData[key].ReputationToGive = Math.Max(UserData[key].MaxReputation, UserData[key].ReputationToGive);
             }
 
             KLog.Info("Reset giveable reputation stats");
