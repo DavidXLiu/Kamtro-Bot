@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Nodes
@@ -31,17 +32,31 @@ namespace Kamtro_Bot.Nodes
         public int KamtrokenReward;
         public bool Secret;
 
-        
+
         /// <summary>
         /// This is the constructor for a TitleNode.
         /// This creates a new Title, and registers it.
         /// </summary>
-        /// <param name="id">The ID of the</param>
-        /// <param name="title"></param>
-        /// <param name="color"></param>
-        public TitleNode(int id, string title) {
+        /// <param name="title">The Name of the Title</param>
+        /// <param name="desc">A brief decription of the title to display</param>
+        /// <param name="kr">Kamtroken Reward</param>
+        /// <param name="prr">Permanent max rep increace reward</param>
+        /// <param name="trr">Temp rep points given as reward</param>
+        /// <param name="secret">If the title is secret, and not on the title list</param>
+        public TitleNode(string title, string desc, int prr, int trr, int kr, bool secret = false) {
             Name = title;  // set the name
-            AchievementManager.NodeMap.Add(id, this);  // Add it to the list of nodes.
+            Description = desc;
+            PermRepReward = prr;
+            TempRepReward = trr;
+            KamtrokenReward = kr;
+            Secret = secret;
+        }
+
+        public void OnComplete(SocketGuildUser user) {
+            UserDataNode data = UserDataManager.GetUserData(user);
+            data.Money += KamtrokenReward;
+            data.MaxReputation += PermRepReward;
+            data.ReputationToGive += TempRepReward;
         }
     }
 }
