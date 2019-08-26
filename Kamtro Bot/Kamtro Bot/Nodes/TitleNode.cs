@@ -21,14 +21,14 @@ namespace Kamtro_Bot.Nodes
         /// </summary>
         public enum DifficultyLevel
         {
-            GOD,  // This one's just for kamtro god
-            VERY_HARD,
-            SECRET_HARD,
-            HARD,
-            SECRET_MEDIUM,
-            MEDIUM,
-            SECRET_EASY,
             EASY,
+            SECRET_EASY,
+            MEDIUM,
+            SECRET_MEDIUM,
+            HARD,
+            SECRET_HARD,
+            VERY_HARD,
+            GOD,  // This one's just for kamtro god
         }
 
         public string Name;  // The name of the title -C

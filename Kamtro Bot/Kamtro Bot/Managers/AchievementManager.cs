@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 using Newtonsoft.Json;
@@ -20,12 +21,30 @@ namespace Kamtro_Bot.Managers
             UserDataNode f = UserDataManager.GetUserData(from);
             UserDataNode t = UserDataManager.GetUserData(to);
 
-
+            //TODO: Give rep titles here
         }
         #endregion
         #region Util
-        private static async Task AnnounceAchievement(SocketUser user, TitleNode title) {
-            await BotUtils.DMUserAsync(user, msg: BotUtils.KamtroText($"Congradulations! You have earned the title {title.Name}!"));
+        public static async Task AddTitle(SocketGuildUser user, int titleid) {
+            TitleNode node = NodeMap[titleid];
+
+            // TODO: Add title
+
+            await AnnounceAchievement(user, node);
+        }
+
+        private static async Task AnnounceAchievement(SocketGuildUser user, TitleNode title) {
+            AchievementNotifyEmbed ane = new AchievementNotifyEmbed(user, title);
+
+            if((int)title.Difficulty > (int)TitleNode.DifficultyLevel.HARD && !(title.Difficulty == TitleNode.DifficultyLevel.SECRET_EASY || title.Difficulty == TitleNode.DifficultyLevel.SECRET_MEDIUM || title.Difficulty == TitleNode.DifficultyLevel.SECRET_HARD)) {
+                await ane.Display(ServerData.BotChannel);
+            } else {
+                bool sent = await BotUtils.DMUserAsync(user, ane.GetEmbed());
+
+                if(!sent) {
+                    await ane.Display(ServerData.BotChannel); // Notify the user somehow
+                }
+            }
         }
 
         public static TitleNode GetTitle(int id) {

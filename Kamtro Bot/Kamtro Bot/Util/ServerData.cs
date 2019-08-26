@@ -25,6 +25,7 @@ namespace Kamtro_Bot.Util
         // Channels
         public static SocketTextChannel AdminChannel;
         public static SocketTextChannel LogChannel;
+        public static SocketTextChannel BotChannel;
 
         // Roles
         public static List<SocketRole> AllRoles;
@@ -83,6 +84,7 @@ namespace Kamtro_Bot.Util
             #region Channels
             AdminChannel = Server.GetTextChannel(bs.AdminChannelID);
             LogChannel = Server.GetTextChannel(bs.LogChannelID);
+            BotChannel = Server.GetTextChannel(bs.BotChannelID);
             #endregion
 
             #region AllRoles
