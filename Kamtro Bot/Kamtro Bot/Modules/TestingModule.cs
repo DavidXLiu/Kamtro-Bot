@@ -55,7 +55,7 @@ namespace Kamtro_Bot.Modules
         }
         #endregion
         #region Concept Commands
-        /*
+        
         [Command("messagetest")]
         [Alias("msgtst", "mts")]
         public async Task MessageTestAsync() {
@@ -149,7 +149,6 @@ namespace Kamtro_Bot.Modules
 
             BotUtils.PauseSave = true;
         }
-        */
         #endregion
     }
 }
