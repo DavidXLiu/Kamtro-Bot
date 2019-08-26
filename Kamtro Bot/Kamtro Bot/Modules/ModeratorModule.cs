@@ -250,6 +250,16 @@ namespace Kamtro_Bot.Modules
             }
         }
 
+        [Command("resetweeklyrep")]
+        [Alias("resetrep", "rwr")]
+        public async Task ResetRepAsync([Remainder] string name = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
+
+            UserDataManager.ResetRep();
+
+            await ReplyAsync(BotUtils.KamtroText("Rep reset."));
+        }
+
         #region Helper Methods
         private async Task StrikeUser(SocketUser user) {
             // First, the classic null check

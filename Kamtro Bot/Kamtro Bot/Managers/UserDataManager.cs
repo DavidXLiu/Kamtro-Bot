@@ -210,6 +210,8 @@ namespace Kamtro_Bot.Managers
                 UserData[key].ReputationToGive = Math.Max(UserData[key].MaxReputation, UserData[key].ReputationToGive);
             }
 
+            SaveUserData();
+
             KLog.Info("Reset giveable reputation stats");
         }
         #endregion

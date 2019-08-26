@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Threading;
 
 using Discord;
 using Discord.WebSocket;
 
+using Newtonsoft.Json;
+
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
-using Newtonsoft.Json;
-using System.Threading;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 
@@ -27,7 +28,7 @@ namespace Kamtro_Bot
     /// </remarks>
     public class Program
     {
-        public const string Version = "0.5.3";
+        public const string Version = "0.5.4";
         private const string TokenFile = "token.txt";
 
         public static bool Ready = false;
