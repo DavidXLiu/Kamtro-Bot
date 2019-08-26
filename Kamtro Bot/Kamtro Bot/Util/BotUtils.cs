@@ -32,6 +32,8 @@ namespace Kamtro_Bot
         public static readonly Color Green = new Color(97, 237, 116);
         public static readonly Color Blue = new Color(97, 193, 237);
         public static readonly Color Purple = new Color(146, 97, 237);
+        public static readonly Color PurpleMagenta = new Color(176, 97, 237);
+        public static readonly Color BrightMagenta = new Color(225, 97, 237);
         public static readonly Color White = new Color(255, 255, 255);
         public static readonly Color Grey = new Color(185, 200, 203);
         public static readonly Color Kamtro = new Color(137, 232, 249);

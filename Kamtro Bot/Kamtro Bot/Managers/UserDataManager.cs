@@ -128,6 +128,8 @@ namespace Kamtro_Bot.Managers
             UserData[from.Id].ReputationToGive--;
             UserData[to.Id].Reputation++;
 
+            GetUserData(from).RepGiven++;
+
             SaveUserData();
 
             return true;

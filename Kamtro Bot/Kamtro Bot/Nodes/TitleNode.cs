@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Kamtro_Bot.Managers;
 
@@ -15,15 +16,20 @@ namespace Kamtro_Bot.Nodes
     /// </summary>
     public class TitleNode
     {
-        // Something important to note about the Newtonsoft JSON serializer
-        // It will not serialize static variables unless specifically told to
-        // This is very useful, because it means that this Dictionary won't be 
-        // serialized into every title node entry
-        // -C
         /// <summary>
-        /// This variable stores title nodes as values, and their corresponding IDs as keys.
-        /// Dictionaries serialize quite well into JSON.
+        /// Title Difficulty (For the display color)
         /// </summary>
+        public enum DifficultyLevel
+        {
+            GOD,  // This one's just for kamtro god
+            VERY_HARD,
+            SECRET_HARD,
+            HARD,
+            SECRET_MEDIUM,
+            MEDIUM,
+            SECRET_EASY,
+            EASY,
+        }
 
         public string Name;  // The name of the title -C
         public string Description; // Description of the title
@@ -31,7 +37,7 @@ namespace Kamtro_Bot.Nodes
         public int TempRepReward;
         public int KamtrokenReward;
         public bool Secret;
-
+        public DifficultyLevel Difficulty;
 
         /// <summary>
         /// This is the constructor for a TitleNode.
@@ -43,13 +49,14 @@ namespace Kamtro_Bot.Nodes
         /// <param name="prr">Permanent max rep increace reward</param>
         /// <param name="trr">Temp rep points given as reward</param>
         /// <param name="secret">If the title is secret, and not on the title list</param>
-        public TitleNode(string title, string desc, int prr, int trr, int kr, bool secret = false) {
+        public TitleNode(string title, string desc, int prr, int trr, int kr, DifficultyLevel difficulty, bool secret = false) {
             Name = title;  // set the name
             Description = desc;
             PermRepReward = prr;
             TempRepReward = trr;
             KamtrokenReward = kr;
             Secret = secret;
+            Difficulty = difficulty;
         }
 
         public void OnComplete(SocketGuildUser user) {
@@ -57,6 +64,14 @@ namespace Kamtro_Bot.Nodes
             data.Money += KamtrokenReward;
             data.MaxReputation += PermRepReward;
             data.ReputationToGive += TempRepReward;
+        }
+
+        public Color GetColor() {
+            switch(Difficulty) {
+                case DifficultyLevel.EASY:
+
+                    break;
+            }
         }
     }
 }

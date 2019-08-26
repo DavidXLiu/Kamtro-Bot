@@ -30,6 +30,16 @@ namespace Kamtro_Bot.Nodes
         public bool Nsfw;  // if the user has access to NSFW
         public bool PorterSupporter; // if the user donated to porter  -C
 
+        #region Statistics
+        public int CommandsUsed;
+        public int TimesCheckedProfile;
+        public int RepGiven;
+
+        // Secret Things
+        public int TimesLookedAtRetroButt;
+        public int TimesLookedAtKamexButt;
+        #endregion
+
         public UserInventoryNode Inventory;
 
         public UserDataNode(string username, string nickname = "", int score = 0, int weeklyscore = 0, int reputation = 0, int reputationtogive = 3, int strikes = 0, bool nsfw = true, string quote = "", bool portersupporter = false) {
@@ -46,6 +56,9 @@ namespace Kamtro_Bot.Nodes
             PorterSupporter = portersupporter;
             ProfileColor = BotUtils.Kamtro.RawValue;
             MaxReputation = 3;
+            CommandsUsed = 0;
+            TimesCheckedProfile = 0;
+            RepGiven = 0;
         }
 
         public Color GetColor() {
