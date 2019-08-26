@@ -66,11 +66,38 @@ namespace Kamtro_Bot.Nodes
             data.ReputationToGive += TempRepReward;
         }
 
+        /// <summary>
+        /// Gets the color for the display embed
+        /// </summary>
+        /// <returns>The color</returns>
         public Color GetColor() {
             switch(Difficulty) {
                 case DifficultyLevel.EASY:
+                    return BotUtils.Blue;
 
-                    break;
+                case DifficultyLevel.SECRET_EASY:
+                    return BotUtils.Purple;
+
+                case DifficultyLevel.MEDIUM:
+                    return BotUtils.Green;
+
+                case DifficultyLevel.SECRET_MEDIUM:
+                    return BotUtils.PurpleMagenta;
+
+                case DifficultyLevel.HARD:
+                    return BotUtils.Orange;
+
+                case DifficultyLevel.SECRET_HARD:
+                    return BotUtils.BrightMagenta;
+
+                case DifficultyLevel.VERY_HARD:
+                    return BotUtils.Red;
+
+                case DifficultyLevel.GOD:
+                    return BotUtils.Yellow;
+
+                default:
+                    return BotUtils.White;
             }
         }
     }
