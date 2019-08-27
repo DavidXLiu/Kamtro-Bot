@@ -41,6 +41,7 @@ namespace Kamtro_Bot.Managers
             UserDataNode u = UserDataManager.GetUserData(user);
 
             u.Titles.Add(titleid);
+            node.OnComplete(user);
             KLog.Important("");
             UserDataManager.SaveUserData();
 

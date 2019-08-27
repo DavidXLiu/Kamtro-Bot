@@ -32,6 +32,7 @@ namespace Kamtro_Bot
         private const string TokenFile = "token.txt";
 
         public static bool Ready = false;
+        public static bool Debug = false;
 
         public static BotSettings Settings;
 

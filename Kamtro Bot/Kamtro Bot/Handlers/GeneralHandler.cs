@@ -104,51 +104,68 @@ namespace Kamtro_Bot.Handlers
         /// <returns></returns>
         public async Task OnMemberUpdate(SocketGuildUser before, SocketGuildUser after) {
             if (before.Guild != ServerData.Server || before.Status != after.Status) return; // If it's not on kamtro, or it was just a status update (online to AFK, etc), ignore it
-            
+
+            KLog.Debug($"Member {BotUtils.GetFullUsername(before)} updated.");
+
             if(BotUtils.GetFullUsername(before) != BotUtils.GetFullUsername(after)) {
                 // If the user changed their name.
+                KLog.Debug($"Username Change: {BotUtils.GetFullUsername(before)} --> {BotUtils.GetFullUsername(after)}");
+                
                 NameChangeEmbed nce = new NameChangeEmbed(before, after);
                 await nce.Display(ServerData.LogChannel, after.Username + "#" + after.Discriminator);
             }
 
+            KLog.Debug("FLAG GH-A");
+
             if (before.Nickname != after.Nickname) {
                 // If the nickame changed
+                KLog.Debug($"Nickname Change: {BotUtils.GetFullUsername(before)}: {(before.Nickname == null ? "[No Nickname]":$"'{before.Nickname}'")} --> {(after.Nickname == null ? "[No Nickname]" : $"'{after.Nickname}'")}");
+
                 NameChangeEmbed nce = new NameChangeEmbed(before, after, true);
                 await nce.Display(ServerData.LogChannel, after.Username + "#" + after.Discriminator);
             }
 
-            if(before.GetAvatarUrl() != after.GetAvatarUrl()) {
-                AvatarUpdateEmbed emb = new AvatarUpdateEmbed(before, after);
+            KLog.Debug("FLAG GH-B");
+
+            if (before.GetAvatarUrl() != after.GetAvatarUrl()) {
+                KLog.Debug($"Avatar change from {BotUtils.GetFullUsername(after)}");
+                // KLog.Debug($"");
+               AvatarUpdateEmbed emb = new AvatarUpdateEmbed(before, after);
                 await emb.Display(ServerData.LogChannel, after.Username + "#" + after.Discriminator);
             }
-
-            // Remove mature role on silence
-            if(before.Roles.Count != after.Roles.Count) {
+            KLog.Debug("FLAG GH-C ");
+            if (before.Roles.Count != after.Roles.Count) {
                 // role update
-
+                KLog.Debug($"Role Update user {BotUtils.GetFullUsername(after)}");
                 if (!before.Roles.Contains(ServerData.Lurker) && after.Roles.Contains(ServerData.Lurker)) return; // if it was just a lurker update, don worry bout it.  -C
-
+                KLog.Debug("FLAG GH-D");
                 if(after.Roles.Contains(ServerData.Lurker) && (after.Roles.Contains(ServerData.Kamexican) || after.Roles.Contains(ServerData.Retropolitan))) {
+                    KLog.Debug("FLAG GH-E");
                     await after.RemoveRoleAsync(ServerData.Lurker); 
                 }
-
+                KLog.Debug("FLAG GH-F");
                 // for lurker
                 if (!after.Roles.Contains(ServerData.Kamexican) && !after.Roles.Contains(ServerData.Retropolitan) && !after.Roles.Contains(ServerData.Lurker)) {
+                    KLog.Debug("FLAG GH-G");
                     await after.AddRoleAsync(ServerData.Lurker);
+                    KLog.Debug("FLAG GH-H");
                     return;
                 }
-
+                KLog.Debug("FLAG GH-I");
 
                 // for nsfw remove
-                foreach(SocketRole role in after.Roles) {
+                foreach (SocketRole role in after.Roles) {
                     if(ServerData.SilencedRoles.Contains(role)) {
                         // remove mature role if user has it
                         if(after.Roles.Contains(ServerData.NSFWRole)) {
+                            KLog.Debug("FLAG GH-J");
                             await after.RemoveRoleAsync(ServerData.NSFWRole);
                         }
                     }
                 }
             }
+
+            KLog.Debug("FLAG GH-Z");
         }
         
         /// <summary>

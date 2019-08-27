@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using Discord.Commands;
 using Kamtro_Bot.Interfaces.MessageEmbeds;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Modules
 {
@@ -54,8 +55,34 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText($"But nobody came."));
         }
         #endregion
+        #region Other Commands
+        [Command("debug")]
+        public async Task ToggleDebugAsync([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
+
+            if (string.IsNullOrWhiteSpace(args)) {
+                Program.Debug = !Program.Debug;
+                await ReplyAsync(BotUtils.KamtroText($"Debug mode turned {(Program.Debug ? "on" : "off")}."));
+                return;
+            }
+
+            if (args.ToLower() == "on") {
+                Program.Debug = true;
+                KLog.Important("Debug mode turned on");
+                await ReplyAsync(BotUtils.KamtroText("Debug mode turned on."));
+            } else if (args.ToLower() == "off") {
+                Program.Debug = false;
+                KLog.Important("Debug mode turned off");
+                await ReplyAsync(BotUtils.KamtroText("Debug mode turned off."));
+            } else if (args.ToLower() == "mode") {
+                await ReplyAsync(BotUtils.KamtroText($"Debug mode is {(Program.Debug ? "on" : "off")}"));
+            } else {
+                await ReplyAsync(BotUtils.KamtroText("Invalid arguments. No args to toggle, '!debug on' to turn debug mode on, '!debug off' to turn debug mode off, '!debug mode' to see current debug mode."));
+            }
+        }
+        #endregion
         #region Concept Commands
-        
+        /*
         [Command("messagetest")]
         [Alias("msgtst", "mts")]
         public async Task MessageTestAsync() {
@@ -79,6 +106,8 @@ namespace Kamtro_Bot.Modules
         [Command("transfer")]
         public async Task TransferAsync()
         {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
+
             BotUtils.PauseSave = true;
             string line = "";
             bool active = true;
@@ -149,6 +178,8 @@ namespace Kamtro_Bot.Modules
 
             BotUtils.PauseSave = true;
         }
+        
+        // */
         #endregion
     }
 }
