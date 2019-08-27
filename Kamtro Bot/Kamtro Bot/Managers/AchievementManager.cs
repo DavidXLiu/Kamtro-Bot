@@ -26,9 +26,23 @@ namespace Kamtro_Bot.Managers
         #endregion
         #region Util
         public static async Task AddTitle(SocketGuildUser user, int titleid) {
+            if(!NodeMap.ContainsKey(titleid)) {
+                KLog.Error($"Attempted to give user {BotUtils.GetFullUsername(user)} invalid title ID #{titleid}");
+                return;
+            }
+
             TitleNode node = NodeMap[titleid];
 
-            // TODO: Add title
+            if(node == null) {
+                KLog.Error($"Attempted to give user {BotUtils.GetFullUsername(user)} null title with ID #{titleid}");
+                return;
+            }
+
+            UserDataNode u = UserDataManager.GetUserData(user);
+
+            u.Titles.Add(titleid);
+            KLog.Important("");
+            UserDataManager.SaveUserData();
 
             await AnnounceAchievement(user, node);
         }

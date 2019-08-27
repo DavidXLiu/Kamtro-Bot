@@ -18,5 +18,9 @@ namespace Kamtro_Bot
         public static void Warning(string msg) {
             Console.WriteLine("[W] " + msg);
         }
+
+        public static void Error(string msg) {
+            Console.WriteLine("[ERROR] " + msg);
+        }
     }
 }
