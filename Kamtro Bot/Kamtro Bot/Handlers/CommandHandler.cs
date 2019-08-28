@@ -137,8 +137,46 @@ namespace Kamtro_Bot.Handlers
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
-                if (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro"))
+                if ((message.Channel.Id == Program.Settings.BotChannelID || message is IDMChannel)
+                    && (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro") || message.Content.ToLower().EndsWith("kamtro")))
                 {
+                    /// ORDER THESE CHECKS FROM LEAST TIME TO MOST TIME
+
+                    #region Question Ask
+                    /// Question Ask is a feature for users to get a random response to their question.
+                    /// These responses are usually in the forms of yes, no, or maybe.
+                    /// Author: Arcy
+                    if (message.Content.EndsWith("?"))
+                    {
+                        // Array of all the responses
+                        string[] responseStrings = {
+                            // Yes
+                            "Of course.", "Beep Boop. My algorithms predict that is probably true.", "Yes...?", "Could be.",
+                            "Most likely.", "Tomorrow it will be.", "Fortunately, yes.", "Yeah!", "Yep.", "Certainly.",
+                            "Yes but not always.", "Totally.",
+
+                            // No
+                            "No.", "Not really.", "Unlikely.", "Yeah, no.", "Absolutely not.", "No way!", "Not a chance.",
+                            "Nah.",
+
+                            // Maybe
+                            "Possibly.", "Maybe.", "It's probably better not to answer.", "Only if you believe in it.",
+                            "Flip a coin to find out.", "If there is a will, there is a way.", "Are you sure you want to know?",
+
+                            // Jokes
+                            "Only on Tuesdays.", "What was the question again?", "o3o", "I do not know. I am just a robotic dragon.",
+                            "Idk ask Arcy.", "Only after a trip to Olive Garden.", "I should be asking you that question.",
+                            "I am a bot. I cannot tell.", "...", "Maybe someday.", "Error 404: Response not found.",
+                            "Let me think about that.", "Soon."
+                        };
+                        Random rnd2 = new Random();
+
+                        // Send a random response from the array
+                        await message.Channel.SendMessageAsync(BotUtils.KamtroText(responseStrings[rnd2.Next(0, responseStrings.Length)]));
+                        return;
+                    }
+                    #endregion
+
                     #region Ping Ask
                     /// Ping Ask is a feature for users to check the latency on Kamtro.
                     /// Depending on certain strings, this should detect if a user is asking Kamtro if they are running well.
@@ -192,38 +230,55 @@ namespace Kamtro_Bot.Handlers
                     }
                     #endregion
 
-                    #region Question Ask
-                    /// Question Ask is a feature for users to get a random response to their question.
-                    /// These responses are usually in the forms of yes, no, or maybe.
+                    #region Thanks
+                    /// Thanks is a simple feature where Kamtro will respond with different ways of saying "Your Welcome".
+                    /// This will check for popular langauges.
                     /// Author: Arcy
-                    if (message.Content.EndsWith("?"))
+                    // Check for thanks in common languages - Arcy
+                    string[] thanksStringsEn = { "thank" };
+                    string[] thanksStringsEs = { "gracias", "obrigado" };
+                    string[] thanksStringsDe = { "danke", "vielen dank" };
+                    string[] thanksStringsJp = { "arigato", "ありがとう", "doumo", "どうも" };
+                    string[] thanksStringsCn = { "xiè", "谢" };
+                    string[] thanksStringsBinary = { "0101010001101000011000010110111001101011", "0111010001101000011000010110111001101011" };
+
+                    string[] welcomeStringsEn = { "You're welcome!", "No problem!", "Anytime!" };
+                    string[] welcomeStringsEs = { "De nada!", "Mucho gusto!" };
+                    string[] welcomeStringsDe = { "Bitte!", "Kein problem!" };
+                    string[] welcomeStringsJp = { "こちらこそ、ありがとうございます。", "いえいえ。" };
+                    string[] welcomeStringsCn = { "不客气", "你太客气了" };
+                    string[] welcomeStringsBinary = { "010110010110111101110101001001110111001001100101001000000111011101100101011011000110001101101111011011010110010100100001" };
+                    Random rnd = new Random();
+
+                    foreach (string s in thanksStringsEn)
                     {
-                        // Array of all the responses
-                        string[] responseStrings = {
-                            // Yes
-                            "Of course.", "Beep Boop. My algorithms predict that is probably true.", "Yes...?", "Could be.",
-                            "Most likely.", "Tomorrow it will be.", "Fortunately, yes.", "Yeah!", "Yep.", "Certainly.",
-                            "Yes but not always.", "Totally.",
-
-                            // No
-                            "No.", "Not really.", "Unlikely.", "Yeah, no.", "Absolutely not.", "No way!", "Not a chance.",
-                            "Nah.",
-
-                            // Maybe
-                            "Possibly.", "Maybe.", "It's probably better not to answer.", "Only if you believe in it.",
-                            "Flip a coin to find out.", "If there is a will, there is a way.", "Are you sure you want to know?",
-
-                            // Jokes
-                            "Only on Tuesdays.", "What was the question again?", "o3o", "I do not know. I am just a robotic dragon.",
-                            "Idk ask Arcy.", "Only after a trip to Olive Garden.", "I should be asking you that question.",
-                            "I am a bot. I cannot tell.", "...", "Maybe someday.", "Error 404: Response not found.",
-                            "Let me think about that.", "Soon."
-                        };
-                        Random rnd = new Random();
-
-                        // Send a random response from the array
-                        await message.Channel.SendMessageAsync(BotUtils.KamtroText(responseStrings[rnd.Next(0, responseStrings.Length)]));
-                        return;
+                        if (message.Content.ToLower().Contains(s))
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsEn[rnd.Next(0, welcomeStringsEn.Length)]));
+                    }
+                    foreach (string s in thanksStringsEs)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsEs[rnd.Next(0, welcomeStringsEs.Length)]));
+                    }
+                    foreach (string s in thanksStringsDe)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsDe[rnd.Next(0, welcomeStringsDe.Length)]));
+                    }
+                    foreach (string s in thanksStringsJp)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsJp[rnd.Next(0, welcomeStringsJp.Length)]));
+                    }
+                    foreach (string s in thanksStringsCn)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsCn[rnd.Next(0, welcomeStringsCn.Length)]));
+                    }
+                    foreach (string s in thanksStringsBinary)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsBinary[rnd.Next(0, welcomeStringsBinary.Length)]));
                     }
                     #endregion
                 }
