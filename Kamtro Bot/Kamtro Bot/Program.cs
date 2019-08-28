@@ -28,7 +28,7 @@ namespace Kamtro_Bot
     /// </remarks>
     public class Program
     {
-        public const string Version = "0.5.5";
+        public const string Version = "0.5.6";
         private const string TokenFile = "token.txt";
 
         public static bool Ready = false;
@@ -43,7 +43,7 @@ namespace Kamtro_Bot
 
         public static DiscordSocketClient Client;
         private DiscordSocketConfig config;
-
+         
         private CommandHandler _commands;
         private LogHandler _logs;
         private ReactionHandler _reaction;

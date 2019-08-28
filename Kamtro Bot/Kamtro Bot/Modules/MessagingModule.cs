@@ -10,6 +10,7 @@ using Discord.Commands;
 
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Handlers;
 
 namespace Kamtro_Bot.Modules
 {
@@ -18,7 +19,8 @@ namespace Kamtro_Bot.Modules
     /// </summary>
     public class MessagingModule : ModuleBase<SocketCommandContext>
     {
-        [Command("directmessage"), Alias("dm","pm","privatemessage","tell")]
+        [Command("directmessage")]
+        [Alias("dm","pm","privatemessage","tell")]
         [Name("DirectMessage")]
         [Summary("Sends a direct message to the specified user.")]
         public async Task DirectMessageAsync([Remainder]string args = null)
@@ -108,26 +110,50 @@ namespace Kamtro_Bot.Modules
             }
         }
 
-        [Command("messagechannel"), Alias("say", "speak")]
+        [Command("messagechannel")]
+        [Alias("say", "speak")]
         [Name("MessageChannel")]
         [Summary("Sends a message to the specified channel.")]
-        public async Task MessageChannelAsync([Remainder]string message)
+        public async Task MessageChannelAsync([Remainder]string args = "")
         {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
-            SocketGuildUser user = BotUtils.GetGUser(Context);
-
-            // Check if admin
-            if (user.GuildPermissions.Administrator || ServerData.AdminUsers.Contains(user))
-            {
-                /// TO DO
-                /// 
-                /// Make toggleable option to record messages received in DMs and send them to specified channel
-                /// Single messages should work similar to the DM command
+            if(string.IsNullOrWhiteSpace(args)) {
+                await ReplyAsync(BotUtils.KamtroText("You need to say a message!"));
+                return;
             }
+            
+            if(Context.Message.MentionedChannels.Count != 1) {
+                await ReplyAsync(BotUtils.KamtroText("You need to specify the channel!"));
+                return;
+            }
+
+            SocketTextChannel target = Context.Message.MentionedChannels.ElementAt(0) as SocketTextChannel;
+
+            if(target == null) {
+                await ReplyAsync(BotUtils.KamtroText("You need to specify a text channel!"));
+                return;
+            }
+
+            List<string> msgl = args.Split(' ').ToList();
+
+            msgl.RemoveAt(0);
+
+            if(msgl.Count <= 0) {
+                await ReplyAsync(BotUtils.KamtroText("You need to say a message!"));
+                return;
+            }
+
+            string msg = string.Join(" ", msgl.ToArray());
+
+            await target.SendMessageAsync(BotUtils.KamtroText(msg));
+            await Context.Message.AddReactionAsync(ReactionHandler.CHECK_EM);
+
+            KLog.Info($"Kamtro Message Sent in #{target.Name} from [{BotUtils.GetFullUsername(Context.User)}]: {msg}");
         }
 
-        [Command("messagerelay"), Alias("togglemessagerelay", "relaymessage", "relaymessages", "relay")]
+        [Command("messagerelay")]
+        [Alias("togglemessagerelay", "relaymessage", "relaymessages", "relay")]
         [Name("MessageRelay")]
         [Summary("Sends a message to the specified channel.")]
         /// Arcy

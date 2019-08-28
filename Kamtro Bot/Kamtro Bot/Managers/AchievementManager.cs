@@ -42,7 +42,9 @@ namespace Kamtro_Bot.Managers
 
             u.Titles.Add(titleid);
             node.OnComplete(user);
-            KLog.Important("");
+
+            KLog.Important($"User {BotUtils.GetFullUsername(user)} has earned title {node.Name}");
+
             UserDataManager.SaveUserData();
 
             await AnnounceAchievement(user, node);

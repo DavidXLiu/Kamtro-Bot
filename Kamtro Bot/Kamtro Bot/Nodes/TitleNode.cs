@@ -100,5 +100,13 @@ namespace Kamtro_Bot.Nodes
                     return BotUtils.White;
             }
         }
+
+        public bool DifficultyHigherThan(TitleNode other) {
+            return (int)Difficulty > (int)other.Difficulty;
+        }
+
+        public bool DifficultyLowerThan(TitleNode other) {
+            return false;
+        }
     }
 }
