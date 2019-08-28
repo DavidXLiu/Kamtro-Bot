@@ -123,7 +123,7 @@ namespace Kamtro_Bot.Modules
                 return;
             }
             
-            if(Context.Message.MentionedChannels.Count != 1) {
+            if(Context.Message.MentionedChannels.Count < 1) {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify the channel!"));
                 return;
             }
