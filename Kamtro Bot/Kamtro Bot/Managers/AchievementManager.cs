@@ -24,7 +24,7 @@ namespace Kamtro_Bot.Managers
             public const int KAMTRO_VETERAN = 5;
             public const int HEART_SOUL = 6;
             public const int WARMLY_WELCOMED = 7;
-            // 10 rep title goes in here
+            public const int TEN_REP = 8;
             public const int COOL_KID = 9;
             public const int POPULAR = 10;
             public const int MILLENIAL_MEMBER = 11;
@@ -41,11 +41,65 @@ namespace Kamtro_Bot.Managers
         public static bool Loaded = false;
 
         #region Event
-        public static void OnRep(SocketGuildUser from, SocketGuildUser to) {
+        /// <summary>
+        /// Method that checks for titles related to rep. Called whenever a user reps another user.
+        /// </summary>
+        /// <remarks>
+        /// This method has a lot of checks, they are all there without return statements for a reason.
+        /// It will make sure to fill in any missing titles the user should have gotten.
+        /// </remarks>
+        /// <param name="from">The user doing the repping</param>
+        /// <param name="to">The user who has been repped</param>
+        /// <returns></returns>
+        public static async Task OnRep(SocketGuildUser from, SocketGuildUser to) {
             UserDataNode f = UserDataManager.GetUserData(from);
             UserDataNode t = UserDataManager.GetUserData(to);
 
-            //TODO: Give rep titles here
+            // rep given
+            if(f.RepGiven >= 1) {
+                await AddTitle(from, TitleIDs.WARM_WELCOMER);
+            }
+
+            if (f.RepGiven >= 10) {
+                await AddTitle(from, TitleIDs.DECAREPPER);
+            }
+
+            if (f.RepGiven >= 50) {
+                await AddTitle(from, TitleIDs.CHARITABLE);
+            }
+
+            if (f.RepGiven >= 100) {
+                await AddTitle(from, TitleIDs.HUNDRED_REP_GIVEN);
+            }
+
+            if (f.RepGiven >= 500) {
+                await AddTitle(from, TitleIDs.REPPER_OF_D);
+            }
+
+            if (f.RepGiven >= 1000) {
+                await AddTitle(from, TitleIDs.THOUSAND_REP_GIVEN);
+            }
+
+            // rep recieved
+            if (t.Reputation >= 1) {
+                await AddTitle(to, TitleIDs.WARMLY_WELCOMED);
+            }
+
+            if (t.Reputation >= 10) {
+                await AddTitle(to, TitleIDs.TEN_REP);
+            }
+
+            if (t.Reputation >= 30) {
+                await AddTitle(to, TitleIDs.COOL_KID);
+            }
+
+            if (t.Reputation >= 100) {
+                await AddTitle(to, TitleIDs.POPULAR);
+            }
+
+            if (t.Reputation >= 1000) {
+                await AddTitle(to, TitleIDs.MILLENIAL_MEMBER);
+            }
         }
         #endregion
         #region Util
@@ -63,7 +117,7 @@ namespace Kamtro_Bot.Managers
             }
 
             UserDataNode u = UserDataManager.GetUserData(user);
-
+            if (u.Titles.Contains(titleid)) return;  // Don't give duplicate titles
             u.Titles.Add(titleid);
             node.OnComplete(user);
 
@@ -104,7 +158,8 @@ namespace Kamtro_Bot.Managers
         public static void LoadNodeMap() {
             string json = FileManager.ReadFullFile(DataFileNames.TitleListFile);
 
-            NodeMap = JsonConvert.DeserializeObject<Dictionary<int, TitleNode>>(json);
+            NodeMap = JsonConvert.DeserializeObject<Dictionary<int, TitleNode>>(json) ?? new Dictionary<int, TitleNode>();
+
             KLog.Info($"Title node map {(Loaded ? "Reloaded":"Loaded")}");
             Loaded = true;
         }

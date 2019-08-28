@@ -11,6 +11,7 @@ using Discord.Commands;
 using Kamtro_Bot.Interfaces.MessageEmbeds;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -79,6 +80,15 @@ namespace Kamtro_Bot.Modules
             } else {
                 await ReplyAsync(BotUtils.KamtroText("Invalid arguments. No args to toggle, '!debug on' to turn debug mode on, '!debug off' to turn debug mode off, '!debug mode' to see current debug mode."));
             }
+        }
+        
+        [Command("credits")]
+        [Alias("version", "v")]
+        public async Task Credits([Remainder] string args = "") {
+            // ignore the parameters
+            CreditsEmbed ce = new CreditsEmbed();
+
+            await ce.Display(Context.Channel);
         }
         #endregion
         #region Concept Commands

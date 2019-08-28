@@ -117,7 +117,7 @@ namespace Kamtro_Bot.Managers
         /// <param name="from">The user giving the reputation point</param>
         /// <param name="to">The user recieving the reputation point</param>
         /// <returns>True if the donor can give a rep point, false otherwise.</returns>
-        public static bool AddRep(SocketGuildUser from, SocketGuildUser to) {
+        public static async Task<bool> AddRep(SocketGuildUser from, SocketGuildUser to) {
             AddUserIfNotExists(from);
             AddUserIfNotExists(to);
 
@@ -131,6 +131,8 @@ namespace Kamtro_Bot.Managers
             GetUserData(from).RepGiven++;
 
             SaveUserData();
+
+            await AchievementManager.OnRep(from, to);
 
             return true;
         }

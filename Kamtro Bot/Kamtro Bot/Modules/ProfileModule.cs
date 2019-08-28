@@ -189,7 +189,7 @@ namespace Kamtro_Bot.Modules
             // Change formatting based on nicknames and channel
             SocketGuildUser targetGuildUser = ServerData.Server.GetUser(user.Id);
 
-            UserDataManager.AddRep(BotUtils.GetGUser(Context), targetGuildUser);
+            await UserDataManager.AddRep(BotUtils.GetGUser(Context), targetGuildUser);
 
             if (Context.Channel is SocketDMChannel)
             {

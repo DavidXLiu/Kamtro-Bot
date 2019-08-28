@@ -171,6 +171,8 @@ namespace Kamtro_Bot
                 }
             }
 
+            AchievementManager.LoadNodeMap();
+
             long date;
 
             if (long.TryParse(FileManager.ReadFullFile(DataFileNames.LastDateFile), out date)) {
