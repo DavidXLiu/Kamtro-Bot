@@ -13,6 +13,30 @@ namespace Kamtro_Bot.Managers
 {
     public class AchievementManager
     {
+        #region Constants
+        public static class TitleIDs
+        {
+            public const int KAMTRO_GOD = 0;
+            public const int KAMTRO_SQUIRE = 1;  // And thus, they spake
+            public const int TALKATIVE = 2;
+            public const int CHATTERBOX = 3;
+            public const int REGULAR = 4;
+            public const int KAMTRO_VETERAN = 5;
+            public const int HEART_SOUL = 6;
+            public const int WARMLY_WELCOMED = 7;
+            // 10 rep title goes in here
+            public const int COOL_KID = 9;
+            public const int POPULAR = 10;
+            public const int MILLENIAL_MEMBER = 11;
+            public const int WARM_WELCOMER = 12;
+            public const int DECAREPPER = 13;
+            public const int CHARITABLE = 14;
+            public const int HUNDRED_REP_GIVEN = 15;
+            public const int REPPER_OF_D = 16;
+            public const int THOUSAND_REP_GIVEN = 17;
+        }
+        #endregion
+
         public static Dictionary<int, TitleNode> NodeMap;  // This is the map that stores the nodes and their corresponding ID values
         public static bool Loaded = false;
 
