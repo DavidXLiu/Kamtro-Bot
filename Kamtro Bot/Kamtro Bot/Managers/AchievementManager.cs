@@ -117,6 +117,8 @@ namespace Kamtro_Bot.Managers
             }
 
             UserDataNode u = UserDataManager.GetUserData(user);
+            if (u.Titles == null) u.Titles = new List<int>();
+
             if (u.Titles.Contains(titleid)) return;  // Don't give duplicate titles
             u.Titles.Add(titleid);
             node.OnComplete(user);
