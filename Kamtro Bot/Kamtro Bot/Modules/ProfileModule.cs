@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
+using Kamtro_Bot.Interfaces.ActionEmbeds;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
 using System;
@@ -177,6 +178,12 @@ namespace Kamtro_Bot.Modules
             } else {
                 await ReplyAsync(BotUtils.KamtroText($"Quote has been set to \"{quote}\"."));
             }
+        }
+
+        [Command("settings")]
+        public async Task NotificationSettingsAsync([Remainder] string args = "") {
+            NotificationSettingsEmbed nse = new NotificationSettingsEmbed(Context);
+            await nse.Display();
         }
 
         #region Helper Methods

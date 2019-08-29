@@ -12,6 +12,12 @@ using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces
 {
+    /// <summary>
+    /// Role selection Embed
+    /// </summary>
+    /// <remarks>
+    /// This wacky embed was made before the UpdateEmbed() method existed, so it relied on shenanigans to get it's stuff to work.
+    /// </remarks>
     public class RoleEmbed : ActionEmbed
     {
         private int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go

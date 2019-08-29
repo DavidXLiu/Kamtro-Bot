@@ -58,7 +58,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     BanDataNode ban = new BanDataNode(Context.User, Reason);
 
                     if (notifyTarget) {
-                        bool sent = await BotUtils.DMUserAsync(Target, new BanNotifyEmbed(ban.Reason).GetEmbed());
+                        bool sent = await BotUtils.DMUserAsync(BotUtils.GetGUser(Context), new BanNotifyEmbed(ban.Reason).GetEmbed());
 
                         if (!sent) await Context.Channel.SendMessageAsync(BotUtils.BadDMResponse);
                     }

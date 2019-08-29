@@ -51,14 +51,14 @@ namespace Kamtro_Bot.Managers
             if(!UserData.ContainsKey(user.Id)) {
                 UserDataNode node = new UserDataNode(user.Username, user.Nickname ?? "");
                 UserData.Add(user.Id, node);
+                SaveUserData();
             }
 
             if(!UserSettings.ContainsKey(user.Id)) {
                 UserSettingsNode node = new UserSettingsNode(BotUtils.GetFullUsername(user));
                 UserSettings.Add(user.Id, node);
+                SaveUserSettings();
             }
-
-            SaveUserData();
 
             Tuple<UserDataNode, UserSettingsNode> value = new Tuple<UserDataNode, UserSettingsNode>(GetUserData(user), GetUserSettings(user));
 
@@ -257,8 +257,12 @@ namespace Kamtro_Bot.Managers
         #endregion
         #region User Settings
         public Dictionary<ulong, UserSettingsNode> LoadUserSettings() {
-            string data = FileManager.ReadFullFile(DataFileNames.UserDataFile);
+            string data = FileManager.ReadFullFile(DataFileNames.UserSettingsFile);
             return JsonConvert.DeserializeObject<Dictionary<ulong, UserSettingsNode>>(data) ?? new Dictionary<ulong, UserSettingsNode>();
+        }
+
+        public static void SaveUserSettings() {
+            BotUtils.WriteToJson(UserSettings, DataFileNames.UserSettingsFile);
         }
         #endregion
         #endregion
