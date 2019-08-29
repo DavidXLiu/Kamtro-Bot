@@ -266,7 +266,7 @@ namespace Kamtro_Bot.Modules
         [Command("roles"), Alias("role")]
         [Name("Roles")]
         [Summary("Displays an embed showing the modifiable roles that can be added/removed by users.")]
-        public async Task RolesAsync() {
+        public async Task RolesAsync([Remainder] string args = "") {
             SocketGuildUser _user = BotUtils.GetGUser(Context);
             RoleEmbed embed = new RoleEmbed(Context, _user);
 

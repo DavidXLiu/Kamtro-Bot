@@ -30,12 +30,13 @@ namespace Kamtro_Bot.Managers
         /// -C
         /// </summary>
         public static Dictionary<ulong, UserDataNode> UserData;
+        public static Dictionary<ulong, UserSettingsNode> UserSettings;
 
         public const int SCORE_NERF = 1000;
 
         public UserDataManager() {
             UserData = LoadUserData();
-            
+            UserSettings = LoadUserSettings();
         }
 
         /// <summary>
@@ -46,26 +47,44 @@ namespace Kamtro_Bot.Managers
         /// </remarks>
         /// <param name="user">The User to add</param>
         /// <returns>The data node that was added</returns>
-        public static UserDataNode AddUser(SocketGuildUser user) {
-            UserDataNode node = new UserDataNode(user.Username, user.Nickname ?? "");
-            UserData.Add(user.Id, node);
+        public static Tuple<UserDataNode, UserSettingsNode> AddUser(SocketGuildUser user) {
+            if(!UserData.ContainsKey(user.Id)) {
+                UserDataNode node = new UserDataNode(user.Username, user.Nickname ?? "");
+                UserData.Add(user.Id, node);
+            }
+
+            if(!UserSettings.ContainsKey(user.Id)) {
+                UserSettingsNode node = new UserSettingsNode(BotUtils.GetFullUsername(user));
+                UserSettings.Add(user.Id, node);
+            }
+
             SaveUserData();
-            return node;
+
+            Tuple<UserDataNode, UserSettingsNode> value = new Tuple<UserDataNode, UserSettingsNode>(GetUserData(user), GetUserSettings(user));
+
+            return value;
         }
 
-        public static UserDataNode AddUser(ulong id, string username, string nickname = null) {
-            UserDataNode node = new UserDataNode(username, nickname ?? "");
-            UserData.Add(id, node);
+        public static Tuple<UserDataNode, UserSettingsNode> AddUser(ulong id, string username, string nickname = null) {
+            UserDataNode dNode = null;
+            UserSettingsNode sNode = null;
+
+            if (!UserData.ContainsKey(id)) { 
+                dNode = new UserDataNode(username, nickname ?? "");
+                UserData.Add(id, dNode);
+            }
+
+            if (!UserSettings.ContainsKey(id)) {
+                sNode = new UserSettingsNode(username);
+                UserSettings.Add(id, sNode);
+            }
+
             SaveUserData();
-            return node;
+
+            return new Tuple<UserDataNode, UserSettingsNode>(dNode, sNode);
         }
 
-        public static UserDataNode GetUserData(SocketGuildUser user) {
-            AddUserIfNotExists(user);
-
-            return UserData[user.Id];
-        }
-
+        #region Exparimental
         /// <summary>
         /// This feature is not yet implemented, and is currently just a placeholder.
         /// This Dictionary hold data on the users inventories.
@@ -75,6 +94,21 @@ namespace Kamtro_Bot.Managers
         /// -C
         /// </summary>
         // public Dictionary<ulong, UserInventoryNode> UserInventories;
+        #endregion
+        #region User Data
+        public static UserDataNode GetUserData(SocketGuildUser user) {
+            AddUserIfNotExists(user);
+
+            return UserData[user.Id];
+        }
+        #endregion
+        #region User Settings
+        public static UserSettingsNode GetUserSettings(SocketGuildUser user) {
+            AddUserIfNotExists(user);
+
+            return UserSettings[user.Id];
+        }
+        #endregion
         #region Event
         public static void OnChannelMessage(SocketUserMessage message) {
             if ((message.Author as SocketGuildUser) == null || message.Channel.Id == Program.Settings.BotChannelID) return;  // only count server messages
@@ -104,6 +138,24 @@ namespace Kamtro_Bot.Managers
         }
         #endregion
         #region Utility
+        /// <summary>
+        /// Adds a user to the dict if it doesn't exist
+        /// </summary>
+        /// <param name="user">The user to add</param>
+        /// <returns>True if the user needed to be added, false otherwise.</returns>
+        /// -C
+        public static bool AddUserIfNotExists(SocketGuildUser user) {
+            bool added = false;
+
+            if (!UserData.ContainsKey(user.Id) || !UserSettings.ContainsKey(user.Id)) {
+                AddUser(user);
+                added =  true;
+            }
+
+            return added;
+        }
+        
+        #region User Data
         /// <summary>
         /// Saves the user data to it's file.
         /// </summary>
@@ -149,26 +201,11 @@ namespace Kamtro_Bot.Managers
         }
 
         /// <summary>
-        /// Adds a user to the dict if it doesn't exist
-        /// </summary>
-        /// <param name="user">The user to add</param>
-        /// <returns>True if the user needed to be added, false otherwise.</returns>
-        /// -C
-        public static bool AddUserIfNotExists(SocketGuildUser user) {
-            if(!UserData.ContainsKey(user.Id)) {
-                AddUser(user);
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// This method Deserializes the user data from the file and loads it into memory
         /// </summary>
         /// <returns>A dict with the user data in it</returns>
         public Dictionary<ulong, UserDataNode> LoadUserData() {
-            string data = FileManager.ReadFullFile(DataFileNames.UserDataFile);
+            string data = FileManager.ReadFullFile(DataFileNames.UserSettingsFile);
             return JsonConvert.DeserializeObject<Dictionary<ulong, UserDataNode>>(data) ?? new Dictionary<ulong, UserDataNode>();
         }
 
@@ -199,6 +236,7 @@ namespace Kamtro_Bot.Managers
             SaveUserData();  // Save the updated data.
         }
         
+
         public static void ResetWeekly() {
             foreach(ulong key in UserData.Keys) {
                 UserData[key].WeeklyScore = 0;
@@ -216,6 +254,13 @@ namespace Kamtro_Bot.Managers
 
             KLog.Info("Reset giveable reputation stats");
         }
+        #endregion
+        #region User Settings
+        public Dictionary<ulong, UserSettingsNode> LoadUserSettings() {
+            string data = FileManager.ReadFullFile(DataFileNames.UserDataFile);
+            return JsonConvert.DeserializeObject<Dictionary<ulong, UserSettingsNode>>(data) ?? new Dictionary<ulong, UserSettingsNode>();
+        }
+        #endregion
         #endregion
     }
 }

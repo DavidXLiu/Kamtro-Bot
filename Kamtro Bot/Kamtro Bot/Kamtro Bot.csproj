@@ -151,6 +151,7 @@
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\AddAdminEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\NotificationSettingsEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\RoleEmoteEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\RoleSelectionEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AchievementNotifyEmbed.cs" />
@@ -199,6 +200,8 @@
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
     <Compile Include="Nodes\UserInventoryNode.cs" />
+    <Compile Include="Nodes\UserSettingsNode.cs" />
+    <Compile Include="Util\Attributes\UserSetting.cs" />
     <Compile Include="Util\BotSettings.cs" />
     <Compile Include="Util\BotUtils.cs" />
     <Compile Include="Util\CustomEmotes.cs" />

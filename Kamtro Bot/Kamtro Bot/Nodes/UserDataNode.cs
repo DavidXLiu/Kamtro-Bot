@@ -40,6 +40,8 @@ namespace Kamtro_Bot.Nodes
         public int TimesLookedAtKamexButt;
         #endregion
 
+        public UserSettingsNode Settings;
+
         public UserInventoryNode Inventory;
 
         public UserDataNode(string username, string nickname = "", int score = 0, int weeklyscore = 0, int reputation = 0, int reputationtogive = 3, int strikes = 0, bool nsfw = true, string quote = "", bool portersupporter = false) {
@@ -59,6 +61,8 @@ namespace Kamtro_Bot.Nodes
             CommandsUsed = 0;
             TimesCheckedProfile = 0;
             RepGiven = 0;
+
+            Settings = new UserSettingsNode(username);
         }
 
         public Color GetColor() {

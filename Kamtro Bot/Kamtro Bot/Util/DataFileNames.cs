@@ -22,6 +22,7 @@ namespace Kamtro_Bot
 
         // User Data  -C
         public const string UserDataFile = @"User Data\UserData.json";
+        public const string UserSettingsFile = @"User Data\UserSettings.json";
 
         // Ban List
         public const string AutoBanFile = @"Admin\AutoBans.json";
