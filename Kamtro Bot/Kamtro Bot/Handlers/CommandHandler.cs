@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
+using System.Diagnostics;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -104,8 +105,9 @@ namespace Kamtro_Bot.Handlers
                         case CommandError.Exception:
                             if(result is ExecuteResult execRes) {
                                 string st = execRes.Exception.StackTrace.Substring(0, execRes.Exception.StackTrace.IndexOf("---")).Trim('\n', '\r', ' ');
+                                StackTrace sta = new StackTrace(execRes.Exception, true);
 
-                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Something went wrong in that command! Please ping Arcy or Carbon.\n\nException:\n{execRes.Exception.GetType().ToString()}\nReason:\n{execRes.ErrorReason}\nOther Info:\n{execRes.Exception.ToString()}\nStack Trace:\n{st}"));
+                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Something went wrong in that command! Please ping Arcy or Carbon.\n\nException:\n{execRes.Exception.GetType().ToString()}\nReason:\n{execRes.ErrorReason}\nLine:Column\n{sta.GetFrame(0).GetFileLineNumber()}:{sta.GetFrame(0).GetFileColumnNumber()}\nStack Trace:\n{st}"));
                                 // ErrorReportEmbed er = new ErrorReportEmbed(execRes.Exception);
                                 // await er.Display(message.Channel);
                             }

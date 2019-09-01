@@ -152,6 +152,7 @@ namespace Kamtro_Bot.Modules
             SocketGuildUser user = BotUtils.GetGUser(Context);
 
             KLog.Debug($"RM - Modifiable Roles: {(ServerData.ModifiableRoles == null ? "NULL" : ServerData.ModifiableRoles.ToString())}");
+            KLog.Debug($"RM - All Roles: {(ServerData.AllRoles == null ? "NULL" : ServerData.AllRoles.ToString())}");
             KLog.Debug($"RM - User: {user}");
 
             // Find if user entered a role
@@ -173,6 +174,7 @@ namespace Kamtro_Bot.Modules
             } else {
                 // Check all roles - Arcy
                 foreach (SocketRole role in ServerData.AllRoles) {
+                    
                     // Find if the message matches the role closely enough - Arcy
                     if (UtilStringComparison.CompareWordScore(message, role.Name) >= 0.66) {
                         // ALREADY DOESN'T HAVE ROLE
@@ -202,7 +204,9 @@ namespace Kamtro_Bot.Modules
                         // Check if it is a modifiable role - Arcy
                         else if (ServerData.ModifiableRoles.Contains(role)) {
                             // Catch instance that the role is higher in heirarchy than bot role - Arcy
-                            if (role.Position >= ServerData.KamtroBotRole.Position) { // first issue here, bot role is kamexican
+                            KLog.Debug($"ROLE: {(role == null ? "NULL" : role.ToString())}");
+                            KLog.Debug($"BOT ROLE: {(ServerData.KamtroBotRole == null ? "NULL" : ServerData.KamtroBotRole.ToString())}");
+                            if (role.Position >= ServerData.KamtroBotRole.Position) { 
                                 await ReplyAsync(BotUtils.KamtroText($"Uh oh! I cannot manage that role! Please contact Arcy or Carbon and let them know about this!"));
                                 break;
                             } else {
