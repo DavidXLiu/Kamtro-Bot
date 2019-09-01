@@ -247,6 +247,8 @@ namespace Kamtro_Bot
                     File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
                 }
 
+                KLog.Debug($"Last Weekly Reset: [{LastWeeklyReset.ToString("F")}]");
+
                 Thread.Sleep(new TimeSpan(0, 20, 0));
             }
         }

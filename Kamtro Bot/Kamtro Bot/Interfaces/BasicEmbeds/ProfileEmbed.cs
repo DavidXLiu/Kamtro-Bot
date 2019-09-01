@@ -42,20 +42,20 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
 
             eb.AddField("Title", "**Coming Soon!**");
 
-            /* for hotifxes
-            // eb.AddField("Weekly Activity Rating:", Data.WeeklyScore.ToString()); // TBA eventually probably  -C
-            eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
-            eb.AddField("Kamtrokens", Data.Money, true);
-            eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
-            eb.AddField("Max Reputation per Week", Data.MaxReputation, true);
-            eb.AddField("Titles Obtained", "**Coming Soon!**", true);
-            */
-
-            eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
-            eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
-            eb.AddField("Kamtrokens", "**Coming Soon!**", true);
-            eb.AddField("Max Reputation per Week", Data.MaxReputation, true);
-            eb.AddField("Titles Obtained", "**Coming Soon!**", true);
+            if (Program.Experimental) {
+                // eb.AddField("Weekly Activity Rating:", Data.WeeklyScore.ToString()); // TBA eventually probably  -C
+                eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
+                eb.AddField("Kamtrokens", Data.Money, true);
+                eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
+                eb.AddField("Max Reputation per Week", Data.MaxReputation, true);
+                eb.AddField("Titles Obtained", "**Coming Soon!**", true);
+            } else {
+                eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
+                eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
+                eb.AddField("Kamtrokens", "**Coming Soon!**", true);
+                eb.AddField("Max Reputation per Week", Data.MaxReputation, true);
+                eb.AddField("Titles Obtained", "**Coming Soon!**", true);
+            }
 
             if (!string.IsNullOrWhiteSpace(Data.Quote)) eb.WithFooter(Data.Quote);
 
