@@ -33,6 +33,7 @@ namespace Kamtro_Bot
 
         public static bool Ready = false;
         public static bool Debug = false;
+        public static bool Experimental = false;
 
         public static BotSettings Settings;
 

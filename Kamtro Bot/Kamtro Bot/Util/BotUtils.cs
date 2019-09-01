@@ -234,19 +234,21 @@ namespace Kamtro_Bot
         /// Thread that handles all events that depend on the date
         /// </summary>
         public static void DateEventCheckLoop() {
-            // Check for weekly reset
-            if(DateTime.Now - LastWeeklyReset > new TimeSpan(7, 0, 0, 0)) {
-                // reset things
-                UserDataManager.ResetWeekly();
-                UserDataManager.ResetRep();
+            while (true) {
+                // Check for weekly reset
+                if (DateTime.Now - LastWeeklyReset > new TimeSpan(7, 0, 0, 0)) {
+                    // reset things
+                    UserDataManager.ResetWeekly();
+                    UserDataManager.ResetRep();
 
-                // set the new time
-                LastWeeklyReset = LastWeeklyReset.LastSunday();
+                    // set the new time
+                    LastWeeklyReset = LastWeeklyReset.LastSunday();
 
-                File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
+                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
+                }
+
+                Thread.Sleep(new TimeSpan(0, 20, 0));
             }
-
-            Thread.Sleep(new TimeSpan(0, 20, 0));
         }
         #endregion
         #region Server Utils

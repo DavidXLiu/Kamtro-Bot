@@ -105,7 +105,7 @@ namespace Kamtro_Bot.Handlers
                             if(result is ExecuteResult execRes) {
                                 string st = execRes.Exception.StackTrace.Substring(0, execRes.Exception.StackTrace.IndexOf("---")).Trim('\n', '\r', ' ');
 
-                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Something went wrong in that command! Please ping Arcy or Carbon.\n\nException:\n{execRes.Exception.GetType().ToString()}\nStack Trace:\n{st}"));
+                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Something went wrong in that command! Please ping Arcy or Carbon.\n\nException:\n{execRes.Exception.GetType().ToString()}\nReason:\n{execRes.ErrorReason}\nStack Trace:\n{st}"));
                                 // ErrorReportEmbed er = new ErrorReportEmbed(execRes.Exception);
                                 // await er.Display(message.Channel);
                             }

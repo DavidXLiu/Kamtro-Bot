@@ -182,6 +182,7 @@ namespace Kamtro_Bot.Modules
 
         [Command("settings")]
         public async Task NotificationSettingsAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
             NotificationSettingsEmbed nse = new NotificationSettingsEmbed(Context);
             await nse.Display();
         }

@@ -90,6 +90,32 @@ namespace Kamtro_Bot.Modules
 
             await ce.Display(Context.Channel);
         }
+        
+        [Command("experimental")]
+        [Alias("exp")]
+        public async Task Experimental([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;  // permissions checking
+
+            if (string.IsNullOrWhiteSpace(args)) {
+                Program.Experimental = !Program.Experimental;
+                await ReplyAsync(BotUtils.KamtroText($"Experimental mode turned {(Program.Experimental ? "on" : "off")}."));
+                return;
+            }
+
+            if (args.ToLower() == "on") {
+                Program.Experimental = true;
+                KLog.Important("Experimental mode turned on");
+                await ReplyAsync(BotUtils.KamtroText("Experimental mode turned on."));
+            } else if (args.ToLower() == "off") {
+                Program.Experimental = false;
+                KLog.Important("Experimental mode turned off");
+                await ReplyAsync(BotUtils.KamtroText("Experimental mode turned off."));
+            } else if (args.ToLower() == "mode") {
+                await ReplyAsync(BotUtils.KamtroText($"Experimental mode is {(Program.Experimental ? "on" : "off")}"));
+            } else {
+                await ReplyAsync(BotUtils.KamtroText("Invalid arguments. No args to toggle, '!Experimental on' to turn Experimental mode on, '!experimental off' to turn Experimental mode off, '!experimental mode' to see current Experimental mode."));
+            }
+        }
         #endregion
         #region Concept Commands
         /*
