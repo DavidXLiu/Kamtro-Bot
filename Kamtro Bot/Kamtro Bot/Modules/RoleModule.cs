@@ -151,6 +151,9 @@ namespace Kamtro_Bot.Modules
         public async Task RemoveRoleAsync([Remainder]string message = "") {
             SocketGuildUser user = BotUtils.GetGUser(Context);
 
+            KLog.Debug($"RM - Modifiable Roles: {(ServerData.ModifiableRoles == null ? "NULL" : ServerData.ModifiableRoles.ToString())}");
+            KLog.Debug($"RM - User: {user}");
+
             // Find if user entered a role
             if (string.IsNullOrWhiteSpace(message)) {
                 SocketGuildUser _user = BotUtils.GetGUser(Context);
@@ -199,8 +202,8 @@ namespace Kamtro_Bot.Modules
                         // Check if it is a modifiable role - Arcy
                         else if (ServerData.ModifiableRoles.Contains(role)) {
                             // Catch instance that the role is higher in heirarchy than bot role - Arcy
-                            if (role.Position >= ServerData.KamtroBotRole.Position) {
-                                await ReplyAsync(BotUtils.KamtroText($"Uh oh! I cannot manage that role! Please contact {ServerData.PrimaryContactUser.Mention} ({ServerData.PrimaryContactUser.Username}#{ServerData.PrimaryContactUser.Discriminator}) and let them know about this!"));
+                            if (role.Position >= ServerData.KamtroBotRole.Position) { // first issue here, bot role is kamexican
+                                await ReplyAsync(BotUtils.KamtroText($"Uh oh! I cannot manage that role! Please contact Arcy or Carbon and let them know about this!"));
                                 break;
                             } else {
                                 // Remove the role! Woohoo! - Arcy
