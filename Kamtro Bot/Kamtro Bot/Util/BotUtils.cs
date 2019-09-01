@@ -387,7 +387,7 @@ namespace Kamtro_Bot
         /// <param name="msg">Text to be included in the message</param>
         /// <returns>True if the message was successfully sent, false otherwise</returns>
         public static async Task<bool> DMUserAsync(SocketGuildUser user, Embed e = null, string msg = "") {
-            if (!UserDataManager.GetUserData(user).Settings.TitleNotify) return true;
+            if (!UserDataManager.GetUserSettings(user).TitleNotify) return true;
 
             try {
                 await user.SendMessageAsync(msg, false, e);  // try to send the message

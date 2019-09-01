@@ -205,7 +205,7 @@ namespace Kamtro_Bot.Managers
         /// </summary>
         /// <returns>A dict with the user data in it</returns>
         public Dictionary<ulong, UserDataNode> LoadUserData() {
-            string data = FileManager.ReadFullFile(DataFileNames.UserSettingsFile);
+            string data = FileManager.ReadFullFile(DataFileNames.UserDataFile);
             return JsonConvert.DeserializeObject<Dictionary<ulong, UserDataNode>>(data) ?? new Dictionary<ulong, UserDataNode>();
         }
 
