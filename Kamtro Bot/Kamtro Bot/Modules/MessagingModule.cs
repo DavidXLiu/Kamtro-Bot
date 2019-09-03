@@ -122,13 +122,44 @@ namespace Kamtro_Bot.Modules
                 await ReplyAsync(BotUtils.KamtroText("You need to say a message!"));
                 return;
             }
-            
-            if(Context.Message.MentionedChannels.Count < 1) {
+
+            SocketTextChannel target = null;
+
+            // Check if a channel name was specified
+            string[] arrayCheck = Context.Message.Content.Split(' ');
+            string channelToCheck;
+
+            // Check if a channel was even in the message
+            if (arrayCheck.Length > 1)
+            {
+                channelToCheck = arrayCheck[1];
+
+                // Check if channel is mentioned in DMs
+                if (Context.Channel is IDMChannel && channelToCheck.StartsWith("<#"))
+                {
+                    target = ServerData.Server.GetTextChannel(ulong.Parse(channelToCheck.Substring(2, channelToCheck.Length - 3)));
+                }
+                else
+                {
+                    // Check for name matches
+                    foreach (SocketTextChannel textChannel in ServerData.Server.TextChannels)
+                    {
+                        if (UtilStringComparison.CompareWordScore(channelToCheck, textChannel.Name) > 0.66)
+                        {
+                            target = textChannel;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (Context.Message.MentionedChannels.Count < 1) {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify the channel!"));
                 return;
             }
 
-            SocketTextChannel target = Context.Message.MentionedChannels.ElementAt(0) as SocketTextChannel;
+            if (target == null)
+                target = Context.Message.MentionedChannels.ElementAt(0) as SocketTextChannel;
 
             if(target == null) {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify a text channel!"));
