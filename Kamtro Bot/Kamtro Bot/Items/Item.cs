@@ -27,7 +27,6 @@ namespace Kamtro_Bot.Items
         public Item(string name, ItemRarity rarity) {
             Name = name;
             Rarity = rarity;
-            Description = desc;
 
 
         }
