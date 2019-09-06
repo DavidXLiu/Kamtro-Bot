@@ -174,6 +174,12 @@ namespace Kamtro_Bot.Handlers
                         Random rnd2 = new Random();
 
                         // Send a random response from the array
+
+                        if(message.Content.ToLower().Contains("should i kill myself") || message.Content.ToLower().Contains("suicide")) {
+                            await message.Channel.SendMessageAsync(BotUtils.KamtroText("Error 404: Response not found."));
+                            return;
+                        }
+
                         await message.Channel.SendMessageAsync(BotUtils.KamtroText(responseStrings[rnd2.Next(0, responseStrings.Length)]));
                         return;
                     }
