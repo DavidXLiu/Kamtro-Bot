@@ -144,6 +144,62 @@ namespace Kamtro_Bot.Handlers
                 {
                     /// ORDER THESE CHECKS FROM LEAST TIME TO MOST TIME
 
+                    #region Ping Ask
+                    /// Ping Ask is a feature for users to check the latency on Kamtro.
+                    /// Depending on certain strings, this should detect if a user is asking Kamtro if they are running well.
+                    /// This takes priority over question ask so it doesn't confuse questions over this.
+                    /// Author: Arcy
+                    // Check for similar ping command strings - Arcy
+                    string[] pingStrings = { "you there", "you up", "you running", "you ok", "you good", "you doing ok" };
+
+                    foreach (string s in pingStrings)
+                    {
+                        if (message.Content.ToLower().Contains(s))
+                        {
+                            // Check latency and make string - Arcy
+                            double localLatency = (DateTime.Now - message.Timestamp.LocalDateTime).Milliseconds;
+                            string latencyString = "(Server: " + _client.Latency + " ms | Local: " + localLatency + " ms)";
+
+                            // Respond based on latency - Arcy
+                            if (_client.Latency > 500)
+                            {
+                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Not always. I'm breaking up. " + latencyString));
+                                return;
+                            }
+
+                            switch (localLatency)
+                            {
+                                case double x when (x >= 1000):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"No. I'm not feeling well. I may not respond at times. " + latencyString));
+                                    return;
+                                case double x when (x >= 500):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Not really. I'm suffering quite a bit. " + latencyString));
+                                    return;
+                                case double x when (x >= 300):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Kinda. I'm being slow. " + latencyString));
+                                    return;
+                                case double x when (x >= 200):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Mostly! I'll be a bit slow. " + latencyString));
+                                    return;
+                                case double x when (x >= 100):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yes! I'm doing well! " + latencyString));
+                                    return;
+                                case double x when (x >= 50):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yes! I'm doing great! " + latencyString));
+                                    return;
+                                case double x when (x >= 10):
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yeah! I'm perfect right now! " + latencyString));
+                                    return;
+                                default:
+                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"I don't know... (Error: Latency)"));
+                                    return;
+                            }
+
+                            // Code execution should not continue past this point. - Arcy
+                        }
+                    }
+                    #endregion
+
                     #region Question Ask
                     /// Question Ask is a feature for users to get a random response to their question.
                     /// These responses are usually in the forms of yes, no, or maybe.
@@ -176,59 +232,6 @@ namespace Kamtro_Bot.Handlers
                         // Send a random response from the array
                         await message.Channel.SendMessageAsync(BotUtils.KamtroText(responseStrings[rnd2.Next(0, responseStrings.Length)]));
                         return;
-                    }
-                    #endregion
-
-                    #region Ping Ask
-                    /// Ping Ask is a feature for users to check the latency on Kamtro.
-                    /// Depending on certain strings, this should detect if a user is asking Kamtro if they are running well.
-                    /// Author: Arcy
-                    // Check for similar ping command strings - Arcy
-                    string[] pingStrings = { "you there", "you up", "you running", "you ok", "you good", "you doing ok" };
-
-                    foreach (string s in pingStrings)
-                    {
-                        if (message.Content.ToLower().Contains(s)) {
-                            // Check latency and make string - Arcy
-                            double localLatency = (DateTime.Now - message.Timestamp.LocalDateTime).Milliseconds;
-                            string latencyString = "(Server: " + _client.Latency + " ms | Local: " + localLatency + " ms)";
-
-                            // Respond based on latency - Arcy
-                            if (_client.Latency > 500)
-                            {
-                                await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Not always. I'm breaking up. " + latencyString));
-                                return;
-                            }
-
-                            switch (localLatency) {
-                                case double x when (x >= 1000):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"No. I'm not feeling well. I may not respond at times. " + latencyString));
-                                    return;
-                                case double x when (x >= 500):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Not really. I'm suffering quite a bit. " + latencyString));
-                                    return;
-                                case double x when (x >= 300):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Kinda. I'm being slow. " + latencyString));
-                                    return;
-                                case double x when (x >= 200):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Mostly! I'll be a bit slow. " + latencyString));
-                                    return;
-                                case double x when (x >= 100):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yes! I'm doing well! " + latencyString));
-                                    return;
-                                case double x when (x >= 50):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yes! I'm doing great! " + latencyString));
-                                    return;
-                                case double x when (x >= 10):
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"Yeah! I'm perfect right now! " + latencyString));
-                                    return;
-                                default:
-                                    await message.Channel.SendMessageAsync(BotUtils.KamtroText($"I don't know... (Error: Latency)"));
-                                    return;
-                            }
-
-                            // Code execution should not continue past this point. - Arcy
-                        }
                     }
                     #endregion
 

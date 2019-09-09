@@ -242,7 +242,7 @@ namespace Kamtro_Bot
                     UserDataManager.ResetRep();
 
                     // set the new time
-                    LastWeeklyReset = LastWeeklyReset.LastSunday();
+                    LastWeeklyReset = DateTime.Now.LastSunday();
 
                     File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
                 }
@@ -387,7 +387,9 @@ namespace Kamtro_Bot
         /// <param name="msg">Text to be included in the message</param>
         /// <returns>True if the message was successfully sent, false otherwise</returns>
         public static async Task<bool> DMUserAsync(SocketGuildUser user, Embed e = null, string msg = "") {
-            if (!UserDataManager.GetUserSettings(user).TitleNotify) return true;
+            // I'm not sure what this check is for since this method is used for more than just titles, but it interferes so I'm
+            // commenting it out for now - Arcy
+            //if (!UserDataManager.GetUserSettings(user).TitleNotify) return true;
 
             try {
                 await user.SendMessageAsync(msg, false, e);  // try to send the message
