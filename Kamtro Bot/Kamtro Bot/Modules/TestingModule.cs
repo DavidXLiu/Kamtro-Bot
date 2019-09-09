@@ -8,10 +8,13 @@ using System.IO;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+
 using Kamtro_Bot.Interfaces.MessageEmbeds;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
+
+using OfficeOpenXml;
 
 namespace Kamtro_Bot.Modules
 {
@@ -115,6 +118,65 @@ namespace Kamtro_Bot.Modules
             } else {
                 await ReplyAsync(BotUtils.KamtroText("Invalid arguments. No args to toggle, '!Experimental on' to turn Experimental mode on, '!experimental off' to turn Experimental mode off, '!experimental mode' to see current Experimental mode."));
             }
+        }
+        
+        [Command("convert")]
+        public async Task ConvertAsync() {
+            FileInfo f = new FileInfo("Strike_Log.xlsx");
+            ExcelPackage p = new ExcelPackage(f);
+
+            ExcelWorksheet log = p.Workbook.Worksheets["Sheet1"];
+
+            int users = 0;
+            int dates = 0;
+
+            for(int i = 2; i <= 421; i++) {
+                if (!string.IsNullOrWhiteSpace(log.Cells[$"E{i}"].Text)) {
+                    log.Cells[$"E{i}"].Value = ConvertDT(log.Cells[$"E{i}"].Text, i).ToString("F"); dates++;
+                }
+
+                if (!string.IsNullOrWhiteSpace(log.Cells[$"G{i}"].Text)) {
+                    log.Cells[$"G{i}"].Value = ConvertDT(log.Cells[$"G{i}"].Text, i).ToString("F"); dates++;
+                }
+
+                if (!string.IsNullOrWhiteSpace(log.Cells[$"I{i}"].Text)) {
+                    log.Cells[$"I{i}"].Value = ConvertDT(log.Cells[$"I{i}"].Text, i).ToString("F"); dates++;
+                }
+
+                users++;
+            }
+
+            p.Save();
+
+            await ReplyAsync(BotUtils.KamtroText($"Conveted {dates} dates for {users} users."));
+        }
+
+        private DateTime ConvertDT(string _d, int i) {
+            string[] dt = _d.Split(' ');
+
+            string[] date = dt[0].Split('/');
+            string[] time = dt[1].Split(':');
+
+            int d, m, y, h, mi, s;
+
+            // Date
+            int.TryParse(date[0], out m);
+            int.TryParse(date[1], out d);
+            int.TryParse(date[2], out y);
+
+            int.TryParse(time[0], out h);
+            int.TryParse(time[1], out mi);
+            int.TryParse(time[2], out s);
+
+            h %= 12;  // Convert to 24 hour format part 1
+
+            if (dt[2] == "PM") {
+                h += 12;
+            }
+
+            DateTime ddd = new DateTime(y, m, d, h, mi, s);
+
+            return ddd;
         }
         #endregion
         #region Concept Commands
