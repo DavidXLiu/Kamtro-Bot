@@ -10,14 +10,19 @@ namespace Kamtro_Bot.Nodes
     public class UserSettingsNode
     {
         public string Username;
+        public bool UpdateNotify;
+        public bool ItemNotify;
         public bool TitleNotify;
+        public bool RepNotify;
         public bool AllNotify;
 
         public UserSettingsNode(string username) {
             Username = username;
 
-            TitleNotify = true;
-            AllNotify = true;
+            // Set notifications to false by default
+            TitleNotify = false;
+            RepNotify = false;
+            AllNotify = false;
         }
 
         public bool this[string name] {

@@ -196,8 +196,18 @@ namespace Kamtro_Bot.Modules
 
             // Change formatting based on nicknames and channel
             SocketGuildUser targetGuildUser = ServerData.Server.GetUser(user.Id);
+            SocketGuildUser currentUser = BotUtils.GetGUser(Context);
 
-            await UserDataManager.AddRep(BotUtils.GetGUser(Context), targetGuildUser);
+            await UserDataManager.AddRep(currentUser, targetGuildUser);
+
+            // Notify user if they have notification on
+            if (UserDataManager.GetUserSettings(targetGuildUser).RepNotify)
+            {
+                if (currentUser.Nickname != null)
+                    await targetGuildUser.SendMessageAsync(BotUtils.KamtroText($"You have received a reputation point from {currentUser.Nickname}."));
+                else
+                    await targetGuildUser.SendMessageAsync(BotUtils.KamtroText($"You have received a reputation point from {currentUser.Username}."));
+            }
 
             if (Context.Channel is SocketDMChannel)
             {

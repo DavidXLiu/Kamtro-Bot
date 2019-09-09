@@ -14,10 +14,14 @@ using Kamtro_Bot.Nodes;
 namespace Kamtro_Bot.Interfaces.ActionEmbeds
 {
     public class NotificationSettingsEmbed : ActionEmbed {
-        public static readonly List<string> VarNames = new List<string>(new string[] { "TitleNotify" });
-        public static readonly List<string> DisplayNames = new List<string>(new string[] { "Titles" });
+        public static readonly List<string> VarNames = new List<string>(new string[] { "UpdateNotify", "ItemNotify", "RepNotify", "TitleNotify" });
+        public static readonly List<string> DisplayNames = new List<string>(new string[] { "Bot Updates", "Items", "Reputation Points", "Titles" });
         public static readonly List<string> Descriptions = new List<string>(new string[] {
+            "When a new update for Kamtro bot is announced, Kamtro will DM you the information about the update.",
+            "Upon earning an item, Kamtro will DM you the item you have obtained.",
+            "Upon earning a reputation point, Kamtro will DM you the user that gave you a reputation point.",
             "Upon earning a title, Kamtro will DM you or announce in the bot channel depending on the difficulty of the title. Turning this setting off will stop Kamtro from DMing you when you earn a title."
+            
         });
 
         private int Cursor = 0;

@@ -33,7 +33,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
 
             if(Title.PermRepReward > 0) {
                 UserDataNode u = UserDataManager.GetUserData(User);
-                eb.AddField("Other Rewards:", $"This title has granted you +{Title.PermRepReward} to your weekly max reputation balance! This means that at the end of each week, the number of reputation points you have left to give will be set to {u.MaxReputation} if it isn't already above thta number");
+                eb.AddField("Other Rewards:", $"This title has granted you +{Title.PermRepReward} to your weekly max reputation balance! This means that at the end of each week, the number of reputation points you have left to give will be set to {u.MaxReputation} if it isn't already above that number.");
             }
 
             return eb.Build();
