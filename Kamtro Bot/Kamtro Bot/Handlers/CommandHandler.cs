@@ -139,7 +139,7 @@ namespace Kamtro_Bot.Handlers
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
-                if ((message.Channel.Id == Program.Settings.BotChannelID || message is IDMChannel)
+                if ((message.Channel.Id == Program.Settings.BotChannelID || message.Channel is IDMChannel)
                     && (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro") || message.Content.ToLower().EndsWith("kamtro")))
                 {
                     /// ORDER THESE CHECKS FROM LEAST TIME TO MOST TIME

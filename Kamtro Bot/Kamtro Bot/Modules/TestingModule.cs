@@ -56,6 +56,15 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText($"But nobody came."));
         }
         #endregion
+        #region Utility Commands
+        [Command("time")]
+        [Name("Time")]
+        [Summary("A command that tells the current local time of the bot and the user.")]
+        public async Task TimeAsync()
+        {
+            await ReplyAsync(BotUtils.KamtroText($"It is currently {DateTime.Now.ToLongTimeString()} in my timezone."));
+        }
+        #endregion
         #region Other Commands
         [Command("debug")]
         public async Task ToggleDebugAsync([Remainder] string args = "") {

@@ -278,7 +278,7 @@ namespace Kamtro_Bot.Modules
             }
 
             // next, check to see if Kamtro has perms to ban the user
-            if (!BotUtils.HighestUser(ServerData.Server.GetUser(Context.Client.CurrentUser.Id), BotUtils.GetGUser(Context)))
+            if (!BotUtils.HighestUser(ServerData.Server.GetUser(Context.Client.CurrentUser.Id), ServerData.Server.GetUser(user.Id)))
             {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot strike them."));
                 KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than bot");
@@ -321,7 +321,7 @@ namespace Kamtro_Bot.Modules
             }
 
             // next, check to see if Kamtro has perms to ban the user
-            if (!BotUtils.HighestUser(ServerData.Server.GetUser(Context.Client.CurrentUser.Id), BotUtils.GetGUser(Context))) {
+            if (!BotUtils.HighestUser(ServerData.Server.GetUser(Context.Client.CurrentUser.Id), ServerData.Server.GetUser(user.Id))) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot ban them."));
                 KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(user)} of higher status than bot");
                 return;

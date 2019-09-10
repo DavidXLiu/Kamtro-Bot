@@ -152,14 +152,20 @@ namespace Kamtro_Bot.Modules
                     }
                 }
             }
-
-            if (Context.Message.MentionedChannels.Count < 1) {
+            else if (Context.Message.MentionedChannels.Count < 1)
+            {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify the channel!"));
                 return;
             }
 
             if (target == null)
-                target = Context.Message.MentionedChannels.ElementAt(0) as SocketTextChannel;
+            {
+                try
+                {
+                    target = Context.Message.MentionedChannels.ElementAt(0) as SocketTextChannel;
+                }
+                catch(Exception e) { }
+            }
 
             if(target == null) {
                 await ReplyAsync(BotUtils.KamtroText("You need to specify a text channel!"));
