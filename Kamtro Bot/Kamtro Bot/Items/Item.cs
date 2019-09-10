@@ -27,10 +27,8 @@ namespace Kamtro_Bot.Items
         public Item(string name, ItemRarity rarity) {
             Name = name;
             Rarity = rarity;
-
-
         }
-
+         
 
         public int GetSellPrice() {
             // TODO
