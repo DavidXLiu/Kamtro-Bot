@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kamtro_Bot.Nodes
+namespace Kamtro_Bot.Items
 {
     public class ShopNode
     {
