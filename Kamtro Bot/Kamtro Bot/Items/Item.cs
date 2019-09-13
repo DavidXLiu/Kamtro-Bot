@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kamtro_Bot.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,22 +18,44 @@ namespace Kamtro_Bot.Items
         }
         #endregion
 
+        public const double BUY_TO_SELL_MULTIPLIER = 0.75;
+
         private string Name;
         private ItemRarity Rarity;
         private string Description;
         private int DefaultSellPrice;
+        private int Id;
 
-        private Dictionary<int, int> Recipe;
+        private Dictionary<int, int> Recipe = null;
 
-        public Item(string name, ItemRarity rarity) {
+        public Item(int id, string name, ItemRarity rarity) {
+            Id = id;
             Name = name;
             Rarity = rarity;
         }
          
-
+        /// <summary>
+        /// Gets the sell price of the item.
+        /// </summary>
+        /// <returns></returns>
         public int GetSellPrice() {
-            // TODO
-            return 0;
+            // Base Case
+            if (Recipe == null) {
+                return ShopManager.GetPrice(Id);
+            }
+
+            int total = 0;
+
+            foreach(int i in Recipe.Values) {
+                total += GetItem(i).GetSellPrice();
+            }
+
+            return total;
+        }
+
+        // TODO
+        private Item GetItem(int i) {
+            return null;
         }
     }
 }

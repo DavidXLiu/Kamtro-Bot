@@ -173,11 +173,14 @@
     <Compile Include="Interfaces\MessageEmbeds\StrikeEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeLogEditEmbed.cs" />
     <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\Nodes\ItemInfoNode.cs" />
+    <Compile Include="Items\Managers\ItemManager.cs" />
     <Compile Include="Items\IUsable.cs" />
     <Compile Include="Managers\AchievementManager.cs" />
     <Compile Include="Managers\AdminDataManager.cs" />
     <Compile Include="Managers\EventQueueManager.cs" />
     <Compile Include="Managers\HelpManager.cs" />
+    <Compile Include="Items\Managers\ShopManager.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\ConfigModule.cs" />
@@ -198,6 +201,7 @@
     <Compile Include="Nodes\MenuOptionNode.cs" />
     <Compile Include="Nodes\MessageEventNode.cs" />
     <Compile Include="Nodes\RoleInfoNode.cs" />
+    <Compile Include="Items\Nodes\ShopNode.cs" />
     <Compile Include="Nodes\StrikeDataNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
