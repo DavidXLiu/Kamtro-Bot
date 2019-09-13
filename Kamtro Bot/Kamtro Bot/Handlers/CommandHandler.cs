@@ -125,7 +125,8 @@ namespace Kamtro_Bot.Handlers
 
                 // Check if the user is responding to an interface. -C
                 // If the user has an entry in the dict, and their entry isn't null. -C
-                if(EventQueueManager.MessageEventQueue.ContainsKey(m.Author.Id) && EventQueueManager.MessageEventQueue[m.Author.Id] != null) {
+                if(EventQueueManager.MessageEventQueue.ContainsKey(m.Author.Id) && EventQueueManager.MessageEventQueue[m.Author.Id] != null &&
+                    EventQueueManager.MessageEventQueue[m.Author.Id].Channel.Id == m.Channel.Id) {
                     SocketUserMessage sm = m as SocketUserMessage;
                     if(sm != null) {
                         await EventQueueManager.MessageEventQueue[m.Author.Id].Interface.PerformMessageAction(sm);
