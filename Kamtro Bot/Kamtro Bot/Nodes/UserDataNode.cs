@@ -66,12 +66,5 @@ namespace Kamtro_Bot.Nodes
         public Color GetColor() {
             return new Color(ProfileColor);
         }
-
-        public static string GetDisplayName(SocketGuildUser user) {
-            UserDataNode u = UserDataManager.GetUserData(user);
-
-            if (string.IsNullOrWhiteSpace(u.Nickname)) return BotUtils.GetFullUsername(user);
-            else return u.Nickname;
-        }
     }
 }

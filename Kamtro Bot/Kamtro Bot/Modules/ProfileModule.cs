@@ -201,31 +201,15 @@ namespace Kamtro_Bot.Modules
 
             // Notify user if they have notification on
             if (UserDataManager.GetUserSettings(targetGuildUser).RepNotify) {
-                if (currentUser.Nickname != null)
-                    await targetGuildUser.SendMessageAsync(BotUtils.KamtroText($"You have received a reputation point from {currentUser.Nickname}."));
-                else
-                    await targetGuildUser.SendMessageAsync(BotUtils.KamtroText($"You have received a reputation point from {currentUser.Username}."));
+                await targetGuildUser.SendMessageAsync(BotUtils.KamtroText($"You have received a reputation point from {currentUser.GetDisplayName()}."));
             }
 
             if (Context.Channel is SocketDMChannel) {
-                if (targetGuildUser.Nickname != null)
-                    await ReplyAsync(BotUtils.KamtroText($"You have given a reputation point to {targetGuildUser.Nickname}."));
-                else
-                    await ReplyAsync(BotUtils.KamtroText($"You have given a reputation point to {targetGuildUser.Username}."));
+                await ReplyAsync(BotUtils.KamtroText($"You have given a reputation point to {targetGuildUser.GetDisplayName()}."));
             } else {
                 SocketGuildUser guildUser = BotUtils.GetGUser(Context);
 
-                if (guildUser.Nickname != null) {
-                    if (targetGuildUser.Nickname != null)
-                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Nickname} has given a reputation point to {targetGuildUser.Nickname}."));
-                    else
-                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Nickname} has given a reputation point to {targetGuildUser.Username}."));
-                } else {
-                    if (targetGuildUser.Nickname != null)
-                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Username} has given a reputation point to {targetGuildUser.Nickname}."));
-                    else
-                        await ReplyAsync(BotUtils.KamtroText($"{guildUser.Username} has given a reputation point to {targetGuildUser.Username}."));
-                }
+                await ReplyAsync(BotUtils.KamtroText($"{guildUser.GetDisplayName()} has given a reputation point to {targetGuildUser.GetDisplayName()}."));
             }
         }
 
