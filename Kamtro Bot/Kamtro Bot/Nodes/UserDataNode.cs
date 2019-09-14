@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Discord.WebSocket;
+using Kamtro_Bot.Managers;
 
 namespace Kamtro_Bot.Nodes
 {
@@ -63,6 +65,13 @@ namespace Kamtro_Bot.Nodes
 
         public Color GetColor() {
             return new Color(ProfileColor);
+        }
+
+        public static string GetDisplayName(SocketGuildUser user) {
+            UserDataNode u = UserDataManager.GetUserData(user);
+
+            if (string.IsNullOrWhiteSpace(u.Nickname)) return BotUtils.GetFullUsername(user);
+            else return u.Nickname;
         }
     }
 }
