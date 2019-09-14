@@ -70,10 +70,10 @@ namespace Kamtro_Bot.Managers
 
             if (MessageEventQueue.ContainsKey(id)) {
                 // If the user is in the queue
-                MessageEventQueue[id] = new MessageEventNode(embed);  // Add the action to their list
+                MessageEventQueue[id] = new MessageEventNode(embed, embed.CommandChannel);  // Add the action to their list
             } else {
                 // otherwise
-                MessageEventQueue.Add(id, new MessageEventNode(embed));  // Create the entry and add the action to their list
+                MessageEventQueue.Add(id, new MessageEventNode(embed, embed.CommandChannel));  // Create the entry and add the action to their list
             }
         }
 

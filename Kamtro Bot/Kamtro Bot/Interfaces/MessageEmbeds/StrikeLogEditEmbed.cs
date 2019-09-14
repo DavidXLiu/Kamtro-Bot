@@ -138,6 +138,9 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
             RegisterMenuFields();
             AddMenuOptions(new MenuOptionNode(BACK, "Go Back"), ReactionHandler.CHECK, ReactionHandler.DECLINE);
+
+            // Set the channel to take input from only that channel - Arcy
+            CommandChannel = ctx.Channel as SocketChannel;
         }
 
         public async override Task PerformAction(SocketReaction action) {

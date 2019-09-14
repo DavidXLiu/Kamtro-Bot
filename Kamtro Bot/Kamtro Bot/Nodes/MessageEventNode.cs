@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Discord.WebSocket;
+
 namespace Kamtro_Bot.Nodes
 {
     /// <summary>
@@ -17,10 +19,12 @@ namespace Kamtro_Bot.Nodes
     public class MessageEventNode
     {
         public MessageEmbed Interface;
+        public SocketChannel Channel;
         public DateTime TimeCreated;
 
-        public MessageEventNode(MessageEmbed iface) {
+        public MessageEventNode(MessageEmbed iface, SocketChannel c) {
             Interface = iface;
+            Channel = c;
             TimeCreated = DateTime.Now;
         }
     }
