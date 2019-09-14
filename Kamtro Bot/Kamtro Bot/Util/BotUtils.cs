@@ -26,7 +26,7 @@ namespace Kamtro_Bot
     {
         public const string ZeroSpace = "​"; // This is a zero-width space. (it's invisible)  -C
 
-        public static readonly Color Red = new Color(247, 47, 60); 
+        public static readonly Color Red = new Color(247, 47, 60);
         public static readonly Color Orange = new Color(250, 148, 80);
         public static readonly Color Yellow = new Color(245, 245, 66);
         public static readonly Color Green = new Color(97, 237, 116);
@@ -79,7 +79,7 @@ namespace Kamtro_Bot
         /// <param name="angry">True if the text should be red, false for normal kamtro blue.</param>
         /// <returns></returns>
         public static async Task AdminLog(string text, bool angry = true) {
-            if(angry) {
+            if (angry) {
                 await ServerData.AdminChannel.SendMessageAsync(KamtroAngry(text));
             } else {
                 await ServerData.AdminChannel.SendMessageAsync(KamtroText(text));
@@ -121,7 +121,7 @@ namespace Kamtro_Bot
         /// <param name="filename">The name of the file</param>
         /// <returns>The file's extension</returns>
         public static string GetFileExtension(string filename) {
-            if (!filename.Contains(".") || filename.LastIndexOf('.')+1 == filename.Length) return "";
+            if (!filename.Contains(".") || filename.LastIndexOf('.') + 1 == filename.Length) return "";
 
             string ext = filename.Substring(filename.LastIndexOf('.') + 1);
             return ext;
@@ -177,7 +177,7 @@ namespace Kamtro_Bot
             TimeSpan span;
 
             while (GCReady && GCLoop) {
-                if(PauseGC) {
+                if (PauseGC) {
                     Thread.Sleep(new TimeSpan(0, 1, 0));
                     continue;
                 }
@@ -189,7 +189,7 @@ namespace Kamtro_Bot
                 now = DateTime.Now;
 
                 foreach (KeyValuePair<ulong, MessageEventNode> action in EventQueueManager.MessageEventQueue.AsEnumerable()) {
-                    span = now - action.Value.TimeCreated; 
+                    span = now - action.Value.TimeCreated;
 
                     if (span > action.Value.Interface.Timeout) {
                         toRemoveMsg.Add(action.Key);
@@ -220,7 +220,7 @@ namespace Kamtro_Bot
 
                     foreach (EventQueueNode node in toRemove) {
                         action.Value.Remove(node);
-                        Console.WriteLine($"[GC] Event from user {action.Key} removed. {((node.IsAlone) ? "Event was paired with message event from same user.":"")}");
+                        Console.WriteLine($"[GC] Event from user {action.Key} removed. {((node.IsAlone) ? "Event was paired with message event from same user." : "")}");
                     }
                 }
 
@@ -274,7 +274,7 @@ namespace Kamtro_Bot
                 return users;
             }
 
-            string remainder = message.Content.Substring(message.Content.IndexOf(' ')  + 1).ToLower();  // Gets everything after the command separated by a space
+            string remainder = message.Content.Substring(message.Content.IndexOf(' ') + 1).ToLower();  // Gets everything after the command separated by a space
 
             foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Add to list if username or nickname contains the name, or if it contains user ID
@@ -285,7 +285,7 @@ namespace Kamtro_Bot
                 else if (remainder == user.Username.ToLower() + "#" + user.Discriminator)
                     users.Add(user);
                 else if (remainder.Contains(user.Id.ToString()))
-                    users.Add(user);             
+                    users.Add(user);
             }
 
             return users;
@@ -319,49 +319,39 @@ namespace Kamtro_Bot
         /// <param name="message"></param>
         /// <returns>User found from the message.</returns>
         /// Arcy
-        public static SocketGuildUser GetUser(string text, float threshold = 0.5f)
-        {
+        public static SocketGuildUser GetUser(string text, float threshold = 0.5f) {
             // Check through all users and determine the best user found
             SocketGuildUser bestUser = null;
             float bestScore = 0;
 
-            foreach (SocketGuildUser user in ServerData.Server.Users)
-            {
+            foreach (SocketGuildUser user in ServerData.Server.Users) {
                 // Check if username or nickname contains the name, or if it contains user ID
-                if (user.Username.ToLower().Contains(text.ToLower()))
-                {
+                if (user.Username.ToLower().Contains(text.ToLower())) {
                     float score = UtilStringComparison.CompareWordScore(user.Username.ToLower(), text.ToLower());
-                    if (score > bestScore)
-                    {
+                    if (score > bestScore) {
                         bestUser = user;
                         bestScore = score;
                         score = 0;
                     }
                 }
-                if (user.Nickname != null && user.Nickname.Contains(text.ToLower()))
-                {
+                if (user.Nickname != null && user.Nickname.Contains(text.ToLower())) {
                     float score = UtilStringComparison.CompareWordScore(user.Nickname.ToLower(), text.ToLower());
-                    if (score > bestScore)
-                    {
+                    if (score > bestScore) {
                         bestUser = user;
                         bestScore = score;
                         score = 0;
                     }
                 }
                 // User ID most likely would not be put in by mistake. Return that user
-                if (text.Contains(user.Id.ToString()))
-                {
+                if (text.Contains(user.Id.ToString())) {
                     return user;
                 }
             }
 
             // Check if match is reasonably close
-            if (bestScore > threshold)
-            {
+            if (bestScore > threshold) {
                 return bestUser;
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }
@@ -394,7 +384,7 @@ namespace Kamtro_Bot
             try {
                 await user.SendMessageAsync(msg, false, e);  // try to send the message
                 return true; // if that works, things are fine
-            } catch(Exception) {
+            } catch (Exception) {
                 return false; // otherwise if it fails, say so.
             }
         }
@@ -411,8 +401,8 @@ namespace Kamtro_Bot
         public static List<SocketRole> GetRoles(string name) {
             List<SocketRole> tmp = new List<SocketRole>();
 
-            foreach(SocketRole role in ServerData.Server.Roles) {
-                if(role.Name.ToLower().Contains(name.ToLower())) tmp.Add(role);
+            foreach (SocketRole role in ServerData.Server.Roles) {
+                if (role.Name.ToLower().Contains(name.ToLower())) tmp.Add(role);
             }
 
             return tmp;
@@ -420,7 +410,7 @@ namespace Kamtro_Bot
 
         public static SocketRole GetRole(ulong id) {
             foreach (SocketRole role in ServerData.Server.Roles) {
-                if(role.Id == id) {
+                if (role.Id == id) {
                     return role;
                 }
             }
@@ -431,20 +421,28 @@ namespace Kamtro_Bot
         #endregion
     }
 
+    #region Extension Methods
     /// <summary>
     /// Extension methods
     /// </summary>
     public static class GeneralExtensions
     {
+        // DateTime
         public static DateTime LastSunday(this DateTime dt) {
 
 
             int diff = dt.DayOfWeek - DayOfWeek.Sunday;
 
 
-            return dt.AddDays(-1*diff).Date;
+            return dt.AddDays(-1 * diff).Date;
+        }
+
+        public static string GetDisplayName(this SocketGuildUser user, bool desc = false) {
+            // If user.Nickname is not null, return it. Otherwise, return the username optionally with descriminator
+            return user.Nickname ?? (desc ? BotUtils.GetFullUsername(user) : user.Username);
         }
     }
+    #endregion
 }
 
 
