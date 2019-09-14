@@ -82,7 +82,7 @@ namespace Kamtro_Bot
             Client = new DiscordSocketClient(config); // get the client with the configurations we want
 
             // Initialize 
-
+            
             // Managers
             userDataManager = new UserDataManager(); // This sets up the user data files and loads them into memory
             fileManager = new FileManager();  // initialize the file manager

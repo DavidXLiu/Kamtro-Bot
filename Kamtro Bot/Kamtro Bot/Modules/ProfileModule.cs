@@ -246,14 +246,17 @@ namespace Kamtro_Bot.Modules
         /// <summary>
         /// Updates the User Info data file to save the user's current username and nickname.
         /// Call this method when profiles are being checked.
-        /// Author: Arcy
+        /// Author: Arcy, Carbon
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="user">The user to update</param>
         private void UpdateUserNames(SocketGuildUser user)
         {
-            UserDataManager.UserData[user.Id].Username = user.Username + "#" + user.Discriminator;
+            UserDataManager.GetUserData(user).Username = BotUtils.GetFullUsername(user);
+
             if (user.Nickname != null)
-                UserDataManager.UserData[user.Id].Nickname = user.Nickname;
+                UserDataManager.GetUserData(user).Nickname = user.Nickname;
+            else
+                UserDataManager.GetUserData(user).Nickname = BotUtils.GetFullUsername(user);  // Added check so that the bot updates with the user clears their username
         }
         #endregion
     }

@@ -10,13 +10,15 @@ namespace Kamtro_Bot.Items
     {
         public string Name;
         public string Description;
+        public int BuyPrice;
         public bool Available;  // If the item is available in the shop
-        
-        public ItemInfoNode() {
+
+        public ItemInfoNode(string name = "Unnamed Item", string desc = "Report to carbon or arcy.", bool avail = false, int price = 0) {
             // TODO
-            Name = "";
-            Description = "";
-            Available = false;
+            Name = name;
+            Description = desc;
+            Available = avail;
+            BuyPrice = price;
         }
     }
 }
