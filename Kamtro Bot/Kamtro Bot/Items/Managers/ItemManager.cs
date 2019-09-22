@@ -23,7 +23,7 @@ namespace Kamtro_Bot.Items
             foreach(uint k in data.Keys) {
                 ItemInfoNode i = data[k];
 
-                Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity));
+                Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable));
                 ShopManager.AddItem(k, i);
             }
 
@@ -38,6 +38,10 @@ namespace Kamtro_Bot.Items
             }
 
             BotUtils.WriteToJson(data, DataFileNames.ItemMapFile);
+        }
+
+        public static bool IsBuyable(uint id) {
+            return Items[id].Buyable;
         }
     }
 }

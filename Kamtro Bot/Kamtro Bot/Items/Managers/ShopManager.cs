@@ -28,12 +28,9 @@ namespace Kamtro_Bot.Items
         /// <returns>The new selection of items</returns>
         public static List<uint> GenShopSelection() {
             Shop.Clear();
-            List<uint> options = new List<uint>();
-            List<uint> final = new List<uint>();
 
-            foreach(uint k in ItemManager.Items.Keys) {
-                if (ItemManager.Items[k].Buyable) options.Add(k);
-            }
+            List<uint> final = new List<uint>();
+            List<uint> options = GetSellableItems();
 
             Random r = new Random();
             int n;
@@ -49,6 +46,28 @@ namespace Kamtro_Bot.Items
             KLog.Info("Shop Refreshed.");
 
             return final;
+        }
+
+        public static List<uint> ValidateShopSelection() {
+            List<uint> toReplace = new List<uint>();
+            List<uint> replaced = new List<uint>();
+
+            foreach(uint i in Shop.Keys) {
+                if(!ItemManager.IsBuyable(i)) {
+                    toReplace.Add(i);
+                }
+            }
+
+            foreach(uint i in toReplace) {
+                Shop.Remove(i);
+
+                Tuple<uint, ShopNode> t = GetRandomNewSellableItem();
+
+                Shop.Add(t.Item1, t.Item2);
+                replaced.Add(t.Item1);
+            }
+
+            return replaced;
         }
 
         public static void AddItem(uint id, ItemInfoNode i) {
@@ -67,6 +86,28 @@ namespace Kamtro_Bot.Items
             KLog.Info($"{(a ? "Enabled":"Disabled")} the item at id {id} in the shop");
 
             Shop[id].Available = a;
+            ValidateShopSelection();
+        }
+
+        private static List<uint> GetSellableItems() {
+            List<uint> options = new List<uint>();
+
+            foreach (uint k in ItemManager.Items.Keys) {
+                if (ItemManager.Items[k].Buyable) options.Add(k);
+            }
+
+            return options;
+        }
+
+        private static Tuple<uint, ShopNode> GetRandomNewSellableItem() {
+            List<uint> tmp = new List<uint>();
+
+            foreach(uint i in GetSellableItems()) {
+                if (!Shop.ContainsKey(i)) tmp.Add(i);
+            }
+            uint id = tmp[new Random().Next(0, tmp.Count)];
+
+            return new Tuple<uint, ShopNode>(id, new ShopNode(GetPrice(id)));
         }
     }
 }
