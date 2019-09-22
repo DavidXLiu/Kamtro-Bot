@@ -27,14 +27,17 @@ namespace Kamtro_Bot.Items
         private uint Id;
         private string ImageUrl;
 
+        public bool Buyable;
+
         private Dictionary<int, int> Recipe = null;
 
-        public Item(uint id, string name, string desc, ItemRarity rarity, string image = "") {
+        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, string image = "") {
             Id = id;
             Name = name;
             Description = desc;
             Rarity = rarity;
             ImageUrl = image;
+            Buyable = buyable;
         }
          
         /// <summary>
