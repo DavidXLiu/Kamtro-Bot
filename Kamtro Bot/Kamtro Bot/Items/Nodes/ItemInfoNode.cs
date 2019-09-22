@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Kamtro_Bot.Items.Item;
 
 namespace Kamtro_Bot.Items
 {
@@ -10,15 +11,18 @@ namespace Kamtro_Bot.Items
     {
         public string Name;
         public string Description;
+        public string ImageUrl;
         public int BuyPrice;
-        public bool Available;  // If the item is available in the shop
+        public bool Buyable;  // If the item is available in the shop
+        public ItemRarity Rarity;
 
-        public ItemInfoNode(string name = "Unnamed Item", string desc = "Report to carbon or arcy.", bool avail = false, int price = 0) {
-            // TODO
+        public ItemInfoNode(string name = "Unnamed Item", string desc = "Report to carbon or arcy.", ItemRarity rarity = ItemRarity.COMMON, bool avail = false, int price = 0, string image = "") {
             Name = name;
             Description = desc;
-            Available = avail;
+            Rarity = rarity;
+            Buyable = avail;
             BuyPrice = price;
+            ImageUrl = image;
         }
     }
 }

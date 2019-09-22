@@ -24,14 +24,17 @@ namespace Kamtro_Bot.Items
         private ItemRarity Rarity;
         private string Description;
         private int DefaultSellPrice;
-        private int Id;
+        private uint Id;
+        private string ImageUrl;
 
         private Dictionary<int, int> Recipe = null;
 
-        public Item(int id, string name, ItemRarity rarity) {
+        public Item(uint id, string name, string desc, ItemRarity rarity, string image = "") {
             Id = id;
             Name = name;
+            Description = desc;
             Rarity = rarity;
+            ImageUrl = image;
         }
          
         /// <summary>
@@ -53,8 +56,12 @@ namespace Kamtro_Bot.Items
             return total;
         }
 
+        public ItemInfoNode GetItemInfo() {
+            return new ItemInfoNode(Name, Description, Rarity, ShopManager.GetAvailability(Id), ShopManager.GetPrice(Id));
+        }
+
         // TODO
-        private Item GetItem(int i) {
+        private Item GetItem(uint i) {
             return null;
         }
     }
