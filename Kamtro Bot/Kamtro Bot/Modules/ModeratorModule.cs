@@ -260,6 +260,41 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText("Rep reset."));
         }
 
+        [Command("purge")]
+        [Alias("massdelete", "deleteall")]
+        public async Task PurgeAsync([Remainder] string name = "")
+        {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
+
+            ISocketMessageChannel channel = Context.Channel;
+
+            List<IMessage> messages = await channel.GetMessagesAsync(99999, CacheMode.AllowDownload).Flatten().ToList();
+            List<IMessage> messagesToDelete = new List<IMessage>();
+
+            for (int i = 0; i < messages.Count; i++)
+            {
+                // Check if message can be deleted and record it
+                if (messages[i].Timestamp.AddDays(14) > DateTimeOffset.Now)
+                    messagesToDelete.Add(messages[i]);
+                else
+                    break; // Cannot get any more messages
+            }
+
+            StreamWriter sw = new StreamWriter("Admin/PurgeLog.txt");
+
+            // Delete Messages
+            for (int i = messagesToDelete.Count - 1; i >= 0; i--)
+            {
+                sw.WriteLine($"[{messagesToDelete[i].Timestamp.DateTime.ToLongTimeString()}] {messagesToDelete[i].Author.Username}#{messagesToDelete[i].Author.Discriminator}: {messagesToDelete[i].Content}");
+                await messagesToDelete[i].DeleteAsync();
+            }
+
+            sw.Close();
+
+            await ServerData.AdminChannel.SendMessageAsync(BotUtils.KamtroText($"{messagesToDelete.Count} messages were deleted in {channel.Name}."));
+            await ServerData.AdminChannel.SendFileAsync("Admin/PurgeLog.txt", "");
+        }
+
         #region Helper Methods
         private async Task StrikeUser(SocketUser user) {
             // First, the classic null check
