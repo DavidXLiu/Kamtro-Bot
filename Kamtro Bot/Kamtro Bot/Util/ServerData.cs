@@ -47,6 +47,9 @@ namespace Kamtro_Bot.Util
         public static List<SocketGuildUser> RelayUsers;
         public static SocketGuildUser PrimaryContactUser;
 
+        // Information
+        public static SocketUser BannedUser; // Used to track what user to delete messages from for the DeleteBanMessages command
+
         /// <summary>
         /// Permission level enum. For checking perms easily
         /// </summary>

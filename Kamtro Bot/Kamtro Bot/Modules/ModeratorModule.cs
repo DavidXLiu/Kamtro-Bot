@@ -295,6 +295,66 @@ namespace Kamtro_Bot.Modules
             await ServerData.AdminChannel.SendFileAsync("Admin/PurgeLog.txt", "");
         }
 
+        [Command("deletebanmessages")]
+        [Alias("dbm")]
+        public async Task DeleteBanMessagesAsync([Remainder] string name = "")
+        {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
+
+            SocketUser bannedUser = ServerData.BannedUser;
+            if (bannedUser != null)
+            {
+                await ServerData.Server.RemoveBanAsync(bannedUser);
+                await ServerData.Server.AddBanAsync(bannedUser, 7);
+
+                await ReplyAsync(BotUtils.KamtroText($"Messages from {bannedUser.Username}#{bannedUser.Discriminator} in the past 7 days have been deleted."));
+            }
+            else
+            {
+                await ReplyAsync(BotUtils.KamtroText("There is not a ban recently to delete messages from."));
+            }
+            /*
+            await ReplyAsync(BotUtils.KamtroText("Please wait. This will take a while."));
+
+            // Warning: This command is very intensive!
+            if (bannedUser != null)
+            {
+                List<IMessage> messagesToDelete = new List<IMessage>();
+
+                // Check all channels
+                foreach (SocketTextChannel channel in ServerData.Server.TextChannels)
+                {
+                    // Get only accessible text channels
+                    if (channel.Users.Contains(ServerData.Server.GetUser(Context.Client.CurrentUser.Id)))
+                    {
+                        // Get all messages
+                        List<IMessage> messages = await channel.GetMessagesAsync(1000).Flatten().ToList();
+
+                        foreach (IMessage message in messages)
+                        {
+                            // Check for messages that were sent by the banned user
+                            if (message.Author.Id == bannedUser.Id)
+                            {
+                                messagesToDelete.Add(message);
+                            }
+                        }
+                    }
+                }
+
+                // Delete all messages by the banned user
+                foreach (IMessage message in messagesToDelete)
+                {
+                    await message.DeleteAsync();
+                }
+
+                await ServerData.AdminChannel.SendMessageAsync($"{messagesToDelete.Count} messages were deleted from {bannedUser.Username}#{bannedUser.Discriminator}.");
+            }
+            else
+            {
+                await ServerData.AdminChannel.SendMessageAsync(BotUtils.KamtroText("There is not a ban recently to delete messages from."));
+            }*/
+        }
+
         #region Helper Methods
         private async Task StrikeUser(SocketUser user) {
             // First, the classic null check
