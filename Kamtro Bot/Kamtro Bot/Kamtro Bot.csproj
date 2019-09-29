@@ -182,6 +182,7 @@
     <Compile Include="Managers\HelpManager.cs" />
     <Compile Include="Items\Managers\ShopManager.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
+    <Compile Include="Managers\UserInventoryManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\ConfigModule.cs" />
     <Compile Include="Modules\FunModule.cs" />

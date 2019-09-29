@@ -1,5 +1,8 @@
-﻿using Kamtro_Bot.Items;
+﻿using Discord.WebSocket;
+using Kamtro_Bot.Items;
+using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +13,7 @@ namespace Kamtro_Bot.Items
 {
     public class ShopManager
     {
-        public static Dictionary<uint, ShopNode> Shop = new Dictionary<uint, ShopNode>();
-
-        public static void AddItem(uint id, int price, bool avail) {
-            ShopNode sn = new ShopNode(price, avail);
-
-            if (Shop.ContainsKey(id)) {
-                KLog.Info($"Replaced item in shop at id {id}");
-            }
-
-            Shop[id] = sn;
-        }
+        public static List<ShopNode> Shop = new List<ShopNode>();
 
         /// <summary>
         /// Refreshes the shop's selection
@@ -40,7 +33,7 @@ namespace Kamtro_Bot.Items
             }
 
             foreach(uint i in final) {
-                Shop.Add(i, new ShopNode(ItemManager.Items[i].GetSellPrice(), ItemManager.Items[i].Buyable));
+                Shop.Add(new ShopNode(i, ItemManager.GetItem(i).BuyPrice, ItemManager.GetItem(i).Buyable));
             }
 
             KLog.Info("Shop Refreshed.");
@@ -49,25 +42,37 @@ namespace Kamtro_Bot.Items
         }
 
         public static List<uint> ValidateShopSelection() {
-            List<uint> toReplace = new List<uint>();
+            List<ShopNode> toReplace = new List<ShopNode>();
             List<uint> replaced = new List<uint>();
 
-            foreach(uint i in Shop.Keys) {
-                if(!ItemManager.IsBuyable(i)) {
+            foreach(ShopNode i in Shop) {
+                if(!ItemManager.GetItem(i.ItemID).Buyable) {
                     toReplace.Add(i);
                 }
             }
 
-            foreach(uint i in toReplace) {
+            foreach(ShopNode i in toReplace) {
                 Shop.Remove(i);
 
-                Tuple<uint, ShopNode> t = GetRandomNewSellableItem();
+                ShopNode t = GetRandomNewSellableItem();
 
-                Shop.Add(t.Item1, t.Item2);
-                replaced.Add(t.Item1);
+                Shop.Add(t);
+                replaced.Add(t.ItemID);
             }
 
             return replaced;
+        }
+
+        /// <summary>
+        /// This method adds an item to the shop.
+        /// Precondition: The shop has been cleared.
+        /// </summary>
+        /// <param name="id">The ID of the item to add</param>
+        /// <param name="price">The price of the item</param>
+        /// <param name="avail">If the item is available</param>
+        public static void AddItem(uint id, int price, bool avail) {
+            ShopNode sn = new ShopNode(id, price, avail);
+            Shop.Add(sn);
         }
 
         public static void AddItem(uint id, ItemInfoNode i) {
@@ -75,18 +80,35 @@ namespace Kamtro_Bot.Items
         }
 
         public static int GetPrice(uint itemid) {
-            return Shop[itemid].Price;
+            return ItemManager.GetItem(itemid).BuyPrice;
         }
 
         public static bool GetAvailability(uint itemid) {
-            return Shop[itemid].Available;
+            return ItemManager.GetItem(itemid).Buyable;
         }
 
         public static void SetAvailability(uint id, bool a) {
             KLog.Info($"{(a ? "Enabled":"Disabled")} the item at id {id} in the shop");
 
-            Shop[id].Available = a;
+            ItemManager.GetItem(id).Buyable = a;
             ValidateShopSelection();
+        }
+
+        public static bool BuyItem(ulong userid, int shopSlot, int quantity) {
+            if (shopSlot > Shop.Count || shopSlot < 0) return false;
+
+            SocketGuildUser user = ServerData.Server.GetUser(userid);
+            UserDataNode customer = UserDataManager.GetUserData(user);
+            ShopNode item = Shop[shopSlot];
+
+            if (quantity > 0 && customer.Money >= item.Price*quantity) {
+                customer.Money -= item.Price * quantity;
+
+                UserInventoryManager.GetInventory(userid).AddItem(item.ItemID, quantity);
+                return true;
+            }
+
+            return false;
         }
 
         private static List<uint> GetSellableItems() {
@@ -99,15 +121,23 @@ namespace Kamtro_Bot.Items
             return options;
         }
 
-        private static Tuple<uint, ShopNode> GetRandomNewSellableItem() {
+        private static ShopNode GetRandomNewSellableItem() {
             List<uint> tmp = new List<uint>();
+            bool add;
 
             foreach(uint i in GetSellableItems()) {
-                if (!Shop.ContainsKey(i)) tmp.Add(i);
+                add = true;
+
+                foreach(ShopNode s in Shop) {
+                    if (s.ItemID == i) add = false;
+                }
+
+                if (add) tmp.Add(i);
             }
+
             uint id = tmp[new Random().Next(0, tmp.Count)];
 
-            return new Tuple<uint, ShopNode>(id, new ShopNode(GetPrice(id)));
+            return new ShopNode(id, GetPrice(id), true);
         }
     }
 }

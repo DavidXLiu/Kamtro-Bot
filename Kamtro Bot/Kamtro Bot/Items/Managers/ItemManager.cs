@@ -24,7 +24,6 @@ namespace Kamtro_Bot.Items
                 ItemInfoNode i = data[k];
 
                 Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable));
-                ShopManager.AddItem(k, i);
             }
 
             KLog.Info("Loaded Items.");
@@ -42,6 +41,20 @@ namespace Kamtro_Bot.Items
 
         public static bool IsBuyable(uint id) {
             return Items[id].Buyable;
+        }
+
+        public static Item GetItem(uint id) {
+            if(Items == null) {
+                SetupItems();
+            }
+
+            Item ret = null;
+
+            if(Items.ContainsKey(id)) {
+                ret = Items[id];
+            }
+
+            return ret;
         }
     }
 }

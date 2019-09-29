@@ -20,18 +20,19 @@ namespace Kamtro_Bot.Items
 
         public const double BUY_TO_SELL_MULTIPLIER = 0.75;
 
-        private string Name;
+        public string Name;
         private ItemRarity Rarity;
         private string Description;
         private int DefaultSellPrice;
+        public int BuyPrice;
         private uint Id;
         private string ImageUrl;
 
         public bool Buyable;
 
-        private Dictionary<int, int> Recipe = null;
+        private Dictionary<uint, int> Recipe = null;
 
-        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, string image = "") {
+        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, int buyPrice = 0, string image = "") {
             Id = id;
             Name = name;
             Description = desc;
@@ -39,7 +40,7 @@ namespace Kamtro_Bot.Items
             ImageUrl = image;
             Buyable = buyable;
         }
-         
+
         /// <summary>
         /// Gets the sell price of the item.
         /// </summary>
@@ -52,8 +53,8 @@ namespace Kamtro_Bot.Items
 
             int total = 0;
 
-            foreach(int i in Recipe.Values) {
-                total += GetItem(i).GetSellPrice();
+            foreach (uint i in Recipe.Keys) {
+                total += ItemManager.GetItem(i).GetSellPrice() * Recipe[i];
             }
 
             return total;
@@ -63,9 +64,16 @@ namespace Kamtro_Bot.Items
             return new ItemInfoNode(Name, Description, Rarity, ShopManager.GetAvailability(Id), ShopManager.GetPrice(Id));
         }
 
-        // TODO
-        private Item GetItem(uint i) {
-            return null;
+        public Dictionary<uint, int> GetRecipe() {
+            return Recipe;
+        }
+
+        /// <summary>
+        /// Tells if the item has a recipe and is craftable
+        /// </summary>
+        /// <returns>True if the item is craftable, false otherwise.</returns>
+        public bool IsCraftable() {
+            return Recipe == null || Recipe.Count <= 0;
         }
     }
 }
