@@ -41,6 +41,8 @@ namespace Kamtro_Bot.Nodes
         /// <param name="count">The number to take away</param>
         public void LoseItem(uint id, int count = 1) {
             Items[id] -= count;
+
+            ParseInventory();
         }
 
         public bool HasItem(uint id) {

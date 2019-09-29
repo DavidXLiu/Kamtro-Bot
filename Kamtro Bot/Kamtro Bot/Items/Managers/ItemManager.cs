@@ -45,8 +45,7 @@ namespace Kamtro_Bot.Items
 
         private static void AddSpecialItems() {
             // Add all item classes
-
-
+            Items.Add(5, new ItemBreadstick());
         }
 
         public static void SaveItemData() {
