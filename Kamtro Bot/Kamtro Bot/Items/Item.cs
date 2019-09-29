@@ -21,16 +21,25 @@ namespace Kamtro_Bot.Items
         public const double BUY_TO_SELL_MULTIPLIER = 0.75;
 
         public string Name;
-        private ItemRarity Rarity;
-        private string Description;
-        private int DefaultSellPrice;
+        public ItemRarity Rarity;
+        public string Description;
+        // public int DefaultSellPrice;
         public int BuyPrice;
-        private uint Id;
-        private string ImageUrl;
+        public uint Id;
+        public string ImageUrl;
 
         public bool Buyable;
 
         private Dictionary<uint, int> Recipe = null;
+
+        public Item() {
+            Id = uint.MaxValue;
+            Name = "UNDEFINED";
+            Description = "UNDEFINED ITEM. REPORT TO CARBON OR ARCY.";
+            BuyPrice = int.MaxValue;
+            Rarity = ItemRarity.COMMON;
+            ImageUrl = "";
+        }
 
         public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, int buyPrice = 0, string image = "") {
             Id = id;

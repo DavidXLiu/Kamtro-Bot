@@ -16,17 +16,38 @@ namespace Kamtro_Bot.Items
         public static void SetupItems() {
             Items = new Dictionary<uint, Item>();
 
+
             string j = FileManager.ReadFullFile(DataFileNames.ItemMapFile);
 
-            Dictionary<uint, ItemInfoNode> data = JsonConvert.DeserializeObject<Dictionary<uint, ItemInfoNode>>(j);
+            Dictionary<uint, ItemInfoNode> data = JsonConvert.DeserializeObject<Dictionary<uint, ItemInfoNode>>(j) ?? new Dictionary<uint, ItemInfoNode>();
+
+            AddSpecialItems();
 
             foreach(uint k in data.Keys) {
                 ItemInfoNode i = data[k];
+
+                if(Items.ContainsKey(k)) {
+                    Item it = Items[k];
+
+                    it.Id = k;
+                    it.Name = i.Name;
+                    it.Description = i.Description;
+                    it.Rarity = i.Rarity;
+                    it.BuyPrice = i.BuyPrice;
+                    it.Buyable = i.Buyable;
+                    continue;
+                }
 
                 Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable));
             }
 
             KLog.Info("Loaded Items.");
+        }
+
+        private static void AddSpecialItems() {
+            // Add all item classes
+
+
         }
 
         public static void SaveItemData() {
