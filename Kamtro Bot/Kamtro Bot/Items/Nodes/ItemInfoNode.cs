@@ -16,13 +16,17 @@ namespace Kamtro_Bot.Items
         public bool Buyable;  // If the item is available in the shop
         public ItemRarity Rarity;
 
-        public ItemInfoNode(string name = "Unnamed Item", string desc = "Report to carbon or arcy.", ItemRarity rarity = ItemRarity.COMMON, bool avail = false, int price = 0, string image = "") {
+        public Dictionary<uint, int> Recipe;
+
+        public ItemInfoNode(string name = "Unnamed Item", string desc = "Report to carbon or arcy.", ItemRarity rarity = ItemRarity.COMMON, bool avail = false, int price = 0, Dictionary<uint, int> recipe = null, string image = "") {
             Name = name;
             Description = desc;
             Rarity = rarity;
             Buyable = avail;
             BuyPrice = price;
             ImageUrl = image;
+
+            Recipe = recipe;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Kamtro_Bot.Items
 
         public bool Buyable;
 
-        private Dictionary<uint, int> Recipe = null;
+        private Dictionary<uint, int> Recipe;
 
         public Item() {
             Id = uint.MaxValue;
@@ -39,15 +39,18 @@ namespace Kamtro_Bot.Items
             BuyPrice = int.MaxValue;
             Rarity = ItemRarity.COMMON;
             ImageUrl = "";
+            Recipe = null;
         }
 
-        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, int buyPrice = 0, string image = "") {
+        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, int buyPrice = 0, Dictionary<uint, int> recipe = null, string image = "") {
             Id = id;
             Name = name;
             Description = desc;
             Rarity = rarity;
             ImageUrl = image;
             Buyable = buyable;
+            BuyPrice = buyPrice;
+            Recipe = recipe;
         }
 
         /// <summary>
@@ -70,7 +73,7 @@ namespace Kamtro_Bot.Items
         }
 
         public ItemInfoNode GetItemInfo() {
-            return new ItemInfoNode(Name, Description, Rarity, ShopManager.GetAvailability(Id), ShopManager.GetPrice(Id));
+            return new ItemInfoNode(Name, Description, Rarity, ShopManager.GetAvailability(Id), ShopManager.GetPrice(Id), GetRecipe());
         }
 
         public Dictionary<uint, int> GetRecipe() {

@@ -16,7 +16,6 @@ namespace Kamtro_Bot.Items
         public static void SetupItems() {
             Items = new Dictionary<uint, Item>();
 
-
             string j = FileManager.ReadFullFile(DataFileNames.ItemMapFile);
 
             Dictionary<uint, ItemInfoNode> data = JsonConvert.DeserializeObject<Dictionary<uint, ItemInfoNode>>(j) ?? new Dictionary<uint, ItemInfoNode>();
@@ -41,6 +40,14 @@ namespace Kamtro_Bot.Items
                 Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable));
             }
 
+            Dictionary<uint, int> r = new Dictionary<uint, int>();
+
+            r.Add(3, 5);
+            r.Add(1, 2);
+            r.Add(2, 4);
+
+            Items.Add(100, new Item(100, "Dough", "Basis for breads", Item.ItemRarity.UNCOMMON, false, recipe:r));
+            SaveItemData();
             KLog.Info("Loaded Items.");
         }
 
