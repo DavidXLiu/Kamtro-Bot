@@ -188,6 +188,7 @@
     <Compile Include="Modules\ConfigModule.cs" />
     <Compile Include="Modules\FunModule.cs" />
     <Compile Include="Modules\HelpModule.cs" />
+    <Compile Include="Modules\ItemModule.cs" />
     <Compile Include="Modules\MatureModule.cs" />
     <Compile Include="Modules\MessagingModule.cs" />
     <Compile Include="Modules\ModeratorModule.cs" />
