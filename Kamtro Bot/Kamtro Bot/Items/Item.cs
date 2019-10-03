@@ -1,4 +1,5 @@
-﻿using Kamtro_Bot.Managers;
+﻿using Discord;
+using Kamtro_Bot.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +87,28 @@ namespace Kamtro_Bot.Items
         /// <returns>True if the item is craftable, false otherwise.</returns>
         public bool IsCraftable() {
             return Recipe == null || Recipe.Count <= 0;
+        }
+
+        public static Color GetColorFromRarity(ItemRarity r) {
+            switch(r) {
+                case ItemRarity.COMMON:
+                    return BotUtils.Grey;
+
+                case ItemRarity.UNCOMMON:
+                    return BotUtils.Green;
+
+                case ItemRarity.RARE:
+                    return BotUtils.Blue;
+
+                case ItemRarity.EPIC:
+                    return BotUtils.Purple;
+
+                case ItemRarity.LEGENDARY:
+                    return BotUtils.Orange;
+
+                default:
+                    return BotUtils.Kamtro;
+            }
         }
     }
 }

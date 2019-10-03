@@ -154,6 +154,7 @@
     <Compile Include="Interfaces\ActionEmbeds\NotificationSettingsEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\RoleEmoteEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\RoleSelectionEmbed.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\ShopEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AchievementNotifyEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
