@@ -154,6 +154,7 @@
     <Compile Include="Interfaces\ActionEmbeds\NotificationSettingsEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\RoleEmoteEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\RoleSelectionEmbed.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\ShopEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AchievementNotifyEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Interfaces\MessageEmbeds\StrikeEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeLogEditEmbed.cs" />
     <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\ItemBreadstick.cs" />
     <Compile Include="Items\Nodes\ItemInfoNode.cs" />
     <Compile Include="Items\Managers\ItemManager.cs" />
     <Compile Include="Items\IUsable.cs" />
@@ -182,10 +184,12 @@
     <Compile Include="Managers\HelpManager.cs" />
     <Compile Include="Items\Managers\ShopManager.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
+    <Compile Include="Managers\UserInventoryManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\ConfigModule.cs" />
     <Compile Include="Modules\FunModule.cs" />
     <Compile Include="Modules\HelpModule.cs" />
+    <Compile Include="Modules\ItemModule.cs" />
     <Compile Include="Modules\MatureModule.cs" />
     <Compile Include="Modules\MessagingModule.cs" />
     <Compile Include="Modules\ModeratorModule.cs" />

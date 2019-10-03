@@ -16,6 +16,7 @@ using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Items;
 
 namespace Kamtro_Bot
 {
@@ -82,7 +83,8 @@ namespace Kamtro_Bot
             Client = new DiscordSocketClient(config); // get the client with the configurations we want
 
             // Initialize 
-            
+            ItemManager.SetupItems();
+
             // Managers
             userDataManager = new UserDataManager(); // This sets up the user data files and loads them into memory
             fileManager = new FileManager();  // initialize the file manager
@@ -183,6 +185,7 @@ namespace Kamtro_Bot
 
         private static void SetupGeneral() {
             ServerData.SetupServerData(Settings);
+            UserInventoryManager.LoadInventories();
         }
 
         /// <summary>

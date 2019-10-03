@@ -18,11 +18,13 @@ namespace Kamtro_Bot
         // Config Files  -C
         public const string GeneralConfigFile = @"Config\settings.json";
         public const string TitleListFile = @"Config\Titles.json";
+        public const string ItemMapFile = @"Config\Items.json";
         public const string RoleSelectMapFile = @"Config\RoleMap.json";
 
         // User Data  -C
         public const string UserDataFile = @"User Data\UserData.json";
         public const string UserSettingsFile = @"User Data\UserSettings.json";
+        public const string UserInventoriesFile = @"User Data\UserInventories.json";
 
         // Ban List
         public const string AutoBanFile = @"Admin\AutoBans.json";
