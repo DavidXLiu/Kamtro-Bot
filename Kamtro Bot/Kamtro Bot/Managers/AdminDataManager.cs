@@ -333,8 +333,9 @@ namespace Kamtro_Bot.Managers
                 pos++;
             }
 
-            GenUserStrike(pos, id, "", 0);
-            SaveExcel();
+            // Don't create new logs for those without strikes/bans - Arcy
+            // GenUserStrike(pos, id, "", 0);
+            // SaveExcel();
             return 0;
         }
 
@@ -353,8 +354,32 @@ namespace Kamtro_Bot.Managers
             return i;
         }
 
+        /// <summary>
+        /// Method for getting the total entries within the Strike Log file.
+        /// Used for checking if there is no current entry in the log for a user.
+        /// Author: Arcy
+        /// </summary>
+        /// <returns></returns>
+        public static int GetEntryCount()
+        {
+            int rows = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells.Rows;
+
+            return rows - 2;
+        }
+
+        /// <summary>
+        /// Method for checking if the current user has an entry in the Strike Log file.
+        /// Author: Arcy
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static bool HasEntry(ulong userId)
+        {
+            return GetEntryPos(userId) >= GetEntryCount();
+        }
+
         public static void DeleteStrike(ulong id, int strike) {
-            if (GetStrikes(id) < strike) return;
+            if (GetStrikes(id) < strike || !HasEntry(id)) return;
 
             int pos = GetEntryPos(id);
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
