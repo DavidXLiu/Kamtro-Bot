@@ -100,7 +100,7 @@ namespace Kamtro_Bot.Managers
                 object test = cell.Value;
                 if (test == null) break;
 
-                if (Convert.ToUInt64(test) == targetId) {
+                if (Convert.ToUInt64(test.ToString().Substring(1)) == targetId) {
                     // Add the srike to this row.
 
                     // First, check the username. 
@@ -151,7 +151,7 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while (cells["A" + pos].Value != null) {
-                if (Convert.ToUInt64(cells["A" + pos].Value) == target.Id) {
+                if (Convert.ToUInt64(cells["A" + pos].Value.ToString().Substring(1)) == target.Id) {
                     cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
                     KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
                     SaveExcel();
@@ -174,7 +174,7 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while (cells["A" + pos].Value != null) {
-                if (Convert.ToUInt64(cells["A" + pos].Value) == id) {
+                if (Convert.ToUInt64(cells["A" + pos].Value.ToString().Substring(1)) == id) {
                     cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
                     KLog.Info($"Banned user {(username == "" ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
                     SaveExcel();
@@ -200,7 +200,7 @@ namespace Kamtro_Bot.Managers
                 object test = cell.Value;
                 if (test == null) break;
 
-                if (Convert.ToUInt64(test) == targetId) {
+                if (Convert.ToUInt64(test.ToString().Substring(1)) == targetId) {
                     // Add the srike to this row.
 
                     if(username != "") cells["B" + pos].Value = username;
@@ -324,7 +324,7 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while (cells["A" + pos].Value != null) {
-                target = Convert.ToUInt64(cells["A" + pos].Value);
+                target = Convert.ToUInt64(cells["A" + pos].Value.ToString().Substring(1));
                 if (target == id) {
                     int strikes = Convert.ToInt32(cells["C" + pos].Value);
                     return strikes;
@@ -344,7 +344,7 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while(cells["A"+i].Value != null) {
-                if(Convert.ToUInt64(cells[$"A{i}"].Value) == id) {
+                if(Convert.ToUInt64(cells[$"A{i}"].Value.ToString().Substring(1)) == id) {
                     return i;
                 }
 
