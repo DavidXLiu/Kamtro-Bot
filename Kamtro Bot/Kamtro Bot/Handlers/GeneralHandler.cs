@@ -42,6 +42,7 @@ namespace Kamtro_Bot.Handlers
             // Add the events
             client.GuildMemberUpdated += OnMemberUpdate;
             client.UserJoined += OnMemberJoin;
+            client.UserBanned += OnMemberBan;
             client.UserUnbanned += OnMemberUnban;
             client.MessageUpdated += OnMessageUpdate;
             client.MessageDeleted += OnMessageDelete;
@@ -70,6 +71,18 @@ namespace Kamtro_Bot.Handlers
             // welcome user 
             Embed e = new EmbedBuilder().WithTitle("Welcome to Kamtro!").WithColor(BotUtils.Kamtro).WithDescription(Program.Settings.WelcomeMessageTemplate).Build();
             await BotUtils.DMUserAsync(user, e);
+        }
+
+        /// <summary>
+        /// Happens when a user is banned from a server the bot is in.
+        /// </summary>
+        /// <param name="user">The user that was banned</param>
+        /// <param name="server">The server they were banned from</param>
+        /// <returns></returns>
+        public async Task OnMemberBan(SocketUser user, SocketGuild server)
+        {
+            // Store last user banned
+            ServerData.BannedUser = user;
         }
 
         /// <summary>

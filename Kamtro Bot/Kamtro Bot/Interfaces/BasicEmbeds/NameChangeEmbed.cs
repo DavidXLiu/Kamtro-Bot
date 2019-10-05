@@ -45,7 +45,16 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
 
             eb.WithColor(BotUtils.Kamtro);
             eb.WithThumbnailUrl(Url);
-            eb.AddField($"{Bef} -----> {Aft}", BotUtils.ZeroSpace);
+
+            // Check if nickname was just made or removed
+            if (!Nickname)
+                eb.AddField($"{Bef} -----> {Aft}", BotUtils.ZeroSpace);
+            else if (Nickname && Bef == null)
+                eb.AddField($"{User.Username} set their nickname to {Aft}", BotUtils.ZeroSpace);
+            else if (Nickname && Aft == null)
+                eb.AddField($"{User.Username} removed their nickname.", BotUtils.ZeroSpace);
+            else
+                eb.AddField($"{Bef} -----> {Aft}", BotUtils.ZeroSpace);
 
             eb.WithTimestamp(MessageTimestamp);
 

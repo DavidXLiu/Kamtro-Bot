@@ -69,7 +69,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     AdminDataManager.AddBan(Target, ban);
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroAngry($"User {BotUtils.GetFullUsername(Target)} has been banned."));
                         
-                    await ServerData.Server.AddBanAsync(Target.Id);
+                    await ServerData.Server.AddBanAsync(Target.Id, 0, Reason);
                     break;
                 case diamond:
                     notifyTarget = !notifyTarget;
