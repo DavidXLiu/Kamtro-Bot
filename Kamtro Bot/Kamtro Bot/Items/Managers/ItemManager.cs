@@ -37,7 +37,7 @@ namespace Kamtro_Bot.Items
                     continue;
                 }
 
-                Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable));
+                Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable, i.BuyPrice));
             }
 
             KLog.Info("Loaded Items.");

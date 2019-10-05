@@ -43,7 +43,7 @@ namespace Kamtro_Bot.Items
             Recipe = null;
         }
 
-        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, int buyPrice = 0, Dictionary<uint, int> recipe = null, string image = "") {
+        public Item(uint id, string name, string desc, ItemRarity rarity, bool buyable, int buyPrice, Dictionary<uint, int> recipe = null, string image = "") {
             Id = id;
             Name = name;
             Description = desc;

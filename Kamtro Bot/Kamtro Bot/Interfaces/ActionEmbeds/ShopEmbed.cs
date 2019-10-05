@@ -163,7 +163,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 if (Cursor >= SHOP_SLOTS - 1) Cursor = 0;
             } else {
-                if (ItemCount >= 0) {
+                if (ItemCount > 0) {
                     LastItemCount = ItemCount;
                     ItemCount--;
                 } else {
