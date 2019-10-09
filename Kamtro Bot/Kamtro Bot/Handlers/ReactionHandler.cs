@@ -48,6 +48,7 @@ namespace Kamtro_Bot.Handlers
         public const string UP_STR = "\u2b06";
         public const string DOWN_STR = "\u2b07";
         public const string SELECT_STR = "\U0001f537";
+        public const string BACK_STR = "⏫";
 
         public static readonly Emoji DONE_EM = new Emoji(DONE_STR);  // For utility
         public static readonly Emoji CHECK_EM = new Emoji(CHECK_STR);
@@ -55,6 +56,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly Emoji UP_EM = new Emoji(UP_STR);
         public static readonly Emoji DOWN_EM = new Emoji(DOWN_STR);
         public static readonly Emoji SELECT_EM = new Emoji(SELECT_STR);
+        public static readonly Emoji BACK_EM = new Emoji(BACK_STR);
 
         public static readonly MenuOptionNode DONE = new MenuOptionNode(DONE_STR, "Done");  // This is also for convinience
         public static readonly MenuOptionNode CHECK = new MenuOptionNode(CHECK_STR, "Confirm");
@@ -62,6 +64,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly MenuOptionNode UP = new MenuOptionNode(UP_STR, "Cursor Up");
         public static readonly MenuOptionNode DOWN = new MenuOptionNode(DOWN_STR, "Cursor Down");
         public static readonly MenuOptionNode SELECT = new MenuOptionNode(SELECT_STR, "Select");
+        public static readonly MenuOptionNode BACK = new MenuOptionNode(BACK_STR, "Back");
 
         public static Dictionary<string, ulong> RoleMap = null;
 

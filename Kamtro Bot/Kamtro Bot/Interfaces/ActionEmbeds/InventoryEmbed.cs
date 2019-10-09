@@ -56,8 +56,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                             eb.WithImageUrl(it.GetImageUrl());
                         }
 
-                        names += $"{it.Name, -1}\n";
-                        count += $"{Inventory.ItemCount(Items[i])}\n";
+                        names += $"{(i == Cursor ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{it.Name, -1}\n";
+                        count += $"{MakeBold(Inventory.ItemCount(Items[i]).ToString(), i)}\n";
                     }
                 }
 
@@ -76,8 +76,24 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             return eb.Build();
         }
 
-        public override Task PerformAction(SocketReaction option) {
-            throw new NotImplementedException();
+        public override async Task PerformAction(SocketReaction option) {
+            switch(option.Emote.ToString()) {
+                case ReactionHandler.SELECT_STR:
+                    break;
+
+                case null:
+                    if(Page != -1) {
+                        Page = -1;
+                        await UpdateEmbed();
+                    }
+                    break;
+
+                case ReactionHandler.UP_STR:
+                    break;
+
+                case ReactionHandler.DOWN_STR:
+                    break;
+            }
         }
 
         private string MakeBold(string s, int i) {
