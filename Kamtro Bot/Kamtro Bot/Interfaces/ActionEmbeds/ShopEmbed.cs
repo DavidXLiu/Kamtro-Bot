@@ -17,8 +17,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
     {
         private const int SHOP_SLOTS = 5;
 
-        private const string GoBack = "⏫";
-
         // Page key:
         // -1 means home page
         // any other number means the page for the item at that slot.
@@ -36,7 +34,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             Customer = UserDataManager.GetUserData(BotUtils.GetGUser(ctx));
 
-            AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.UP, ReactionHandler.DOWN, new MenuOptionNode(GoBack, "Back"));
+            AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.BACK);
         }
 
         public override Embed GetEmbed() {
@@ -147,7 +145,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     await CursorUp();
                     break;
 
-                case GoBack:
+                case ReactionHandler.BACK_STR:
                     if (Page != -1) Page = -1;
                     LastItemCount = ItemCount;
                     ItemCount = 0;

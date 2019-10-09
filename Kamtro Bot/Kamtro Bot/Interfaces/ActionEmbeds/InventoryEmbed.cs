@@ -29,7 +29,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             UserData = UserDataManager.GetUserData(User);
             Inventory = UserInventoryManager.GetInventory(User.Id);
 
-            AddMenuOptions(ReactionHandler.SELECT, null, ReactionHandler.UP, ReactionHandler.DOWN);
+            AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.BACK, ReactionHandler.UP, ReactionHandler.DOWN);
         }
 
         public override Embed GetEmbed() {
@@ -81,7 +81,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 case ReactionHandler.SELECT_STR:
                     break;
 
-                case null:
+                case ReactionHandler.BACK_STR:
                     if(Page != -1) {
                         Page = -1;
                         await UpdateEmbed();
