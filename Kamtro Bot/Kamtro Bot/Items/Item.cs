@@ -57,7 +57,7 @@ namespace Kamtro_Bot.Items
         /// <summary>
         /// Gets the sell price of the item.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The sell price of the item</returns>
         public int GetSellPrice() {
             // Base Case
             if (Recipe == null) {
@@ -87,6 +87,18 @@ namespace Kamtro_Bot.Items
         /// <returns>True if the item is craftable, false otherwise.</returns>
         public bool IsCraftable() {
             return Recipe == null || Recipe.Count <= 0;
+        }
+
+        /// <summary>
+        /// Retrieves the item's image which should be displayed
+        /// </summary>
+        /// <returns>The image which should be displayed for the item</returns>
+        public string GetImageUrl() {
+            if(string.IsNullOrWhiteSpace(ImageUrl)) {
+                return ItemManager.DefaultItemImageUrl;
+            }
+
+            return ImageUrl;
         }
 
         public static Color GetColorFromRarity(ItemRarity r) {

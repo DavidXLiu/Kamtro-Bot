@@ -9,6 +9,8 @@ namespace Kamtro_Bot.Items
 {
     public class ItemManager
     {
+        public const string DefaultItemImageUrl = "";
+
         public static Dictionary<uint, Item> Items = null;
         /// <summary>
         /// This method initializes all items to the dictionary, and sets up the shop
@@ -34,10 +36,11 @@ namespace Kamtro_Bot.Items
                     it.Rarity = i.Rarity;
                     it.BuyPrice = i.BuyPrice;
                     it.Buyable = i.Buyable;
+                    it.ImageUrl = i.ImageUrl;
                     continue;
                 }
 
-                Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable, i.BuyPrice));
+                Items.Add(k, new Item(k, i.Name, i.Description, i.Rarity, i.Buyable, i.BuyPrice, i.Recipe, i.ImageUrl));
             }
 
             KLog.Info("Loaded Items.");

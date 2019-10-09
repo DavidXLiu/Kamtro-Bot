@@ -90,6 +90,56 @@ namespace Kamtro_Bot.Nodes
         }
 
         /// <summary>
+        /// Counts the number of items (or the number of a specific item) in the inventory.
+        /// </summary>
+        /// <param name="item">The item to get the count of</param>
+        /// <returns>The count of the specified item, or the total number of items if no item is specified</returns>
+        public int ItemCount(uint? item = null) {
+            // check if an item was specified
+            if (item == null) {
+                // if it wasn't, get the total count of all items
+                int t = 0;  // variable to store item total
+                bool cleanup = false;  // bool for cleanup so if it 
+
+                foreach(uint k in Items.Keys) {
+                    int i = Items[k];
+
+                    // check to make sure the items don't have bizarre counts
+                    if (i <= 0) {
+                        KLog.Debug($"[UIN] Item [{k}] had count {i}, and was removed.");
+                        cleanup = true;  // if so, make sure to clean up the inventory at the end of the method
+                        continue;  // and skip the item
+                    }
+
+                    t += i;  // add it to the total
+                }
+
+                if(cleanup) {
+                    // if the inventory needs cleaning, do so.
+                    ParseInventory();
+                }
+
+                return t;  // return the total
+            } else {
+                // The item was specified, so count it
+                uint i = item.Value;
+
+                if(!Items.ContainsKey(i)) {
+                    // error checks
+                    return 0;
+                }
+
+                if(Items[i] <= 0) {
+                    // Fix broken inventories
+                    ParseInventory();
+                    return 0;
+                }
+
+                return Items[i];
+            }
+        }
+
+        /// <summary>
         /// Crafts the item. No checks in method
         /// </summary>
         /// <param name="item">The item to craft</param>

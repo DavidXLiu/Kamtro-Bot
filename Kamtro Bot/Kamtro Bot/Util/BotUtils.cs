@@ -437,6 +437,12 @@ namespace Kamtro_Bot
             return dt.AddDays(-1 * diff).Date;
         }
 
+        /// <summary>
+        /// Gets the name that should be displayed in an embed, which is the username if there is no nickname already available
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="desc">Whether or not to include the descriminator in the case of no nickname. Default is false.</param>
+        /// <returns>The display name of the user.</returns>
         public static string GetDisplayName(this SocketGuildUser user, bool desc = false) {
             // If user.Nickname is not null, return it. Otherwise, return the username optionally with descriminator
             return user.Nickname ?? (desc ? BotUtils.GetFullUsername(user) : user.Username);
