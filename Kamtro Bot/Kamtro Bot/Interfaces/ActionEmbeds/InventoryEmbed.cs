@@ -15,11 +15,14 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 {
     public class InventoryEmbed : ActionEmbed
     {
+        private const int MAX_ITEM_OPTIONS = 2;  // the number of things you can do with an item max (for now, sell and use)
+
         private SocketGuildUser User;
         private UserDataNode UserData;
         private UserInventoryNode Inventory;
 
         private int Cursor = 0;
+        private int ItCursor = 0;  // cursor to select sell or use
         private int Page = -1;
 
         public InventoryEmbed(SocketCommandContext ctx) {
@@ -48,6 +51,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     names = "You have no items!";
                 } else {
                     List<uint> Items = Inventory.Items.Keys.ToList();
+                    Items.Sort();
 
                     for(int i = 0; i < Items.Count; i++) {
                         Item it = ItemManager.GetItem(Items[i]);
@@ -79,20 +83,81 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         public override async Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
                 case ReactionHandler.SELECT_STR:
+                    if(Page == -1) {
+                        // List<uint> Items = Inventory.Items.Keys.ToList();
+                        // Items.Sort();
+
+                        Page = Cursor;
+                        await UpdateEmbed();
+                    } else {
+                        if(ItCursor == 0) {
+
+                        }
+                    }
                     break;
 
                 case ReactionHandler.BACK_STR:
                     if(Page != -1) {
                         Page = -1;
+                        ItCursor = 0;
+
+                        if (Cursor >= Inventory.Items.Count()) Cursor = Inventory.Items.Count();
+
                         await UpdateEmbed();
                     }
                     break;
 
                 case ReactionHandler.UP_STR:
+                    await CursorUp();
                     break;
 
                 case ReactionHandler.DOWN_STR:
+                    await CursorDown();
                     break;
+            }
+        }
+
+        private async Task CursorUp() {
+            if(Page == -1) {
+                Cursor--;
+
+                if (Cursor < 0) Cursor = Inventory.Items.Count();
+
+                await UpdateEmbed();
+            } else {
+                List<uint> Items = Inventory.Items.Keys.ToList();
+                Items.Sort();
+
+                if(ItemManager.GetItem(Items[Page]) is IUsable) {
+                    ItCursor--;
+
+                    if (ItCursor < 0) ItCursor = MAX_ITEM_OPTIONS - 1;
+
+                    await UpdateEmbed();
+                } 
+            }
+        }
+
+        private async Task CursorDown() {
+            if (Page == -1) {
+                Cursor++;
+
+                if (Cursor >= Inventory.Items.Count) Cursor = 0;
+
+                await UpdateEmbed();
+            } else {
+                List<uint> Items = Inventory.Items.Keys.ToList();
+                Items.Sort();
+
+                if (ItemManager.GetItem(Items[Page]) is IUsable) {
+                    ItCursor++;
+
+                    if (ItCursor >= MAX_ITEM_OPTIONS) ItCursor = 0;
+
+                    await UpdateEmbed();
+                } else {
+                    ItCursor = 0;
+                }
             }
         }
 
