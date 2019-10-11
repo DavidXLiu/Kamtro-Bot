@@ -150,6 +150,7 @@
     <Compile Include="Handlers\GeneralHandler.cs" />
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\AddAdminEmbed.cs" />
+    <Compile Include="Interfaces\ActionEmbeds\ConfirmEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\HelpEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\InventoryEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\NotificationSettingsEmbed.cs" />
