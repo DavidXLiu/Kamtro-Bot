@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Items;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kamtro_Bot.Interfaces.ActionEmbeds
 {
@@ -50,7 +48,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             eb.WithColor(UserData.ProfileColor);
 
 
-            if(Page == HOME_PAGE) {
+            if (Page == HOME_PAGE) {
                 // if it's the home page
                 string names = "";
                 string count = "";
@@ -61,10 +59,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     List<uint> Items = Inventory.Items.Keys.ToList();
                     Items.Sort();
 
-                    for(int i = 0; i < Items.Count; i++) {
+                    for (int i = 0; i < Items.Count; i++) {
                         Item it = ItemManager.GetItem(Items[i]);
 
-                        if(i == Cursor) {
+                        if (i == Cursor) {
                             eb.WithImageUrl(it.GetImageUrl());
                         }
 
@@ -75,7 +73,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 eb.AddField("Items", names, true);
                 eb.AddField("Item Count", count, true);
-            } else if(Page == ITEM_PAGE) {
+            } else if (Page == ITEM_PAGE) {
                 // if it's an item page
                 Item i = GetItemAtCursor();
 
@@ -88,8 +86,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 string menu = "";
 
-                if(i is IUsable) {
-                    if(ItCursor == 0) {
+                if (i is IUsable) {
+                    if (ItCursor == 0) {
                         // use item
                         menu += $"{CustomEmotes.CursorAnimated}Use Item\n";
                         menu += $"{CustomEmotes.CursorBlankSpace}Sell Item";
@@ -104,7 +102,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 eb.AddField("Actions", menu);
 
                 eb.WithDescription(i.Description);
-            } else if(Page == SELL_PAGE) {
+            } else if (Page == SELL_PAGE) {
                 eb.WithTitle($"Selling {GetItemAtCursor().Name}");
                 eb.AddField("Number of Items", $"{SellCount}", true);
                 eb.AddField("Value", $"{SellCount * GetItemAtCursor().GetSellPrice()} Kamtrokens", true);
@@ -113,7 +111,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 eb.AddField("ERROR", $"Something went wrong! Please ping Arcy and Carbon \nPage: {Page}");
             }
 
-            if(InvalidSellCount) {
+            if (InvalidSellCount) {
                 InvalidSellCount = false;
                 // display the message
                 eb.AddField("Error", "Something went wrong with the number of items you selected to sell! Please ping arcy and carbon!");
@@ -125,19 +123,19 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         }
 
         public override async Task PerformAction(SocketReaction option) {
-            switch(option.Emote.ToString()) {
+            switch (option.Emote.ToString()) {
                 case ReactionHandler.SELECT_STR:
-                    if(Page == HOME_PAGE) {
+                    if (Page == HOME_PAGE) {
                         List<uint> Items = Inventory.Items.Keys.ToList();
                         Items.Sort();
 
                         Page = ITEM_PAGE;
-                        
+
                         SelectedItem = Items[Cursor];
                         await UpdateEmbed();
-                    } else if(Page == ITEM_PAGE) {
-                        if(ItCursor == 0) {
-                            if(GetItemAtCursor() is IUsable) {
+                    } else if (Page == ITEM_PAGE) {
+                        if (ItCursor == 0) {
+                            if (GetItemAtCursor() is IUsable) {
                                 // if the item can be used, the cursor is on the use option
                                 // so use the item
                                 ConfirmEmbed ce = new ConfirmEmbed("Are you sure you want to use the item?", UseItem);
@@ -152,7 +150,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         // on sell page, so process sell.
                         if (SellCount <= Inventory.ItemCount(GetItemAtCursor())) {
                             // if the user has enough items to sell
-                            ShopManager.SellItem(User.Id, SelectedItem.Value, SellCount);
+                            ConfirmEmbed ce = new ConfirmEmbed($"Are you sure you want to sell {SellCount} {GetItemAtCursor().Name}{(SellCount == 1 ? "":"s")} for {SellCount * GetItemAtCursor().GetSellPrice()} Kamtrokens?", SellItem);
+                            await ce.Display();
                         } else {
                             // if the user has somehow selected more items than they have, correct the number and do nothing.
                             SellCount = 0;
@@ -163,13 +162,13 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     break;
 
                 case ReactionHandler.BACK_STR:
-                    if(Page > HOME_PAGE) {
+                    if (Page > HOME_PAGE) {
                         Page--;
                         ItCursor = 0;
 
                         if (Cursor >= Inventory.Items.Count()) Cursor = Inventory.Items.Count();
 
-                        if(Page == -1) {
+                        if (Page == -1) {
                             SelectedItem = null;
                         }
 
@@ -191,20 +190,20 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         }
 
         private async Task CursorUp() {
-            if(Page == -1) {
+            if (Page == -1) {
                 Cursor--;
 
                 if (Cursor < 0) Cursor = Inventory.Items.Count();
 
                 await UpdateEmbed();
             } else {
-                if(GetItemAtCursor() is IUsable) {
+                if (GetItemAtCursor() is IUsable) {
                     ItCursor--;
 
                     if (ItCursor < 0) ItCursor = MAX_ITEM_OPTIONS - 1;
 
                     await UpdateEmbed();
-                } 
+                }
             }
         }
 
@@ -229,7 +228,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         }
 
         private string MakeBold(string s, int i) {
-            if(Cursor == i) {
+            if (Cursor == i) {
                 return $"**{s}**";
             }
 
@@ -252,15 +251,30 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         }
 
         private async Task UseItem(bool use) {
-            if(use) {
+            if (use) {
                 // use the item
-                (GetItemAtCursor() as IUsable).Use(User);
+                await (GetItemAtCursor() as IUsable).Use(User);
             }
         }
 
         private async Task SellItem(bool sell) {
-            if(sell) {
-                // TODO THIS
+            if (sell) {
+                ShopManager.SellItem(User.Id, SelectedItem.Value, SellCount);
+
+                await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"You successfully sold {SellCount} items for a total of {SellCount * GetItemAtCursor().GetSellPrice()} Kamtrokens"));
+                SellCount = 0;
+
+                if (SellCount == Inventory.ItemCount(GetItemAtCursor().Id)) {
+                    // if the user's not going to have any more of the item, take them back to the inventory page
+                    Cursor = 0;
+                    ItCursor = 0;
+                    Page = HOME_PAGE;
+                    SelectedItem = null;
+                } else {
+                    Page = ITEM_PAGE;
+                }
+
+                await UpdateEmbed();
             }
         }
     }

@@ -9,6 +9,6 @@ namespace Kamtro_Bot.Items
 {
     public interface IUsable
     {
-        void Use(SocketGuildUser user, params object[] args);
+        Task Use(SocketGuildUser user, params object[] args);
     }
 }
