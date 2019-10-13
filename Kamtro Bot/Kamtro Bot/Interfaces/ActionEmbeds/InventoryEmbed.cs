@@ -16,14 +16,22 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
     public class InventoryEmbed : ActionEmbed
     {
         private const int MAX_ITEM_OPTIONS = 2;  // the number of things you can do with an item max (for now, sell and use)
+        private const int HOME_PAGE = -1;
+        private const int ITEM_PAGE = 0;
+        private const int SELL_PAGE = 1;
 
         private SocketGuildUser User;
         private UserDataNode UserData;
         private UserInventoryNode Inventory;
 
+        private uint? SelectedItem = null;
         private int Cursor = 0;
-        private int ItCursor = 0;  // cursor to select sell or use
+        private int ItCursor = 0;  // cursor to select sell or use. 0 for use, 1 for sell
         private int Page = -1;
+        private int SellCount = 0;
+
+        // Warning Flags
+        private bool InvalidSellCount = false;
 
         public InventoryEmbed(SocketCommandContext ctx) {
             SetCtx(ctx);
@@ -42,7 +50,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             eb.WithColor(UserData.ProfileColor);
 
 
-            if(Page == -1) {
+            if(Page == HOME_PAGE) {
                 // if it's the home page
                 string names = "";
                 string count = "";
@@ -60,19 +68,55 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                             eb.WithImageUrl(it.GetImageUrl());
                         }
 
-                        names += $"{(i == Cursor ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{it.Name, -1}\n";
+                        names += $"{(i == Cursor ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{it.Name}\n";
                         count += $"{MakeBold(Inventory.ItemCount(Items[i]).ToString(), i)}\n";
                     }
                 }
 
                 eb.AddField("Items", names, true);
                 eb.AddField("Item Count", count, true);
-            } else {
+            } else if(Page == ITEM_PAGE) {
                 // if it's an item page
-                Item i = ItemManager.GetItem(Inventory.Items.Keys.ToList()[Cursor]);
+                Item i = GetItemAtCursor();
 
+                eb.WithTitle(i.Name);
                 eb.WithColor(Item.GetColorFromRarity(i.Rarity));
                 eb.WithThumbnailUrl(i.GetImageUrl());
+
+                eb.AddField("Number Owned", $"{Inventory.ItemCount(i.Id)}", true);
+                eb.AddField("Sell Price", $"{i.GetSellPrice()} Kamtrokens", true);
+
+                string menu = "";
+
+                if(i is IUsable) {
+                    if(ItCursor == 0) {
+                        // use item
+                        menu += $"{CustomEmotes.CursorAnimated}Use Item\n";
+                        menu += $"{CustomEmotes.CursorBlankSpace}Sell Item";
+                    } else {
+                        menu += $"{CustomEmotes.CursorBlankSpace}Use Item\n";
+                        menu += $"{CustomEmotes.CursorAnimated}Sell Item";
+                    }
+                } else {
+                    menu = $"{CustomEmotes.CursorAnimated}Sell Item";
+                }
+
+                eb.AddField("Actions", menu);
+
+                eb.WithDescription(i.Description);
+            } else if(Page == SELL_PAGE) {
+                eb.WithTitle($"Selling {GetItemAtCursor().Name}");
+                eb.AddField("Number of Items", $"{SellCount}", true);
+                eb.AddField("Value", $"{SellCount * GetItemAtCursor().GetSellPrice()} Kamtrokens", true);
+            } else {
+                eb.WithColor(BotUtils.Red);
+                eb.AddField("ERROR", $"Something went wrong! Please ping Arcy and Carbon \nPage: {Page}");
+            }
+
+            if(InvalidSellCount) {
+                InvalidSellCount = false;
+                // display the message
+                eb.AddField("Error", "Something went wrong with the number of items you selected to sell! Please ping arcy and carbon!");
             }
 
             AddMenu(eb);
@@ -83,26 +127,55 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         public override async Task PerformAction(SocketReaction option) {
             switch(option.Emote.ToString()) {
                 case ReactionHandler.SELECT_STR:
-                    if(Page == -1) {
-                        // List<uint> Items = Inventory.Items.Keys.ToList();
-                        // Items.Sort();
+                    if(Page == HOME_PAGE) {
+                        List<uint> Items = Inventory.Items.Keys.ToList();
+                        Items.Sort();
 
-                        Page = Cursor;
+                        Page = ITEM_PAGE;
+                        
+                        SelectedItem = Items[Cursor];
                         await UpdateEmbed();
-                    } else {
+                    } else if(Page == ITEM_PAGE) {
                         if(ItCursor == 0) {
-
+                            if(GetItemAtCursor() is IUsable) {
+                                // if the item can be used, the cursor is on the use option
+                                // so use the item
+                                ConfirmEmbed ce = new ConfirmEmbed("Are you sure you want to use the item?", UseItem);
+                                await ce.Display();
+                            } else {
+                                await SwitchToSellPage();
+                            }
+                        } else {
+                            await SwitchToSellPage();
+                        }
+                    } else {
+                        // on sell page, so process sell.
+                        if (SellCount <= Inventory.ItemCount(GetItemAtCursor())) {
+                            // if the user has enough items to sell
+                            ShopManager.SellItem(User.Id, SelectedItem.Value, SellCount);
+                        } else {
+                            // if the user has somehow selected more items than they have, correct the number and do nothing.
+                            SellCount = 0;
+                            InvalidSellCount = true;
+                            await UpdateEmbed();
                         }
                     }
                     break;
 
                 case ReactionHandler.BACK_STR:
-                    if(Page != -1) {
-                        Page = -1;
+                    if(Page > HOME_PAGE) {
+                        Page--;
                         ItCursor = 0;
 
                         if (Cursor >= Inventory.Items.Count()) Cursor = Inventory.Items.Count();
 
+                        if(Page == -1) {
+                            SelectedItem = null;
+                        }
+
+                        await UpdateEmbed();
+                    } else {
+                        Page = HOME_PAGE;
                         await UpdateEmbed();
                     }
                     break;
@@ -125,10 +198,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 await UpdateEmbed();
             } else {
-                List<uint> Items = Inventory.Items.Keys.ToList();
-                Items.Sort();
-
-                if(ItemManager.GetItem(Items[Page]) is IUsable) {
+                if(GetItemAtCursor() is IUsable) {
                     ItCursor--;
 
                     if (ItCursor < 0) ItCursor = MAX_ITEM_OPTIONS - 1;
@@ -146,10 +216,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 await UpdateEmbed();
             } else {
-                List<uint> Items = Inventory.Items.Keys.ToList();
-                Items.Sort();
-
-                if (ItemManager.GetItem(Items[Page]) is IUsable) {
+                if (GetItemAtCursor() is IUsable) {
                     ItCursor++;
 
                     if (ItCursor >= MAX_ITEM_OPTIONS) ItCursor = 0;
@@ -167,6 +234,34 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             }
 
             return s;
+        }
+
+        private Item GetItemAtCursor() {
+            if (SelectedItem == null) return null;
+
+            List<uint> items = Inventory.Items.Keys.ToList();
+            items.Sort();
+
+            return ItemManager.GetItem(SelectedItem.Value);
+        }
+
+        private async Task SwitchToSellPage() {
+            Page = SELL_PAGE;
+            SellCount = 0;
+            await UpdateEmbed();
+        }
+
+        private async Task UseItem(bool use) {
+            if(use) {
+                // use the item
+                (GetItemAtCursor() as IUsable).Use(User);
+            }
+        }
+
+        private async Task SellItem(bool sell) {
+            if(sell) {
+                // TODO THIS
+            }
         }
     }
 }

@@ -111,6 +111,18 @@ namespace Kamtro_Bot.Items
             return false;
         }
 
+        public static bool SellItem(ulong userid, uint itemid, int quantity) {
+            UserInventoryNode i = UserInventoryManager.GetInventory(userid);
+
+            if (i.ItemCount(itemid) < quantity) return false;
+
+            int total = ItemManager.GetItem(itemid).GetSellPrice() * quantity;
+            UserDataManager.GetUserData(ServerData.Server.GetUser(userid)).Money += total;
+            i.LoseItem(itemid, quantity);
+
+            return true;
+        }
+
         private static List<uint> GetSellableItems() {
             List<uint> options = new List<uint>();
 

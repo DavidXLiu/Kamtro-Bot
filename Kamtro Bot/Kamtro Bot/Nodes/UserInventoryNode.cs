@@ -92,7 +92,7 @@ namespace Kamtro_Bot.Nodes
         /// <summary>
         /// Counts the number of items (or the number of a specific item) in the inventory.
         /// </summary>
-        /// <param name="item">The item to get the count of</param>
+        /// <param name="item">The ID of the item to get the count of</param>
         /// <returns>The count of the specified item, or the total number of items if no item is specified</returns>
         public int ItemCount(uint? item = null) {
             // check if an item was specified
@@ -137,6 +137,17 @@ namespace Kamtro_Bot.Nodes
 
                 return Items[i];
             }
+        }
+
+        /// <summary>
+        /// Counts the number of items (or the number of a specific item) in the inventory.
+        /// </summary>
+        /// <param name="i">The item to get the count of</param>
+        /// <returns>The count of the specified item, or the total number of items if no item is specified</returns>
+        public int ItemCount(Item i) {
+            if (i == null) return 0;
+
+            return ItemCount(i.Id);
         }
 
         /// <summary>
