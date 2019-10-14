@@ -72,7 +72,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 }
 
                 eb.AddField("Items", names, true);
-                eb.AddField("Item Count", count, true);
+                if(Inventory.ItemCount() > 0) eb.AddField("Item Count", count, true);
             } else if (Page == ITEM_PAGE) {
                 // if it's an item page
                 Item i = GetItemAtCursor();

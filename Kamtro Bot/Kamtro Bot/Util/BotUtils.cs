@@ -394,7 +394,7 @@ namespace Kamtro_Bot
         }
 
         public static SocketGuildUser GetGUser(ulong id) {
-            return BotUtils.GetGUser(id);
+            return ServerData.Server.GetUser(id);
         }
 
         /// <summary>

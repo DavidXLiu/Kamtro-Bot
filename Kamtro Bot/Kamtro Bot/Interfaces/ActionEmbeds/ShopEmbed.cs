@@ -28,6 +28,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private UserDataNode Customer;
 
         private bool ShowBadNumberWarn = false; // wether or not to show the message telling the user to enter a valid number of items.
+        private bool PurchaseThank = false;
 
         public ShopEmbed(SocketCommandContext ctx) {
             SetCtx(ctx);
@@ -79,11 +80,17 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 eb.AddField("Total Cost", $"{sn.Price * ItemCount}");
                 eb.AddField("Current Balance", $"{Customer.Money}");
 
-                if (ShowBadNumberWarn) {
-                    eb.AddField("Error", "Please enter a valid number of items greater than 0");
-                }
-
                 eb.WithDescription("Use the arrows to increase or decrease the number of items you want to purchase, then use the checkmark to buy them.");
+            }
+
+            if (ShowBadNumberWarn) {
+                ShowBadNumberWarn = false;
+                eb.AddField("Error", "Please enter a valid number of items greater than 0");
+            }
+
+            if (PurchaseThank) {
+                PurchaseThank = false;
+                eb.AddField("Purchase Successful!", "Thank you for your purchase");
             }
 
             AddMenu(eb);
@@ -114,8 +121,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                                 return;
                             }
 
-                            ShowBadNumberWarn = false;
-
                             if (total > Customer.Money && LastItemCount != ItemCount) {
                                 // To prevent easy spam
                                 int missing = total - Customer.Money;
@@ -127,9 +132,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                             // If they got this far they have money and have entered a valid number of items
                             bool bought = ShopManager.BuyItem(Context.User.Id, Page, ItemCount);
 
-
                             if(bought) {
-                                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Thank you for your purchase!"));
+                                PurchaseThank = true;
+                                await UpdateEmbed();
                             } else {
                                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Something went wrong with the purchase, you have been refunded."));
                             }

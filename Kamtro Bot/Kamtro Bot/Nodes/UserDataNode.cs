@@ -42,6 +42,7 @@ namespace Kamtro_Bot.Nodes
         public int TimesLookedAtKamexButt;
         #endregion
 
+        [JsonIgnore]
         public UserInventoryNode Inventory;
 
         public UserDataNode(string username, string nickname = "", int score = 0, int weeklyscore = 0, int reputation = 0, int reputationtogive = 3, int strikes = 0, bool nsfw = true, string quote = "", bool portersupporter = false) {

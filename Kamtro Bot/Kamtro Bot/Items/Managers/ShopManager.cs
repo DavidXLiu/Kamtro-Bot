@@ -105,6 +105,9 @@ namespace Kamtro_Bot.Items
                 customer.Money -= item.Price * quantity;
 
                 UserInventoryManager.GetInventory(userid).AddItem(item.ItemID, quantity);
+
+                UserDataManager.SaveUserData();
+                UserInventoryManager.SaveInventories();
                 return true;
             }
 
@@ -119,7 +122,8 @@ namespace Kamtro_Bot.Items
             int total = ItemManager.GetItem(itemid).GetSellPrice() * quantity;
             UserDataManager.GetUserData(BotUtils.GetGUser(userid)).Money += total;
             i.LoseItem(itemid, quantity);
-
+            UserDataManager.SaveUserData();
+            UserInventoryManager.SaveInventories();
             return true;
         }
 

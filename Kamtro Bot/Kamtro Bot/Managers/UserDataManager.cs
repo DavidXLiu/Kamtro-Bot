@@ -51,6 +51,7 @@ namespace Kamtro_Bot.Managers
             if(!UserData.ContainsKey(user.Id)) {
                 UserDataNode node = new UserDataNode(user.Username, user.Nickname ?? "");
                 UserData.Add(user.Id, node);
+                GetUserData(user).Inventory = new UserInventoryNode();
                 SaveUserData();
             }
 
@@ -84,6 +85,14 @@ namespace Kamtro_Bot.Managers
             return new Tuple<UserDataNode, UserSettingsNode>(dNode, sNode);
         }
 
+        public static void FullSave() {
+            KLog.Info("Beginning full save...\n---------------");
+            SaveUserData();
+            SaveUserSettings();
+            UserInventoryManager.SaveInventories();
+            KLog.Info("---------------");
+        }
+
         #region Exparimental
         /// <summary>
         /// This feature is not yet implemented, and is currently just a placeholder.
@@ -101,6 +110,7 @@ namespace Kamtro_Bot.Managers
 
             return UserData[user.Id];
         }
+
         #endregion
         #region User Settings
         public static UserSettingsNode GetUserSettings(SocketGuildUser user) {
@@ -235,7 +245,6 @@ namespace Kamtro_Bot.Managers
 
             SaveUserData();  // Save the updated data.
         }
-        
 
         public static void ResetWeekly() {
             foreach(ulong key in UserData.Keys) {
@@ -263,6 +272,7 @@ namespace Kamtro_Bot.Managers
 
         public static void SaveUserSettings() {
             BotUtils.WriteToJson(UserSettings, DataFileNames.UserSettingsFile);
+            KLog.Info("Saved user settings.");
         }
         #endregion
         #endregion

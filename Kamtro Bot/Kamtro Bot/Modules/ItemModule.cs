@@ -28,6 +28,7 @@ namespace Kamtro_Bot.Modules
         }
 
         [Command("inventory")]
+        [Alias("inv")]
         public async Task InventoryAsync([Remainder] string args = "") {
             // TODO: add feature where admins can look through a user's inventory
 
