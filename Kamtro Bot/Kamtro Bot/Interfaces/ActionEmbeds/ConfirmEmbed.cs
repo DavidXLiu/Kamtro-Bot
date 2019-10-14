@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
@@ -15,7 +16,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private Func<bool, Task> Action;
         private string BoxText;
 
-        public ConfirmEmbed(string txt = "Are you sure?", Func<bool, Task> func = null) {
+        public ConfirmEmbed(SocketCommandContext ctx, string txt = "Are you sure?", Func<bool, Task> func = null) {
+            SetCtx(ctx);
+
             Action = func;
             BoxText = txt;
 

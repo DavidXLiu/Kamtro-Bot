@@ -138,7 +138,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                             if (GetItemAtCursor() is IUsable) {
                                 // if the item can be used, the cursor is on the use option
                                 // so use the item
-                                ConfirmEmbed ce = new ConfirmEmbed("Are you sure you want to use the item?", UseItem);
+                                ConfirmEmbed ce = new ConfirmEmbed(Context, "Are you sure you want to use the item?", UseItem);
                                 await ce.Display();
                             } else {
                                 await SwitchToSellPage();
@@ -148,9 +148,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         }
                     } else {
                         // on sell page, so process sell.
-                        if (SellCount <= Inventory.ItemCount(GetItemAtCursor())) {
+                        if (SellCount <= Inventory.ItemCount(GetItemAtCursor()) && SellCount > 0) {
                             // if the user has enough items to sell
-                            ConfirmEmbed ce = new ConfirmEmbed($"Are you sure you want to sell {SellCount} {GetItemAtCursor().Name}{(SellCount == 1 ? "":"s")} for {SellCount * GetItemAtCursor().GetSellPrice()} Kamtrokens?", SellItem);
+                            ConfirmEmbed ce = new ConfirmEmbed(Context, $"Are you sure you want to sell {SellCount} {GetItemAtCursor().Name}{(SellCount == 1 ? "":"s")} for {SellCount * GetItemAtCursor().GetSellPrice()} Kamtrokens?", SellItem);
                             await ce.Display();
                         } else {
                             // if the user has somehow selected more items than they have, correct the number and do nothing.
@@ -190,44 +190,52 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         }
 
         private async Task CursorUp() {
-            if (Page == -1) {
+            if (Page == HOME_PAGE) {
                 Cursor--;
 
                 if (Cursor < 0) Cursor = Inventory.Items.Count();
-
-                await UpdateEmbed();
-            } else {
+            } else if(Page == ITEM_PAGE) {
                 if (GetItemAtCursor() is IUsable) {
                     ItCursor--;
 
                     if (ItCursor < 0) ItCursor = MAX_ITEM_OPTIONS - 1;
-
-                    await UpdateEmbed();
+                }
+            } else {
+                SellCount++;
+                
+                if(SellCount > Inventory.ItemCount(SelectedItem)) {
+                    SellCount = 1;
                 }
             }
+
+            await UpdateEmbed();
         }
 
         private async Task CursorDown() {
-            if (Page == -1) {
+            if (Page == HOME_PAGE) {
                 Cursor++;
 
                 if (Cursor >= Inventory.Items.Count) Cursor = 0;
-
-                await UpdateEmbed();
-            } else {
+            } else if (Page == ITEM_PAGE) {
                 if (GetItemAtCursor() is IUsable) {
                     ItCursor++;
 
                     if (ItCursor >= MAX_ITEM_OPTIONS) ItCursor = 0;
-
-                    await UpdateEmbed();
                 } else {
                     ItCursor = 0;
                 }
+            } else {
+                SellCount--;
+
+                if (SellCount < 1) {
+                    SellCount = Inventory.ItemCount(SelectedItem);
+                }
             }
+
+            await UpdateEmbed();
         }
 
-        private string MakeBold(string s, int i) {
+            private string MakeBold(string s, int i) {
             if (Cursor == i) {
                 return $"**{s}**";
             }
