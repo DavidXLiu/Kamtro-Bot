@@ -63,7 +63,7 @@ namespace Kamtro_Bot.Modules
                     // More than one user mentioned, or ambiguous user
                     else
                     {
-                        UserSelectionEmbed use = new UserSelectionEmbed(users, DisplayUserInfoEmbed, ServerData.Server.GetUser(Context.User.Id));
+                        UserSelectionEmbed use = new UserSelectionEmbed(users, DisplayUserInfoEmbed, BotUtils.GetGUser(Context.User.Id));
                         await use.Display(Context.Channel);
                     }
                 }
@@ -145,7 +145,7 @@ namespace Kamtro_Bot.Modules
                     // More than one user mentioned, or ambiguous user
                     else
                     {
-                        UserSelectionEmbed use = new UserSelectionEmbed(users, VoiceKickUserAsync, ServerData.Server.GetUser(Context.User.Id));
+                        UserSelectionEmbed use = new UserSelectionEmbed(users, VoiceKickUserAsync, BotUtils.GetGUser(Context.User.Id));
                         await use.Display(Context.Channel);
                     }
                 }
@@ -325,7 +325,7 @@ namespace Kamtro_Bot.Modules
                 foreach (SocketTextChannel channel in ServerData.Server.TextChannels)
                 {
                     // Get only accessible text channels
-                    if (channel.Users.Contains(ServerData.Server.GetUser(Context.Client.CurrentUser.Id)))
+                    if (channel.Users.Contains(BotUtils.GetGUser(Context.Client.CurrentUser.Id)))
                     {
                         // Get all messages
                         List<IMessage> messages = await channel.GetMessagesAsync(1000).Flatten().ToList();
@@ -373,7 +373,7 @@ namespace Kamtro_Bot.Modules
             }
 
             // next, check to see if Kamtro has perms to ban the user
-            if (!BotUtils.HighestUser(ServerData.Server.GetUser(Context.Client.CurrentUser.Id), ServerData.Server.GetUser(user.Id)))
+            if (!BotUtils.HighestUser(BotUtils.GetGUser(Context.Client.CurrentUser.Id), BotUtils.GetGUser(user.Id)))
             {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot strike them."));
                 KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than bot");
@@ -383,7 +383,7 @@ namespace Kamtro_Bot.Modules
             // next, check if the caller can ban the user
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN))
             {
-                if (BotUtils.HighestUser(ServerData.Server.GetUser(user.Id), BotUtils.GetGUser(Context), true))
+                if (BotUtils.HighestUser(BotUtils.GetGUser(user.Id), BotUtils.GetGUser(Context), true))
                 {
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher or equal than you, and as such, you cannot strike them."));
                     KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than caller");
@@ -416,7 +416,7 @@ namespace Kamtro_Bot.Modules
             }
 
             // next, check to see if Kamtro has perms to ban the user
-            if (!BotUtils.HighestUser(ServerData.Server.GetUser(Context.Client.CurrentUser.Id), ServerData.Server.GetUser(user.Id))) {
+            if (!BotUtils.HighestUser(BotUtils.GetGUser(Context.Client.CurrentUser.Id), BotUtils.GetGUser(user.Id))) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot ban them."));
                 KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(user)} of higher status than bot");
                 return;
@@ -425,7 +425,7 @@ namespace Kamtro_Bot.Modules
             // next, check if the caller can ban the user
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN))
             {
-                if (BotUtils.HighestUser(ServerData.Server.GetUser(user.Id), BotUtils.GetGUser(Context), true))
+                if (BotUtils.HighestUser(BotUtils.GetGUser(user.Id), BotUtils.GetGUser(Context), true))
                 {
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher or equal than you, and as such, you cannot ban them."));
                     KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(user)} of higher status than caller");

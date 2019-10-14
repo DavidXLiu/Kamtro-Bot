@@ -16,8 +16,9 @@ namespace Kamtro_Bot.Modules
         #region User Commands
         [Command("shop")]
         public async Task ShopAsync([Remainder] string args = "") {
-            ShopEmbed shop = new ShopEmbed(Context);
+            if (!Program.Experimental) return;
 
+            ShopEmbed shop = new ShopEmbed(Context);
             await shop.Display();
         }
 
@@ -28,7 +29,12 @@ namespace Kamtro_Bot.Modules
 
         [Command("inventory")]
         public async Task InventoryAsync([Remainder] string args = "") {
+            // TODO: add feature where admins can look through a user's inventory
 
+            if (!Program.Experimental) return;
+
+            InventoryEmbed ie = new InventoryEmbed(Context);
+            await ie.Display();
         }
         #endregion
         #region Admin Commands

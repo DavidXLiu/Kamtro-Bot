@@ -73,10 +73,10 @@ namespace Kamtro_Bot
             AutobanReset = new Thread(new ThreadStart(GeneralHandler.ResetThread));
 
             SetupFiles();  // This is to keep the Main method more readable
+            LoadFiles();
 
             new Program().StartAsync().GetAwaiter().GetResult();
         }
-
 
         public async Task StartAsync() {
             config = new DiscordSocketConfig() { MessageCacheSize = 1000000 }; // initialize the config for the client, and set the message cache size
@@ -134,6 +134,7 @@ namespace Kamtro_Bot
             ServerData.SetupServerData(Settings);
             KLog.Info("Settings Reloaded");
         }
+
         public static void SaveSettings() {
             BotUtils.WriteToJson(Settings, DataFileNames.GeneralConfigFile);
             KLog.Info("Settings Saved.");
@@ -146,8 +147,6 @@ namespace Kamtro_Bot
                     Directory.CreateDirectory(dir);  // Then create it
                 } 
             }
-
-            LoadSettings();
 
             // Special case for Excel files.
             // Only used for admin stuff atm
@@ -185,7 +184,11 @@ namespace Kamtro_Bot
 
         private static void SetupGeneral() {
             ServerData.SetupServerData(Settings);
+        }
+
+        private static void LoadFiles() {
             UserInventoryManager.LoadInventories();
+            LoadSettings();
         }
 
         /// <summary>

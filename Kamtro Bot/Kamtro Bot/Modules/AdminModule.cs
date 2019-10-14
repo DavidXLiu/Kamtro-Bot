@@ -76,12 +76,12 @@ namespace Kamtro_Bot.Modules
             int errcount = 0;
              
             foreach(ulong id in GeneralHandler.CrossBan.Keys) {
-                if(ServerData.Server.GetUser(id) != null) {
-                    bool sent = await BotUtils.DMUserAsync(ServerData.Server.GetUser(id), new BanNotifyEmbed($"You were banned on {GeneralHandler.CrossBan[id].GetServer()}, and therefore have been auto banned from Kamtro.\nOld ban reason:\n\n{GeneralHandler.CrossBan[id].Reason}").GetEmbed());
+                if(BotUtils.GetGUser(id) != null) {
+                    bool sent = await BotUtils.DMUserAsync(BotUtils.GetGUser(id), new BanNotifyEmbed($"You were banned on {GeneralHandler.CrossBan[id].GetServer()}, and therefore have been auto banned from Kamtro.\nOld ban reason:\n\n{GeneralHandler.CrossBan[id].Reason}").GetEmbed());
 
                     if (!sent) errcount++;
                     
-                    await ServerData.Server.AddBanAsync(ServerData.Server.GetUser(id));
+                    await ServerData.Server.AddBanAsync(BotUtils.GetGUser(id));
                     scan.InKamtro++;
                 }
             }

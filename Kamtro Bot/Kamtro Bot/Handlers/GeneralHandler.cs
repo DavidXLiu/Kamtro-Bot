@@ -234,7 +234,7 @@ namespace Kamtro_Bot.Handlers
                 ConsMessages.Add(msg.Channel.Id, 0);
             }
 
-            SocketGuildUser auth = ServerData.Server.GetUser(msg.Author.Id);
+            SocketGuildUser auth = BotUtils.GetGUser(msg.Author.Id);
 
             if (auth == null) return;
 

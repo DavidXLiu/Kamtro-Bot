@@ -1,5 +1,7 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using Kamtro_Bot.Managers;
+using Kamtro_Bot.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,6 +101,15 @@ namespace Kamtro_Bot.Items
             }
 
             return ImageUrl;
+        }
+
+        /// <summary>
+        /// Notifies the bot channel, usually used on item use
+        /// </summary>
+        /// <param name="msg">The message to be sent</param>
+        /// <returns></returns>
+        public async Task NotifyChannel(string msg) {
+            await ServerData.BotChannel.SendMessageAsync(BotUtils.KamtroText(msg));
         }
 
         public static Color GetColorFromRarity(ItemRarity r) {

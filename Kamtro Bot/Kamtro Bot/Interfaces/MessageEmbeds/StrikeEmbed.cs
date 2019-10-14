@@ -68,7 +68,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Added strike for {BotUtils.GetFullUsername(Target)}. They now have {strikes} strike{((strikes == 1) ? "":"s")}."));
 
                     if(notifyUser) {
-                        bool sent = await BotUtils.DMUserAsync(ServerData.Server.GetUser(Target.Id), new StrikeNotifyEmbed(str.Reason, strikes).GetEmbed());
+                        bool sent = await BotUtils.DMUserAsync(BotUtils.GetGUser(Target.Id), new StrikeNotifyEmbed(str.Reason, strikes).GetEmbed());
 
                         if (!sent) await Context.Channel.SendMessageAsync(BotUtils.BadDMResponse);
                     }

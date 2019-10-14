@@ -194,7 +194,7 @@ namespace Kamtro_Bot.Modules
             }
 
             // Change formatting based on nicknames and channel
-            SocketGuildUser targetGuildUser = ServerData.Server.GetUser(user.Id);
+            SocketGuildUser targetGuildUser = BotUtils.GetGUser(user.Id);
             SocketGuildUser currentUser = BotUtils.GetGUser(Context);
 
             await UserDataManager.AddRep(currentUser, targetGuildUser);

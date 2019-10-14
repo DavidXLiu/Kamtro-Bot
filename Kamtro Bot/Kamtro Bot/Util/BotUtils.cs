@@ -268,7 +268,7 @@ namespace Kamtro_Bot
             // Find mentions
             if (message.MentionedUsers.Count > 0) {
                 foreach (SocketUser user in message.MentionedUsers.ToList()) {
-                    users.Add(ServerData.Server.GetUser(user.Id));
+                    users.Add(BotUtils.GetGUser(user.Id));
                 }
 
                 return users;
@@ -390,7 +390,11 @@ namespace Kamtro_Bot
         }
 
         public static SocketGuildUser GetGUser(SocketCommandContext ctx) {
-            return ServerData.Server.GetUser(ctx.User.Id);
+            return BotUtils.GetGUser(ctx.User.Id);
+        }
+
+        public static SocketGuildUser GetGUser(ulong id) {
+            return BotUtils.GetGUser(id);
         }
 
         /// <summary>

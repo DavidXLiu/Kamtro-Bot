@@ -97,7 +97,7 @@ namespace Kamtro_Bot.Items
         public static bool BuyItem(ulong userid, int shopSlot, int quantity) {
             if (shopSlot > Shop.Count || shopSlot < 0) return false;
 
-            SocketGuildUser user = ServerData.Server.GetUser(userid);
+            SocketGuildUser user = BotUtils.GetGUser(userid);
             UserDataNode customer = UserDataManager.GetUserData(user);
             ShopNode item = Shop[shopSlot];
 
@@ -117,7 +117,7 @@ namespace Kamtro_Bot.Items
             if (i.ItemCount(itemid) < quantity) return false;
 
             int total = ItemManager.GetItem(itemid).GetSellPrice() * quantity;
-            UserDataManager.GetUserData(ServerData.Server.GetUser(userid)).Money += total;
+            UserDataManager.GetUserData(BotUtils.GetGUser(userid)).Money += total;
             i.LoseItem(itemid, quantity);
 
             return true;

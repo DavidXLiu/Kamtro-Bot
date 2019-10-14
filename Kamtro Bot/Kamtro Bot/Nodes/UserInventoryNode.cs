@@ -163,7 +163,7 @@ namespace Kamtro_Bot.Nodes
 
             AddItem(itemId);
 
-            KLog.Info($"User {BotUtils.GetFullUsername(ServerData.Server.GetUser(UserInventoryManager.UserInventories.FirstOrDefault(x => x.Value == this).Key))} crafted item {item.Name} (ID: {itemId})");
+            KLog.Info($"User {BotUtils.GetFullUsername(BotUtils.GetGUser(UserDataManager.UserData.FirstOrDefault(x => x.Value.Inventory == this).Key))} crafted item {item.Name} (ID: {itemId})");
 
             ParseInventory();
         }

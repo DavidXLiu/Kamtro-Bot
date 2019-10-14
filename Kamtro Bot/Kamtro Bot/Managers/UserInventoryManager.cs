@@ -14,18 +14,20 @@ namespace Kamtro_Bot.Managers
 
         public static void LoadInventories() {
             string data = FileManager.ReadFullFile(DataFileNames.UserInventoriesFile);
-            UserInventories = JsonConvert.DeserializeObject<Dictionary<ulong, UserInventoryNode>>(data) ?? new Dictionary<ulong, UserInventoryNode>();
+            Dictionary<ulong, UserInventoryNode> UserInventories = JsonConvert.DeserializeObject<Dictionary<ulong, UserInventoryNode>>(data) ?? new Dictionary<ulong, UserInventoryNode>();
 
             KLog.Info("Loaded Inventories.");
         }
 
         public static void SaveInventories() {
+            Dictionary<ulong, UserInventoryNode> UserInventories = null;
+
             BotUtils.WriteToJson(UserInventories, DataFileNames.UserInventoriesFile);
             KLog.Info("Saved Inventories.");
         }
 
         public static UserInventoryNode GetInventory(ulong userId) {
-            return UserInventories[userId];
+            return UserDataManager.GetUserData(BotUtils.GetGUser(userId)).Inventory;
         }
     }
 }
