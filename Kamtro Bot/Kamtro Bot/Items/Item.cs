@@ -88,7 +88,7 @@ namespace Kamtro_Bot.Items
         /// </summary>
         /// <returns>True if the item is craftable, false otherwise.</returns>
         public bool IsCraftable() {
-            return Recipe == null || Recipe.Count <= 0;
+            return Recipe != null && Recipe.Count > 0;
         }
 
         /// <summary>

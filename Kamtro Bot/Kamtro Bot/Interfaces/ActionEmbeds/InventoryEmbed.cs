@@ -38,6 +38,11 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             UserData = UserDataManager.GetUserData(User);
             Inventory = UserInventoryManager.GetInventory(User.Id);
 
+            List<uint> Items = Inventory.Items.Keys.ToList();
+            Items.Sort();
+
+            if (Items.Count != 0) SelectedItem = Items[0];
+
             AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.BACK, ReactionHandler.UP, ReactionHandler.DOWN);
         }
 
@@ -47,6 +52,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             eb.WithTitle($"{User.GetDisplayName()}'s Inventory");
             eb.WithColor(UserData.ProfileColor);
 
+            if(SelectedItem != null) {
+                eb.WithThumbnailUrl(GetItemAtCursor().GetImageUrl());
+            }
 
             if (Page == HOME_PAGE) {
                 // if it's the home page
@@ -169,7 +177,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         if (Cursor >= Inventory.Items.Count()) Cursor = Inventory.Items.Count();
 
                         if (Page == -1) {
-                            SelectedItem = null;
+                            List<uint> Items = Inventory.Items.Keys.ToList();
+                            Items.Sort();
+                            SelectedItem = Items[Cursor];
                         }
 
                         await UpdateEmbed();
@@ -194,6 +204,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 Cursor--;
 
                 if (Cursor < 0) Cursor = Inventory.Items.Count();
+
+                List<uint> Items = Inventory.Items.Keys.ToList();
+                Items.Sort();
+                SelectedItem = Items[Cursor];
             } else if(Page == ITEM_PAGE) {
                 if (GetItemAtCursor() is IUsable) {
                     ItCursor--;
@@ -216,6 +230,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 Cursor++;
 
                 if (Cursor >= Inventory.Items.Count) Cursor = 0;
+
+                List<uint> Items = Inventory.Items.Keys.ToList();
+                Items.Sort();
+                SelectedItem = Items[Cursor];
             } else if (Page == ITEM_PAGE) {
                 if (GetItemAtCursor() is IUsable) {
                     ItCursor++;
@@ -235,7 +253,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             await UpdateEmbed();
         }
 
-            private string MakeBold(string s, int i) {
+        private string MakeBold(string s, int i) {
             if (Cursor == i) {
                 return $"**{s}**";
             }
@@ -245,9 +263,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
         private Item GetItemAtCursor() {
             if (SelectedItem == null) return null;
-
-            List<uint> items = Inventory.Items.Keys.ToList();
-            items.Sort();
 
             return ItemManager.GetItem(SelectedItem.Value);
         }
