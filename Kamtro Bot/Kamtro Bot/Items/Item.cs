@@ -83,6 +83,10 @@ namespace Kamtro_Bot.Items
             return Recipe;
         }
 
+        public void SetRecipe(Dictionary<uint, int> recipe) {
+            Recipe = recipe;
+        }
+
         /// <summary>
         /// Tells if the item has a recipe and is craftable
         /// </summary>
