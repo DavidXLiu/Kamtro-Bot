@@ -27,9 +27,11 @@ namespace Kamtro_Bot.Items
 
             Random r = new Random();
             int n;
-            for(int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++) {
                 n = r.Next(0, options.Count);
                 final.Add(options[n]);
+                options.RemoveAt(n);
+                if (options.Count == 0) break;
             }
 
             foreach(uint i in final) {

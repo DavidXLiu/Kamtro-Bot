@@ -99,7 +99,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         }
 
         public override async Task PerformAction(SocketReaction option) {
-            switch(option.Emote.ToString()) {
+            if (ShopManager.Shop.Count == 0) return;  // avoid indexoutofbounds exception
+
+            switch (option.Emote.ToString()) {
                 case ReactionHandler.SELECT_STR:
                     if(Page == -1) {
                         if (ShopManager.Shop.Count == 0) return;
@@ -164,7 +166,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (Page == -1) { 
                 Cursor++;
 
-                if (Cursor >= SHOP_SLOTS - 1) Cursor = 0;
+                if (Cursor >= ShopManager.Shop.Count - 1) Cursor = 0;
             } else {
                 if (ItemCount > 0) {
                     LastItemCount = ItemCount;
@@ -182,7 +184,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private async Task CursorDown() {
             if (Page == -1) {
                 Cursor--;
-                if (Cursor < 0) Cursor = SHOP_SLOTS - 1;
+                if (Cursor < 0) Cursor = ShopManager.Shop.Count - 1;
             } else {
                 LastItemCount = ItemCount;
                 ItemCount++;

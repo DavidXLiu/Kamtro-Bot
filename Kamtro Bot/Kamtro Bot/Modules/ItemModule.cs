@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Discord.Commands;
 using Kamtro_Bot.Interfaces.ActionEmbeds;
 using Kamtro_Bot.Items;
+using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Modules
 {
@@ -44,6 +45,7 @@ namespace Kamtro_Bot.Modules
         [Command("refreshshop")]
         [Alias("refresh shop", "rfsh")]
         public async Task RefreshShopAsync([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
             ShopManager.GenShopSelection();
             await ReplyAsync(BotUtils.KamtroText("Shop Refreshed."));
         }
