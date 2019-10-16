@@ -65,7 +65,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 string list = "";
 
                 for (int i = 0; i < CraftItems.Count; i++) {
-                    list += MakeBold($"{(i == Cursor ? CustomEmotes.CursorBlankSpace : CustomEmotes.CursorAnimated)}{ItemManager.GetItem(CraftItems[i]).Name}", Inventory.CanCraft(CraftItems[i])) + "\n";
+                    list += MakeBold($"{(i == Cursor ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{ItemManager.GetItem(CraftItems[i]).Name}", Inventory.CanCraft(CraftItems[i])) + "\n";
                 }
 
                 if (CraftItems.Count == 0) list = "Crafting Unavailable!";
@@ -183,7 +183,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (Page == HOME_PAGE) {
                 Cursor++;
 
-                if (Cursor >= CraftItems.Count() - 1) Cursor = 0;
+                if (Cursor >= CraftItems.Count()) Cursor = 0;
 
                 SelectedItem = CraftItems[Cursor];
             } else {

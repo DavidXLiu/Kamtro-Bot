@@ -203,7 +203,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (Page == HOME_PAGE) {
                 Cursor--;
 
-                if (Cursor < 0) Cursor = Inventory.Items.Count();
+                if (Cursor < 0) Cursor = Inventory.Items.Count() - 1;
 
                 List<uint> Items = Inventory.Items.Keys.ToList();
                 Items.Sort();
@@ -277,6 +277,12 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (use) {
                 // use the item
                 await (GetItemAtCursor() as IUsable).Use(User);
+
+                if(Inventory.ItemCount(GetItemAtCursor()) == 0) {
+                    Page = HOME_PAGE;
+                }
+
+                await UpdateEmbed();
             }
         }
 

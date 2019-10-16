@@ -171,11 +171,17 @@ namespace Kamtro_Bot.Nodes
         private void ParseInventory() {
             bool save = false;
 
+            List<uint> remove = new List<uint>();
+
             foreach(uint k in Items.Keys) {
                 if (Items[k] <= 0) {
-                    Items.Remove(k);
+                    remove.Add(k);
                     save = true;
                 }
+            }
+
+            foreach(uint k in remove) {
+                Items.Remove(k);
             }
 
             if (save) UserInventoryManager.SaveInventories();
