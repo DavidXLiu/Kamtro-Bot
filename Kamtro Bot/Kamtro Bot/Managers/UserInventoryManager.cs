@@ -32,6 +32,8 @@ namespace Kamtro_Bot.Managers
             Dictionary<ulong, UserInventoryNode> UserInventories = new Dictionary<ulong, UserInventoryNode>();
 
             foreach(ulong i in UserDataManager.UserData.Keys) {
+                if (BotUtils.GetGUser(i) == null) continue;  // null checking.
+
                 UserInventories.Add(i, UserDataManager.GetUserData(BotUtils.GetGUser(i)).Inventory ?? new UserInventoryNode());
             }
 

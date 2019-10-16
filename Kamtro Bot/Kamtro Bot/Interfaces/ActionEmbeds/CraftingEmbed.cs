@@ -87,7 +87,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     int owned = Inventory.ItemCount(ItemManager.GetItem(i));  // number of the ingredient owned by the user
                     int needed = GetItemAtCursor().GetRecipe()[i];
 
-                    cost += MakeBold($"{ItemManager.GetItem(i).Name} ({owned}/{needed*ItemCount})\n", owned >= needed*ItemCount);
+                    cost += MakeBold($"{ItemManager.GetItem(i).Name} ({owned}/{needed*ItemCount})", owned >= needed*ItemCount) + "\n";
                 }
 
                 eb.AddField("Crafting Cost (Owned/Needed)", cost);
@@ -135,6 +135,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 case ReactionHandler.SELECT_STR:
                     if (Page == HOME_PAGE) {
                         Page = CRAFT_PAGE;
+                        await UpdateEmbed();
                     } else {
                         // item page
                         if(ItemCount == 0) {
@@ -153,8 +154,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                             }
                         }
                     }
-
-                    await UpdateEmbed();
                     break;
 
                 case ReactionHandler.BACK_STR:
@@ -173,6 +172,8 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 if (Cursor < 0) Cursor = CraftItems.Count() - 1;
 
                 SelectedItem = CraftItems[Cursor];
+            } else {
+                ItemCount++;
             }
 
             await UpdateEmbed();
@@ -185,6 +186,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 if (Cursor >= CraftItems.Count() - 1) Cursor = 0;
 
                 SelectedItem = CraftItems[Cursor];
+            } else {
+                ItemCount--;
+
+                if (ItemCount < 0) ItemCount = 0;
             }
 
             await UpdateEmbed();
