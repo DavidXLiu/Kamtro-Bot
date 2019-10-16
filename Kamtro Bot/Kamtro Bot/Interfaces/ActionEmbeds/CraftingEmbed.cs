@@ -222,7 +222,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             ConfirmOut = false;
 
-            await Context.Channel.SendMessageAsync($"Successfully crafted {GetItemAtCursor().Name} * {ItemCount}");
+            await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"Successfully crafted {GetItemAtCursor().Name} * {ItemCount}"));
         }
 
         private string MakeBold(string s, bool b) {
