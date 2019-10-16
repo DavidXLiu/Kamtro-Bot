@@ -24,7 +24,9 @@ namespace Kamtro_Bot.Modules
 
         [Command("craft")]
         public async Task CraftAsync([Remainder] string args = "") {
-
+            if (!Program.Experimental) return;
+            CraftingEmbed cre = new CraftingEmbed(Context);
+            await cre.Display();
         }
 
         [Command("inventory")]

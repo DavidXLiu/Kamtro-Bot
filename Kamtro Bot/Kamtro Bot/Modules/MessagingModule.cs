@@ -163,8 +163,7 @@ namespace Kamtro_Bot.Modules
                 try
                 {
                     target = Context.Message.MentionedChannels.ElementAt(0) as SocketTextChannel;
-                }
-                catch(Exception e) { }
+                } catch (Exception) { }
             }
 
             if(target == null) {

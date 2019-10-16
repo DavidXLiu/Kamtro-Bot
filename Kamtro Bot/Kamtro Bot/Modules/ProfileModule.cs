@@ -51,7 +51,7 @@ namespace Kamtro_Bot.Modules
         }
 
         [Command("profile")]
-        [Alias("userprofile", "prof", "p")]
+        [Alias("userprofile", "prof", "pr")]
         public async Task ProfileAsync([Remainder] string username = "") {
             if (username == "") {
                 // user's profile

@@ -78,12 +78,12 @@ namespace Kamtro_Bot.Nodes
             return true;
         }
 
-        public bool CanCraft(uint item) {
+        public bool CanCraft(uint item, int quantity = 1) {
             Item i = ItemManager.GetItem(item);
 
             foreach(uint k in i.GetRecipe().Keys) {
                 if (!Items.ContainsKey(k)) return false;
-                if (Items[k] < i.GetRecipe()[k]) return false;
+                if (Items[k] < i.GetRecipe()[k]*quantity) return false;
             }
 
             return true;

@@ -23,7 +23,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private int ItemCount = 0;
         private uint? SelectedItem = null;
 
+        private bool ConfirmOut = false;  // protect against spam
+
         private bool ZeroItemCountWarn = false;
+        private bool CantCraftWarn = false;
 
         private SocketGuildUser User;
         private UserInventoryNode Inventory;
@@ -49,33 +52,72 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             EmbedBuilder eb = new EmbedBuilder();
 
             eb.WithTitle("Crafting");
+            eb.WithColor(Item.GetColorFromRarity(GetItemAtCursor().Rarity));
+            eb.WithThumbnailUrl(GetItemAtCursor().GetImageUrl());
 
             if (SelectedItem != null) {
                 eb.WithThumbnailUrl(GetItemAtCursor().GetImageUrl());
             }
 
             if (Page == HOME_PAGE) {
-                /*
-                    Home Page
-                    Must have:
-                        - List of craftable items
-                        - Color is item rarity
-                        - Image is item icon
-                */
-                
+                eb.WithDescription("Items you have enough materials to craft are in bold.");
+
+                string list = "";
+
+                for (int i = 0; i < CraftItems.Count; i++) {
+                    list += MakeBold($"{(i == Cursor ? CustomEmotes.CursorBlankSpace : CustomEmotes.CursorAnimated)}{ItemManager.GetItem(CraftItems[i]).Name}", Inventory.CanCraft(CraftItems[i])) + "\n";
+                }
+
+                if (CraftItems.Count == 0) list = "Crafting Unavailable!";
+
+                eb.AddField("Crafting Options", list.Trim('\n'));
+
+                // Menu
+                ClearMenuOptions();
+                AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.BACK);
             } else {
-                /*
-                    Crafting Page
-                    Must have:
-                        - Item Name
-                        - Crafting cost
-                            - Each ingredient must have a count in the form of (a/b) where a is the number the user has, and b is the number needed to craft
-                        - To Craft Count
-                        - Item Description
-                        - Color is item rarity
-                        - Image is item icon
-                */
+                eb.WithDescription("Crafting ingredients marked in bold are ones you have enough of to craft this item.");
+
+                eb.AddField("Name", GetItemAtCursor().Name);
+
+                // Crafting Cost
+                string cost = "";
+
+                foreach (uint i in GetItemAtCursor().GetRecipe().Keys) {
+                    int owned = Inventory.ItemCount(ItemManager.GetItem(i));  // number of the ingredient owned by the user
+                    int needed = GetItemAtCursor().GetRecipe()[i];
+
+                    cost += MakeBold($"{ItemManager.GetItem(i).Name} ({owned}/{needed*ItemCount})\n", owned >= needed*ItemCount);
+                }
+
+                eb.AddField("Crafting Cost (Owned/Needed)", cost);
+
+                eb.AddField("Description", GetItemAtCursor().Description);
+
+                // To Craft Count
+                eb.AddField("Item Count", $"{ItemCount}");
+
+                // Custom Menu
+                ClearMenuOptions();
+                AddMenuOptions(ReactionHandler.SELECT, new MenuOptionNode(ReactionHandler.UP_STR, "Increase Crafting Count"), new MenuOptionNode(ReactionHandler.DOWN_STR, "Decrease Crafting Count"), ReactionHandler.BACK);
             }
+
+            string warnings = "";
+
+            // Warnings
+            if(CantCraftWarn) {
+                warnings += "You can't craft that many of this item!\n";
+                CantCraftWarn = false;
+            }
+
+            if(ZeroItemCountWarn) {
+                warnings += "You can't craft 0 items!\n\n";
+                ZeroItemCountWarn = false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(warnings)) eb.AddField("Warning", warnings.Trim('\n'));
+
+            AddMenu(eb); // menu only makes sense on home page, adjust it for the other pages
 
             return eb.Build();
         }
@@ -97,10 +139,17 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         // item page
                         if(ItemCount == 0) {
                             ZeroItemCountWarn = true;  // if the number to craft is 0, notify the user that they can only craft one or more of an item.
+                            await UpdateEmbed();
                         } else {
-                            // craft the item
-                            for (int i = 0; i < ItemCount; i++) {
-                                Inventory.TryCraft(SelectedItem.Value);
+                            if(Inventory.CanCraft(GetItemAtCursor().Id, ItemCount) && !ConfirmOut) {
+                                // User can craft X items
+                                ConfirmOut = true;
+                                ConfirmEmbed ce = new ConfirmEmbed(Context, $"Are you sure you want to craft {ItemCount} item{(ItemCount == 1 ? "" : "s")}?", DoCraft);
+                                await ce.Display();
+                            } else {
+                                // user can't craft
+                                CantCraftWarn = true;
+                                await UpdateEmbed();
                             }
                         }
                     }
@@ -109,7 +158,10 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     break;
 
                 case ReactionHandler.BACK_STR:
-
+                    if(Page != HOME_PAGE) {
+                        Page = HOME_PAGE;
+                        await UpdateEmbed();
+                    }
                     break;
             }
         }
@@ -156,6 +208,24 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             craftable.Sort();
 
             return craftable;
+        }
+
+        private async Task DoCraft(bool craft) {
+            for (int i = 0; i < ItemCount; i++) {
+                Inventory.TryCraft(SelectedItem.Value);
+            }
+
+            ConfirmOut = false;
+
+            await Context.Channel.SendMessageAsync($"Successfully crafted {GetItemAtCursor().Name} * {ItemCount}");
+        }
+
+        private string MakeBold(string s, bool b) {
+            if(b) {
+                return $"**{s}**";
+            }
+
+            return s;
         }
     }
 }

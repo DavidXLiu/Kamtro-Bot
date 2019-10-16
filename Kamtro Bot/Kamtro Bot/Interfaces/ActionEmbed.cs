@@ -46,7 +46,6 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="option"></param>
         public abstract Task PerformAction(SocketReaction option);
 
-
         /// <summary>
         /// Adds the menu options at the bottom of the embed.
         /// </summary>
@@ -70,7 +69,6 @@ namespace Kamtro_Bot.Interfaces
             return embedBuilder;
         }
 
-
         /// <summary>
         /// Initializes the list of Menu options and fills it
         /// </summary>
@@ -90,7 +88,6 @@ namespace Kamtro_Bot.Interfaces
         protected void ClearMenuOptions() {
             MenuOptions.Clear();
         }
-
 
         /// <summary>
         /// Adds the menu options to the message as reactions.
