@@ -71,7 +71,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         Item it = ItemManager.GetItem(Items[i]);
 
                         if (i == Cursor) {
-                            eb.WithImageUrl(it.GetImageUrl());
+                            eb.WithThumbnailUrl(it.GetImageUrl());
                         }
 
                         names += $"{(i == Cursor ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{it.Name}\n";

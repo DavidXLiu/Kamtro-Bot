@@ -9,7 +9,7 @@ namespace Kamtro_Bot.Items
 {
     public class ItemManager
     {
-        public const string DefaultItemImageUrl = "";
+        public const string DefaultItemImageUrl = "https://cdn.discordapp.com/attachments/631239436365070372/631239508435795998/New_Piskel.png";
 
         public static Dictionary<uint, Item> Items = null;
         /// <summary>
