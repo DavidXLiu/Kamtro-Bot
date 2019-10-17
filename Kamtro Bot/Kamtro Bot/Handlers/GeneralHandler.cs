@@ -13,6 +13,7 @@ using Kamtro_Bot.Managers;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
 using Discord;
 using Kamtro_Bot.Interfaces;
+using Discord.Rest;
 
 namespace Kamtro_Bot.Handlers
 {
@@ -46,6 +47,7 @@ namespace Kamtro_Bot.Handlers
             client.UserUnbanned += OnMemberUnban;
             client.MessageUpdated += OnMessageUpdate;
             client.MessageDeleted += OnMessageDelete;
+            client.RoleDeleted += OnRoleDelete;
         }
 
         /// <summary>
@@ -220,6 +222,19 @@ namespace Kamtro_Bot.Handlers
 
             await mde.Display(ServerData.LogChannel);
         }
+        
+        /// <summary>
+        /// Called when a user deletes a role
+        /// </summary>
+        /// <param name="r">The role which was deleted</param>
+        /// <returns></returns>
+        public async Task OnRoleDelete(SocketRole r) {
+            ServerData.ModifiableRoles.Remove(r);
+            Program.Settings.ModifiableRoles.Remove(r.Id);
+            Program.Settings.RoleDescriptions.Remove(r.Id);
+            Program.SaveSettings();
+            await UpdateRoleMessage();
+        }
         #endregion
 
         #region Non-Handlers
@@ -277,6 +292,17 @@ namespace Kamtro_Bot.Handlers
             }
 
             KLog.Info("Saved autoban list.");
+        }
+
+        private async Task UpdateRoleMessage() {
+            IMessage roleMessage = await ServerData.Server.GetTextChannel(Program.Settings.RoleSelectChannelID).GetMessageAsync(Program.Settings.RoleSelectMessageID);
+
+            // Form message with each pair in the role map
+            string message = "";
+            foreach (KeyValuePair<string, ulong> pair in ReactionHandler.RoleMap) {
+                message += ServerData.Server.GetRole(pair.Value).Mention + " - " + pair.Key + "\n";
+            }
+            await (roleMessage as RestUserMessage).ModifyAsync(x => x.Content = message);
         }
         #endregion
 
