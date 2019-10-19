@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Managers;
@@ -114,8 +115,7 @@ namespace Kamtro_Bot.Handlers
                     if (reaction.Emote.ToString() == DONE_EM.ToString()) {
                         // The user has indicated that they no longer need the Interface,
                         // So remove it from the dict
-                        await action.EventAction.Message.ModifyAsync(x => x.Content = BotUtils.KamtroText("This embed is no longer in use.")); // Notify the user that the embed is disabled
-                        await action.EventAction.Message.ModifyAsync(x => x.Embed = null); // Remove embed
+                        await CloseActionEmbedAsync(action.EventAction);
                         awaitingActions.Remove(action);
                         return;  // Also exit the method
                     }
@@ -218,6 +218,13 @@ namespace Kamtro_Bot.Handlers
         public static void SaveRoleMap() {
             string json = JsonConvert.SerializeObject(RoleMap, Formatting.Indented);
             File.WriteAllText(DataFileNames.RoleSelectMapFile, json);
+
+            KLog.Info("Role Map Saved.");
+        }
+        
+        public static async Task CloseActionEmbedAsync(ActionEmbed embed) {
+            await embed.Message.ModifyAsync(x => x.Content = BotUtils.KamtroText("This embed is no longer in use.")); // Notify the user that the embed is disabled
+            await embed.Message.ModifyAsync(x => x.Embed = null); // Remove embed
         }
         #endregion
     }

@@ -57,16 +57,43 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         return;
                     }
 
-                    if(ReactionHandler.RoleMap.ContainsKey(Emote)) {
+                    if (ReactionHandler.RoleMap.ContainsKey(Emote)) {
+                        if (ServerData.Server.GetRole(ReactionHandler.RoleMap[Emote]) == null) {
+                            ulong id = ReactionHandler.RoleMap[Emote];
+
+                            ReactionHandler.RoleMap.Remove(Emote);
+                            ReactionHandler.SaveRoleMap();
+
+                            EventQueueManager.RemoveEvent(this);
+                            await ReactionHandler.CloseActionEmbedAsync(this);
+
+                            await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Something went wrong! Please use the command again!"));
+
+                            KLog.Info($"[REE] Role was null! ID: {id}");
+                            return;
+                        }
+
                         Emote = $"The role {ServerData.Server.GetRole(ReactionHandler.RoleMap[Emote]).Mention} already has that emote!";
                         await UpdateEmbed();
                         break;
                     }
 
+                    if (ServerData.Server.GetRole(Role.Id) == null) {
+                        ulong id = ReactionHandler.RoleMap[Emote];
+
+                        EventQueueManager.RemoveEvent(this);
+                        await ReactionHandler.CloseActionEmbedAsync(this);
+
+                        await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Something went wrong! Please use the command again!"));
+
+                        KLog.Info($"[REE] Role was null! ID: {id}");
+                        return;
+                    }
+                    
                     ReactionHandler.RoleMap.Add(Emote, Role.Id);
                     ReactionHandler.SaveRoleMap();
 
-                    await UpdateRoleMessage();
+                    await GeneralHandler.UpdateRoleMessage();
 
                     EventQueueManager.RemoveEvent(this);
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Emote Association Added."));
@@ -86,6 +113,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             }
         }
 
+        /*
         /// <summary>
         /// Method used to update the bot message that contains the list of modifiable roles.
         /// Users can react to this message to get or remove a role with its corresponding reaction.
@@ -105,5 +133,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             }
             await (roleMessage as RestUserMessage).ModifyAsync(x => x.Content = message);
         }
+        */
     }
 }

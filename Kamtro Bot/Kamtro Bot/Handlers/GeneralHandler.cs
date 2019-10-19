@@ -294,14 +294,37 @@ namespace Kamtro_Bot.Handlers
             KLog.Info("Saved autoban list.");
         }
 
-        private async Task UpdateRoleMessage() {
+        public static async Task UpdateRoleMessage() {
             IMessage roleMessage = await ServerData.Server.GetTextChannel(Program.Settings.RoleSelectChannelID).GetMessageAsync(Program.Settings.RoleSelectMessageID);
 
+            List<string> cleanup = new List<string>();
+
             // Form message with each pair in the role map
-            string message = "";
+            string message = "React with an emoji to get the corresponding roles:\n";
             foreach (KeyValuePair<string, ulong> pair in ReactionHandler.RoleMap) {
-                message += ServerData.Server.GetRole(pair.Value).Mention + " - " + pair.Key + "\n";
+                SocketRole role = ServerData.Server.GetRole(pair.Value);
+
+                if (role == null) {
+                    cleanup.Add(pair.Key);
+                    continue;
+                }
+
+                message += role.Mention + " - " + pair.Key + "\n";
             }
+
+            bool clean = true;
+
+            foreach(string s in cleanup) {
+                KLog.Info($"Role with ID {ReactionHandler.RoleMap[s]} no longer exists! Cleaning up role message...");
+                ReactionHandler.RoleMap.Remove(s);
+                clean = false;
+            }
+
+            if(!clean) {
+                clean = true;
+                ReactionHandler.SaveRoleMap();
+            }
+
             await (roleMessage as RestUserMessage).ModifyAsync(x => x.Content = message);
         }
         #endregion

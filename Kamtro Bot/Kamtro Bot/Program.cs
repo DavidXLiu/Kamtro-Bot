@@ -114,6 +114,9 @@ namespace Kamtro_Bot
 
         public async Task OnReady() {
             SetupGeneral();
+
+            await GeneralHandler.UpdateRoleMessage();
+            
             Ready = true;
             KLog.Important("Ready!");
         }
