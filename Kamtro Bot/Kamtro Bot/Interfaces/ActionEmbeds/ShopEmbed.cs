@@ -60,7 +60,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 eb.AddField("Daily Listings", s);
 
-                eb.AddField("Current Balance", $"{Customer.Money}");
+                eb.AddField("Current Balance", $"{Customer.Kamtrokens}");
 
                 eb.WithDescription("Select an item to purchase, prices are listed next to the item name");
             } else {
@@ -78,7 +78,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 eb.AddField("Item Count", $"{ItemCount}");
                 eb.AddField("Total Cost", $"{sn.Price * ItemCount}");
-                eb.AddField("Current Balance", $"{Customer.Money}");
+                eb.AddField("Current Balance", $"{Customer.Kamtrokens}");
 
                 eb.WithDescription("Use the arrows to increase or decrease the number of items you want to purchase, then use the checkmark to buy them.");
             }
@@ -123,9 +123,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                                 return;
                             }
 
-                            if (total > Customer.Money && LastItemCount != ItemCount) {
+                            if (total > Customer.Kamtrokens && LastItemCount != ItemCount) {
                                 // To prevent easy spam
-                                int missing = total - Customer.Money;
+                                int missing = total - Customer.Kamtrokens;
 
                                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText($"You don't have enough Kamtrokens for that! (Missing {missing} kamtroken{(missing == 1 ? "":"s")})"));
                                 return;

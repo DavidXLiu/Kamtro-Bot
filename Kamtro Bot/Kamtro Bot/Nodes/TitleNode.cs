@@ -61,7 +61,7 @@ namespace Kamtro_Bot.Nodes
 
         public void OnComplete(SocketGuildUser user) {
             UserDataNode data = UserDataManager.GetUserData(user);
-            data.Money += KamtrokenReward;
+            data.Kamtrokens += KamtrokenReward;
             data.MaxReputation += PermRepReward;
             data.ReputationToGive += TempRepReward;
         }

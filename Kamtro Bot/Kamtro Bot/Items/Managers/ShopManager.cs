@@ -103,8 +103,8 @@ namespace Kamtro_Bot.Items
             UserDataNode customer = UserDataManager.GetUserData(user);
             ShopNode item = Shop[shopSlot];
 
-            if (quantity > 0 && customer.Money >= item.Price*quantity) {
-                customer.Money -= item.Price * quantity;
+            if (quantity > 0 && customer.Kamtrokens >= item.Price*quantity) {
+                customer.Kamtrokens -= item.Price * quantity;
 
                 UserInventoryManager.GetInventory(userid).AddItem(item.ItemID, quantity);
 
@@ -122,7 +122,7 @@ namespace Kamtro_Bot.Items
             if (i.ItemCount(itemid) < quantity) return false;
 
             int total = ItemManager.GetItem(itemid).GetSellPrice() * quantity;
-            UserDataManager.GetUserData(BotUtils.GetGUser(userid)).Money += total;
+            UserDataManager.GetUserData(BotUtils.GetGUser(userid)).Kamtrokens += total;
             i.LoseItem(itemid, quantity);
             UserDataManager.SaveUserData();
             UserInventoryManager.SaveInventories();
