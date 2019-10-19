@@ -200,7 +200,7 @@ namespace Kamtro_Bot
         /// -C
         /// <returns>the token as a string</returns>
         private string GetToken() {
-            if (!File.Exists("token.txt")) {
+            if (!File.Exists(TokenFile)) {
                 // if there is no token file  -C
                 Console.WriteLine("\nNo token.txt file found!\nPress any key to exit...");  // notify the user  -C
                 Console.ReadKey();  // wait for the keypress  -C
@@ -208,7 +208,7 @@ namespace Kamtro_Bot
             }
 
             // If the token file exists, then read it and return the token
-            return FileManager.ReadFullFile("token.txt");
+            return FileManager.ReadFullFile(TokenFile);
         }
     }
 }
