@@ -29,7 +29,7 @@ namespace Kamtro_Bot
     /// </remarks>
     public class Program
     {
-        public const string Version = "0.5.7";
+        public const string Version = "0.8";
         private const string TokenFile = "token.txt";
 
         public static bool Ready = false;
@@ -115,7 +115,7 @@ namespace Kamtro_Bot
         public async Task OnReady() {
             SetupGeneral();
 
-            await GeneralHandler.UpdateRoleMessage();
+            await GeneralHandler.UpdateRoleMessage();  // fix the role selection message on startup
             
             Ready = true;
             KLog.Important("Ready!");
