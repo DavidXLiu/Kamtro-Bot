@@ -83,7 +83,7 @@ namespace Kamtro_Bot.Interfaces
                 roleList += ((i == 0) ? "" : "\n") + cursor + MakeBold(ServerData.ModifiableRoles[i].Name, shouldBeBold);
             }
 
-            uint colorHex = Convert.ToUInt32(Program.Settings.RoleDescriptions[ServerData.ModifiableRoles[cursorPos].Id].Color, 16);
+            uint colorHex = Convert.ToUInt32(Program.Settings.RoleDescriptions[ServerData.ModifiableRoles[cursorPos].Id].Color.Remove('#'), 16);
             Color embedColor = new Color(colorHex);
             builder.WithColor(embedColor);
 
