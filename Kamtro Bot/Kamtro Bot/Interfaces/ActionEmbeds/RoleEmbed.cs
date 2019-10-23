@@ -20,7 +20,6 @@ namespace Kamtro_Bot.Interfaces
     /// </remarks>
     public class RoleEmbed : ActionEmbed
     {
-        private int maxCursorPos = ServerData.ModifiableRoles.Count;  // The farthest the cursor should go
         private int cursorPos = 0;  // How many spaces down the cursor is
 
         private bool boldOverride = false;
@@ -65,12 +64,11 @@ namespace Kamtro_Bot.Interfaces
                 }
 
                 onId = ServerData.ModifiableRoles[i].Id == boldId;
-                shouldBeBold = BotUtils.GetGUser(Context).Roles.Contains(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
+                shouldBeBold = BotUtils.GetGUser(Context).HasRole(ServerData.ModifiableRoles[i]);   // if the user has the role, make it bold.
                 shouldBeBold = shouldBeBold || (boldOverride && onId);
                 shouldBeBold = shouldBeBold && (!boldNoverride || !onId);
 
-
-            if (boldOverride && ServerData.ModifiableRoles[i].Id == boldId) {
+                if (boldOverride && ServerData.ModifiableRoles[i].Id == boldId) {
                     boldOverride = false; 
                     boldId = 0;
                 }
@@ -83,7 +81,7 @@ namespace Kamtro_Bot.Interfaces
                 roleList += ((i == 0) ? "" : "\n") + cursor + MakeBold(ServerData.ModifiableRoles[i].Name, shouldBeBold);
             }
 
-            uint colorHex = Convert.ToUInt32(Program.Settings.RoleDescriptions[ServerData.ModifiableRoles[cursorPos].Id].Color.Remove('#'), 16);
+            uint colorHex = Convert.ToUInt32(Program.Settings.RoleDescriptions[ServerData.ModifiableRoles[cursorPos].Id].Color.Replace("#", ""), 16);
             Color embedColor = new Color(colorHex);
             builder.WithColor(embedColor);
 
@@ -92,6 +90,10 @@ namespace Kamtro_Bot.Interfaces
             // Get the description from the settings class
             string roleDesc = Program.Settings.RoleDescriptions[ServerData.ModifiableRoles[cursorPos].Id].Description;
             builder.AddField("Description", roleDesc);
+
+            if(Program.Debug) {
+                builder.AddField("Debug Info", $"MRFC: {ServerData.ModifiableRoles.Count} C: {cursorPos}\nBO: {boldOverride} BN: {boldNoverride} ");
+            }
 
             AddMenu(builder);  // Adds the menu key at the bottom
 
@@ -105,7 +107,7 @@ namespace Kamtro_Bot.Interfaces
                     break;
 
                 case ReactionHandler.DOWN_STR:
-                    cursorPos++;  // Move the cirsor down a space
+                    cursorPos++;  // Move the cursor down a space
                     break;
 
                 case ReactionHandler.SELECT_STR:
@@ -127,8 +129,8 @@ namespace Kamtro_Bot.Interfaces
 
             // Wrap the cursor if it goes past the top
             if(cursorPos < 0) {
-                cursorPos = maxCursorPos-1;
-            } else if(cursorPos >= maxCursorPos) {
+                cursorPos = ServerData.ModifiableRoles.Count - 1;
+            } else if(cursorPos >= ServerData.ModifiableRoles.Count) {
                 cursorPos = 0;
             }
 

@@ -421,7 +421,6 @@ namespace Kamtro_Bot
 
             return null;
         }
-
         #endregion
     }
 
@@ -450,6 +449,10 @@ namespace Kamtro_Bot
         public static string GetDisplayName(this SocketGuildUser user, bool desc = false) {
             // If user.Nickname is not null, return it. Otherwise, return the username optionally with descriminator
             return user.Nickname ?? (desc ? BotUtils.GetFullUsername(user) : user.Username);
+        }
+
+        public static bool HasRole(this SocketGuildUser user, SocketRole role) {
+            return user.Roles.Contains(role);
         }
     }
     #endregion
