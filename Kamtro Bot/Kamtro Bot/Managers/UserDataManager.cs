@@ -120,7 +120,7 @@ namespace Kamtro_Bot.Managers
         }
         #endregion
         #region Event
-        public static void OnChannelMessage(SocketUserMessage message) {
+        public static async Task OnChannelMessage(SocketUserMessage message) {
             if ((message.Author as SocketGuildUser) == null || message.Channel.Id == Program.Settings.BotChannelID) return;  // only count server messages
 
             bool userAdded = AddUserIfNotExists(message.Author as SocketGuildUser);  // if the user does not have an entry, add it.
@@ -140,8 +140,7 @@ namespace Kamtro_Bot.Managers
                 score = Math.Max(1, 6 - x);  // give the user a score of 5 if their message comes after another users, else give one less point for each consecutive message down to 1 point per message
             }
 
-            UserData[message.Author.Id].Score += score;
-            UserData[message.Author.Id].WeeklyScore += score;
+            await AddScore(BotUtils.GetGUser(message.Author.Id), score);
             // End of score calculation
 
             if (userAdded && !BotUtils.SaveInProgress) SaveUserData();  // save the data if the user was added, but only if autosave isn't in progress.
@@ -187,10 +186,38 @@ namespace Kamtro_Bot.Managers
                 return false;
             }
 
-            UserData[from.Id].ReputationToGive--;
-            UserData[to.Id].Reputation++;
+            GetUserData(from).ReputationToGive--;
+            GetUserData(to).Reputation++;
 
             GetUserData(from).RepGiven++;
+
+            if(Program.Experimental) {
+                int g = GetUserData(from).RepGiven;
+
+                if(g >= 1) {
+                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.WARM_WELCOMER);
+                }
+
+                if (g >= 10) {
+                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.DECAREPPER);
+                }
+
+                if (g >= 30) {
+                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.CHARITABLE);
+                }
+
+                if (g >= 100) {
+                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.HUNDRED_REP_GIVEN);
+                }
+
+                if (g >= 500) {
+                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.REPPER_OF_D);
+                }
+
+                if (g >= 1000) {
+                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.THOUSAND_REP_GIVEN);
+                }
+            }
 
             SaveUserData();
 
@@ -238,10 +265,36 @@ namespace Kamtro_Bot.Managers
         /// </summary>
         /// <param name="user">The user who will have their score added to</param>
         /// <param name="score">The score that will be added to the user</param>
-        public static void AddScore(SocketGuildUser user, int score) {
+        public static async Task AddScore(SocketGuildUser user, int score) {
             AddUserIfNotExists(user);
 
             UserData[user.Id].Score += score;  // Add to the score
+            UserData[user.Id].WeeklyScore += score;
+
+            if(Program.Experimental) {
+                int s = UserData[user.Id].Score;
+
+                // for titles
+                if (s >= 1) {
+                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.KAMTRO_SQUIRE);
+                }
+
+                if (s >= 10_000) {
+                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.TALKATIVE);
+                }
+
+                if (s >= 50_000) {
+                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.CHATTERBOX);
+                }
+
+                if (s >= 100_000) {
+                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.REGULAR);
+                }
+
+                if (s >= 500_000) {
+                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.KAMTRO_VETERAN);
+                }
+            }
 
             SaveUserData();  // Save the updated data.
         }

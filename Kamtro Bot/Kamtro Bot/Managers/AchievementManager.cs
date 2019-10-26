@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Managers
             public const int CHATTERBOX = 3;
             public const int REGULAR = 4;
             public const int KAMTRO_VETERAN = 5;
-            public const int HEART_SOUL = 6;
+            public const int HEART_SOUL = 6;  // REPURPOSE THIS. 1,000,000 SCORE IS NOT POSSIBLE.
             public const int WARMLY_WELCOMED = 7;
             public const int TEN_REP = 8;
             public const int COOL_KID = 9;

@@ -136,13 +136,13 @@ namespace Kamtro_Bot.Handlers
 
                 SecurityManager.CheckMessage(message);  // tba
                 await GeneralHandler.HandleMessage(message); // Evaluate for consecutive messages and autoban
-                UserDataManager.OnChannelMessage(message);  // evaluate the message for user score
+                await UserDataManager.OnChannelMessage(message);  // evaluate the message for user score
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
                 if ((message.Channel.Id == Program.Settings.BotChannelID || message.Channel is IDMChannel)
-                    && (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro") || message.Content.ToLower().EndsWith("kamtro")))
-                {
+                    && (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro") 
+                    || message.Content.ToLower().EndsWith("kamtro"))) {
                     /// ORDER THESE CHECKS FROM LEAST TIME TO MOST TIME
 
                     #region Ping Ask
@@ -241,7 +241,7 @@ namespace Kamtro_Bot.Handlers
                     /// This will check for popular langauges.
                     /// Author: Arcy
                     // Check for thanks in common languages - Arcy
-                    string[] thanksStringsEn = { "thank" };
+                    string[] thanksStringsEn = { "thank", "thanks", "thank you" };
                     string[] thanksStringsEs = { "gracias", "obrigado" };
                     string[] thanksStringsDe = { "danke", "vielen dank" };
                     string[] thanksStringsJp = { "arigato", "ありがとう", "doumo", "どうも" };
