@@ -153,6 +153,22 @@ namespace Kamtro_Bot.Managers
         public static bool HasTitleUnlocked(SocketGuildUser user, int title) {
             return UserDataManager.GetUserData(user).Titles.Contains(title);
         }
+        
+        public static int TitleCount() {
+            return NodeMap.Count;
+        }
+        
+        public static List<Tuple<int, TitleNode>> GetTitles(bool secret = false) {
+            List<Tuple<int, TitleNode>> titles = new List<Tuple<int, TitleNode>>();
+
+            foreach (KeyValuePair<int, TitleNode> kv in NodeMap) {
+                if(!kv.Value.Secret || secret) titles.Add(new Tuple<int, TitleNode>(kv.Key, kv.Value));
+            }
+
+            titles.Sort((x, y) => x.Item2.Name.CompareTo(y.Item2.Name));  // sort by title Name
+
+            return titles;
+        }
         #endregion
         #region File Interaction
         public static void SaveNodeMap() {

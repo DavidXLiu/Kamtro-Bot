@@ -111,6 +111,9 @@ namespace Kamtro_Bot.Managers
             return UserData[user.Id];
         }
 
+        public static bool HasTitle(SocketGuildUser user, int title) {
+            return AchievementManager.HasTitleUnlocked(user, title);
+        }
         #endregion
         #region User Settings
         public static UserSettingsNode GetUserSettings(SocketGuildUser user) {
@@ -192,36 +195,10 @@ namespace Kamtro_Bot.Managers
             GetUserData(from).RepGiven++;
 
             if(Program.Experimental) {
-                int g = GetUserData(from).RepGiven;
-
-                if(g >= 1) {
-                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.WARM_WELCOMER);
-                }
-
-                if (g >= 10) {
-                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.DECAREPPER);
-                }
-
-                if (g >= 30) {
-                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.CHARITABLE);
-                }
-
-                if (g >= 100) {
-                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.HUNDRED_REP_GIVEN);
-                }
-
-                if (g >= 500) {
-                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.REPPER_OF_D);
-                }
-
-                if (g >= 1000) {
-                    await AchievementManager.AddTitle(from, AchievementManager.TitleIDs.THOUSAND_REP_GIVEN);
-                }
+                await AchievementManager.OnRep(from, to);
             }
 
             SaveUserData();
-
-            await AchievementManager.OnRep(from, to);
 
             return true;
         }
