@@ -62,6 +62,8 @@ namespace Kamtro_Bot.Nodes
             CommandsUsed = 0;
             TimesCheckedProfile = 0;
             RepGiven = 0;
+
+            Titles = new List<int>();
         }
 
         public Color GetColor() {

@@ -186,6 +186,16 @@ namespace Kamtro_Bot.Modules
             await nse.Display();
         }
 
+        #region Exparimental
+        [Command("titles")]
+        public async Task TitleListAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
+
+            TitleEmbed te = new TitleEmbed(Context);
+            await te.Display();
+        }
+        #endregion
+
         #region Helper Methods
         private async Task AddRep(SocketUser user) {
             if (user.Id == Context.User.Id) {
