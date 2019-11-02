@@ -16,6 +16,9 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
     {
         public const int MAX_TITLES_DISPLAYED = 10;
 
+        private bool NoTitleNotify = false;
+        private bool TitleEquipedNotify = false;
+
         private int Cursor = 0;
         private int Start = 0;
         private int? SelectedTitle = null;
@@ -39,7 +42,6 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             eb.WithTitle("Titles");
             eb.WithColor(BotUtils.Kamtro);
 
-
             if (SelectedTitle == null) {
                 // if the embed is on the home page AKA title list page
                 eb.WithColor(BotUtils.Kamtro);
@@ -53,17 +55,19 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         txt += MakeBold($"{(Cursor == i ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{Titles[i].Item2.Name}\n", UserDataManager.HasTitle(User, Titles[i].Item1));
                     }
                 } else {
-                    if (Start != 0) txt += "***[^^^]***";
+                    if (Start != 0) txt += "***[...]***\n";
 
                     for (int i = Start; i <= Math.Min(Titles.Count-1, MAX_TITLES_DISPLAYED + Start); i++) {
                         // display titles starting from Start
                         txt += MakeBold($"{(Cursor == i ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{Titles[i].Item2.Name}\n", UserDataManager.HasTitle(User, Titles[i].Item1));
                     }
 
-                    if (true) txt += "***[vvv]***";
+                    if (Start < Titles.Count - 1 - MAX_TITLES_DISPLAYED) txt += "***[...]***";
                 }
 
                 eb.AddField("Title List", txt.TrimEnd('\n'));
+
+                MenuOptions.Find((x) => x.Icon == ReactionHandler.SELECT_STR).Description = "Select";
             } else {
                 // if it's on a title page
                 TitleNode tn = AchievementManager.GetTitle(SelectedTitle.Value);
@@ -87,6 +91,19 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 if(!string.IsNullOrWhiteSpace(add)) {
                     eb.AddField("Additional Rewards:", add.TrimEnd('\n'));
                 }
+
+                MenuOptions.Find((x) => x.Icon == ReactionHandler.SELECT_STR).Description = "Equip Title";
+                
+            }
+
+            if(NoTitleNotify) {
+                NoTitleNotify = false;
+                eb.AddField("Alert", "You don't have this title unlocked!");
+            }
+
+            if(TitleEquipedNotify) {
+                TitleEquipedNotify = false;
+                eb.AddField("Success", "Title Equipped!");
             }
 
             AddMenu(eb);
@@ -107,8 +124,17 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                 case ReactionHandler.SELECT_STR:
                     if(SelectedTitle == null) {
                         SelectedTitle = Titles[Cursor].Item1;
-                        await UpdateEmbed();
+                    } else {
+                        if(UserDataManager.HasTitle(User, SelectedTitle.Value)) {
+                            UserDataManager.GetUserData(User).CurrentTitle = SelectedTitle.Value;
+                            UserDataManager.SaveUserData();
+                            TitleEquipedNotify = true;
+                        } else {
+                            NoTitleNotify = true;
+                        }
                     }
+
+                    await UpdateEmbed();
                     break;
 
                 case ReactionHandler.BACK_STR:
@@ -122,7 +148,12 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (SelectedTitle == null) {
                 Cursor--;
 
-                if (Cursor < 0) Cursor = Titles.Count() - 1;
+                if (Cursor < 0) {
+                    Cursor = Titles.Count() - 1;
+                    Start = Titles.Count() - MAX_TITLES_DISPLAYED;
+                } else if (Cursor - Start <= 1) {
+                    Start--;
+                }
             }
            
             await UpdateEmbed();
@@ -132,8 +163,12 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (SelectedTitle == null) {
                 Cursor++;
 
-                if (Cursor >= Titles.Count()) Cursor = 0;
-
+                if (Cursor >= Titles.Count()) {
+                    Cursor = 0;
+                    Start = 0;
+                } else if(Cursor - Start > MAX_TITLES_DISPLAYED-1) {
+                    Start++;
+                }
             }
 
             await UpdateEmbed();
