@@ -126,8 +126,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         SelectedTitle = Titles[Cursor].Item1;
                     } else {
                         if(UserDataManager.HasTitle(User, SelectedTitle.Value)) {
-                            UserDataManager.GetUserData(User).CurrentTitle = SelectedTitle.Value;
-                            UserDataManager.SaveUserData();
+                            UserDataManager.EquipTitle(User, SelectedTitle.Value);
                             TitleEquipedNotify = true;
                         } else {
                             NoTitleNotify = true;

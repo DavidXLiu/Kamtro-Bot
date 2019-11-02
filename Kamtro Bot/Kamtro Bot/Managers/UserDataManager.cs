@@ -114,6 +114,11 @@ namespace Kamtro_Bot.Managers
         public static bool HasTitle(SocketGuildUser user, int title) {
             return AchievementManager.HasTitleUnlocked(user, title);
         }
+        
+        public static void EquipTitle(SocketGuildUser user, int title) {
+            GetUserData(user).CurrentTitle = title;
+            SaveUserData();
+        }
         #endregion
         #region User Settings
         public static UserSettingsNode GetUserSettings(SocketGuildUser user) {

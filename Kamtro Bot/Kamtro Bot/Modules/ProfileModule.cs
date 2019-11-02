@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kamtro_Bot.Nodes;
 
 namespace Kamtro_Bot.Modules
 {
@@ -186,15 +187,43 @@ namespace Kamtro_Bot.Modules
             await nse.Display();
         }
 
-        #region Exparimental
         [Command("titles")]
         public async Task TitleListAsync([Remainder] string args = "") {
-            if (!Program.Experimental) return;
-
             TitleEmbed te = new TitleEmbed(Context);
             await te.Display();
         }
-        #endregion
+
+        [Command("equiptitle")]
+        [Alias("et")]
+        public async Task AddTitleAsync([Remainder] string tn = "") {
+            if(string.IsNullOrWhiteSpace(tn)) {
+                TitleEmbed te = new TitleEmbed(Context);
+                await te.Display();
+                return;
+            }
+
+            int? select = null;
+
+            foreach(int id in AchievementManager.NodeMap.Keys) {
+                if(UtilStringComparison.CompareWordScore(tn, AchievementManager.GetTitle(id).Name) >= 0.66) {
+                    select = id;
+                    break;
+                }
+            }
+
+            if(select == null) {
+                TitleEmbed te = new TitleEmbed(Context);
+                await te.Display();
+                return;
+            }
+
+            if(UserDataManager.HasTitle(BotUtils.GetGUser(Context), select.Value)) {
+                UserDataManager.EquipTitle(BotUtils.GetGUser(Context), select.Value);
+                await ReplyAsync(BotUtils.KamtroText("Title Equipped!"));
+            } else {
+                await ReplyAsync($"You don't have the {AchievementManager.GetTitle(select.Value).Name} title");
+            }
+        }
 
         #region Helper Methods
         private async Task AddRep(SocketUser user) {

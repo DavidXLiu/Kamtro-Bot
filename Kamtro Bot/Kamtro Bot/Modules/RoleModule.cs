@@ -39,9 +39,9 @@ namespace Kamtro_Bot.Modules
 
                 await embed.Display(Context.Channel);
 
-                ulong id = Context.Message.Author.Id;
+                //ulong id = Context.Message.Author.Id;
 
-                EventQueueManager.AddEvent(embed);
+                //EventQueueManager.AddEvent(embed);
 
             } else {
                 // Check all roles - Arcy
