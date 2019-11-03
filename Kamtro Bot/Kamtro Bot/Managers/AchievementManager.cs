@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Managers
             public const int CHATTERBOX = 3;
             public const int REGULAR = 4;
             public const int KAMTRO_VETERAN = 5;
-            public const int HEART_SOUL = 6;  // REPURPOSE THIS. 1,000,000 SCORE IS NOT POSSIBLE.
+            public const int ALL_SECRET = 6;  
             public const int WARMLY_WELCOMED = 7;
             public const int TEN_REP = 8;
             public const int COOL_KID = 9;
@@ -34,6 +34,9 @@ namespace Kamtro_Bot.Managers
             public const int HUNDRED_REP_GIVEN = 15;
             public const int REPPER_OF_D = 16;
             public const int THOUSAND_REP_GIVEN = 17;
+            public const int RETRO_BUTT = 18;
+            public const int KAMEX_BUTT = 19;
+            public const int MLEM = 20;
         }
         #endregion
 

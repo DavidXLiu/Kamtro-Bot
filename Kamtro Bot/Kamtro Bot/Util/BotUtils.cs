@@ -249,7 +249,7 @@ namespace Kamtro_Bot
 
                 KLog.Debug($"Last Weekly Reset: [{LastWeeklyReset.ToString("F")}]");
 
-                Thread.Sleep(new TimeSpan(0, 20, 0));
+                Thread.Sleep(new TimeSpan(0, 1, 0));
             }
         }
         #endregion

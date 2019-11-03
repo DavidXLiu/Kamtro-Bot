@@ -23,6 +23,7 @@ namespace Kamtro_Bot.Modules
         public async Task DergbuttAsync([Remainder] string message = "")
         {
             await Context.Channel.SendFileAsync("Images/Dergbutt.png");
+            await AchievementManager.AddTitle(BotUtils.GetGUser(Context), AchievementManager.TitleIDs.KAMEX_BUTT);
         }
 
         /// <summary>
@@ -36,6 +37,7 @@ namespace Kamtro_Bot.Modules
         public async Task MlemAsync([Remainder] string message = "")
         {
             await Context.Channel.SendFileAsync("Images/Mlem.png");
+            await AchievementManager.AddTitle(BotUtils.GetGUser(Context), AchievementManager.TitleIDs.MLEM);
         }
 
         /// <summary>
@@ -91,6 +93,7 @@ namespace Kamtro_Bot.Modules
             int num = random.Next(0, 100);
             if (num == 0) await Context.Channel.SendFileAsync("Images/Snokbutt2.png");
             else await Context.Channel.SendFileAsync("Images/Snokbutt.png");
+            await AchievementManager.AddTitle(BotUtils.GetGUser(Context), AchievementManager.TitleIDs.RETRO_BUTT);
         }
 
         /// <summary>
