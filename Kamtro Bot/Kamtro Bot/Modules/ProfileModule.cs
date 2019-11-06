@@ -231,6 +231,11 @@ namespace Kamtro_Bot.Modules
         public async Task RewardUserAsync([Remainder] string args = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
+            if(args == "") {
+                await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
+                return;
+            }
+
             // This command is used as an easy way to give a user rewards after winning a tournament.
             List<SocketGuildUser> users = BotUtils.GetUsers(args);
 
@@ -246,7 +251,6 @@ namespace Kamtro_Bot.Modules
                 UserSelectionEmbed use = new UserSelectionEmbed(users, RewardUser, BotUtils.GetGUser(Context));
                 await use.Display(Context.Channel);
             }
-
         }
         #endregion
 
