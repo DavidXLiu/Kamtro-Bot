@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Interfaces.MessageEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -225,7 +226,36 @@ namespace Kamtro_Bot.Modules
             }
         }
 
+        #region Special Commands
+        [Command("award")]
+        public async Task RewardUserAsync([Remainder] string args = "") {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
+
+            // This command is used as an easy way to give a user rewards after winning a tournament.
+            List<SocketGuildUser> users = BotUtils.GetUsers(args);
+
+            if (users.Count == 0) {
+                await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name, make sure the name is spelt correctly!"));
+                return;
+            } else if (users.Count > 10) {
+                await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
+                return;
+            } else if (users.Count == 1) {
+                await RewardUser(users[0]);
+            } else {
+                UserSelectionEmbed use = new UserSelectionEmbed(users, RewardUser, BotUtils.GetGUser(Context));
+                await use.Display(Context.Channel);
+            }
+
+        }
+        #endregion
+
         #region Helper Methods
+        private async Task RewardUser(SocketGuildUser user) {
+            RewardEmbed re = new RewardEmbed(Context, user);
+            await re.Display();
+        }
+
         private async Task AddRep(SocketUser user) {
             if (user.Id == Context.User.Id) {
                 await ReplyAsync(BotUtils.KamtroText("You can't give a repuation point to yourself!"));

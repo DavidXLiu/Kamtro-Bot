@@ -12,6 +12,7 @@ using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 using Kamtro_Bot.Util.Exceptions;
 using Kamtro_Bot.Handlers;
+using Discord.Commands;
 
 namespace Kamtro_Bot.Interfaces
 {
@@ -249,20 +250,18 @@ namespace Kamtro_Bot.Interfaces
         /// <param name="num">The number of times to move the cursor up. Default is 1.</param>
         protected async Task MoveCursorUp(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
-            
-            if(num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
+
+            if (num < 0) await MoveCursorUp(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
-                CursorPos++;
+                CursorPos--;
 
-                if (CursorPos > GetFieldCount()) {
+                if (CursorPos < 1) {
                     // If the cursor goes out of bounds, correct it
-                    CursorPos = 1;
+                    CursorPos = GetFieldCount();
                 }
             }
-
-            await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
         }
 
         /// <summary>
@@ -273,15 +272,15 @@ namespace Kamtro_Bot.Interfaces
         protected async Task MoveCursorDown(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
-            if (num < 0) await MoveCursorUp(-num); // if num is negative, use the other method with positive num
+            if (num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
-                CursorPos--;
+                CursorPos++;
 
-                if(CursorPos < 1) {
+                if (CursorPos > GetFieldCount()) {
                     // If the cursor goes out of bounds, correct it
-                    CursorPos = GetFieldCount();
+                    CursorPos = 1;
                 }
             }
 
@@ -348,6 +347,11 @@ namespace Kamtro_Bot.Interfaces
             if (!InputFields.ContainsKey(PageNum)) return 0;
 
             return InputFields[PageNum].Count();
+        }
+        
+        protected override void SetCtx(SocketCommandContext ctx) {
+            base.SetCtx(ctx);
+            CommandChannel = ctx.Channel as SocketChannel;
         }
         #endregion
 

@@ -127,7 +127,7 @@ namespace Kamtro_Bot.Interfaces
         /// Sets all context variables such as CommandCaller
         /// </summary>
         /// <param name="ctx">The SocketCommandContext</param>
-        protected void SetCtx(SocketCommandContext ctx) {
+        protected virtual void SetCtx(SocketCommandContext ctx) {
             Context = ctx;
             CommandCaller = ctx.User;
         }
