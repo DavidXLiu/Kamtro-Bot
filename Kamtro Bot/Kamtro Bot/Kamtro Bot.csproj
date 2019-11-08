@@ -180,6 +180,7 @@
     <Compile Include="Interfaces\MessageEmbeds\StrikeLogEditEmbed.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Items\ItemBreadstick.cs" />
+    <Compile Include="Items\ItemPizza.cs" />
     <Compile Include="Items\Nodes\ItemInfoNode.cs" />
     <Compile Include="Items\Managers\ItemManager.cs" />
     <Compile Include="Items\IUsable.cs" />

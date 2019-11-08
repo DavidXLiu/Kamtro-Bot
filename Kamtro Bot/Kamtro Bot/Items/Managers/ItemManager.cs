@@ -51,6 +51,7 @@ namespace Kamtro_Bot.Items
         private static void AddSpecialItems() {
             // Add all item classes
             Items.Add(5, new ItemBreadstick());
+            Items.Add(8, new ItemPizza());
         }
 
         public static void SaveItemData() {
