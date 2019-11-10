@@ -52,6 +52,8 @@ namespace Kamtro_Bot.Items
             // Add all item classes
             Items.Add(5, new ItemBreadstick());
             Items.Add(8, new ItemPizza());
+            Items.Add(12, new ItemPasta());
+            Items.Add(15, new ItemPokePuff());
         }
 
         public static void SaveItemData() {
@@ -80,6 +82,6 @@ namespace Kamtro_Bot.Items
             }
 
             return ret;
-        }
+        }  
     }
 }
