@@ -78,7 +78,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                 eb.AddField("Item Count", $"{ItemCount}");
                 eb.AddField("Total Cost", $"{sn.Price * ItemCount}");
-                eb.AddField("Current Balance", $"{Customer.Kamtrokens}");
+                eb.AddField("Current Balance", $"{Customer.Kamtrokens} Kamtroken{(Customer.Kamtrokens == 1 ? "":"s")}");
 
                 eb.WithDescription("Use the arrows to increase or decrease the number of items you want to purchase, then use the checkmark to buy them.");
             }
@@ -132,7 +132,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                             }
 
                             // If they got this far they have money and have entered a valid number of items
-                            bool bought = ShopManager.BuyItem(Context.User.Id, Page, ItemCount);
+                            bool bought = await ShopManager.BuyItem(Context.User.Id, Page, ItemCount);
 
                             if(bought) {
                                 PurchaseThank = true;

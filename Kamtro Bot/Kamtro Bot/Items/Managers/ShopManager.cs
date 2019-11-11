@@ -96,7 +96,7 @@ namespace Kamtro_Bot.Items
             ValidateShopSelection();
         }
 
-        public static bool BuyItem(ulong userid, int shopSlot, int quantity) {
+        public static async Task<bool> BuyItem(ulong userid, int shopSlot, int quantity) {
             if (shopSlot > Shop.Count || shopSlot < 0) return false;
 
             SocketGuildUser user = BotUtils.GetGUser(userid);
@@ -105,8 +105,11 @@ namespace Kamtro_Bot.Items
 
             if (quantity > 0 && customer.Kamtrokens >= item.Price*quantity) {
                 customer.Kamtrokens -= item.Price * quantity;
+                UserDataManager.GetUserData(user).KamtrokensSpent += item.Price * quantity;
 
                 UserInventoryManager.GetInventory(userid).AddItem(item.ItemID, quantity);
+
+                await AchievementManager.OnBuy(user);
 
                 UserDataManager.SaveUserData();
                 UserInventoryManager.SaveInventories();

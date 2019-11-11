@@ -24,6 +24,7 @@ namespace Kamtro_Bot.Nodes
         public int ReputationToGive; // Rep they have left to give to others
         public int MaxReputation = 3; // Max rep to give
         public int Kamtrokens;  // Kamtrokens  -C
+        public int KamtrokensSpent = 0;
         public int? CurrentTitle;  // The id of user's selected title.  -C
         public List<int> Titles;  // A list of title ids the user has  -C
         public uint ProfileColor;

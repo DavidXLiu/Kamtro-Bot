@@ -22,7 +22,7 @@ namespace Kamtro_Bot.Managers
             public const int CHATTERBOX = 3;
             public const int REGULAR = 4;
             public const int KAMTRO_VETERAN = 5;
-            public const int ALL_SECRET = 6;  
+            public const int OLIVE_GARDENER = 6;  
             public const int WARMLY_WELCOMED = 7;
             public const int TEN_REP = 8;
             public const int COOL_KID = 9;
@@ -33,10 +33,13 @@ namespace Kamtro_Bot.Managers
             public const int CHARITABLE = 14;
             public const int HUNDRED_REP_GIVEN = 15;
             public const int REPPER_OF_D = 16;
-            public const int THOUSAND_REP_GIVEN = 17;
-            public const int RETRO_BUTT = 18;
-            public const int KAMEX_BUTT = 19;
-            public const int MLEM = 20;
+            public const int RETRO_BUTT = 17;
+            public const int KAMEX_BUTT = 18;
+            public const int MLEM = 19;
+            public const int FIRST_BUY = 20;
+            public const int SHOPPER = 21;
+            public const int FRIDAY_EXPERT = 22;
+            public const int SHOPMASTER = 23;
         }
         #endregion
 
@@ -103,6 +106,24 @@ namespace Kamtro_Bot.Managers
             if (t.Reputation >= 1000) {
                 await AddTitle(to, TitleIDs.MILLENIAL_MEMBER);
             }
+        }
+        
+        public static async Task OnBuy(SocketGuildUser customer) {
+            int spent = UserDataManager.GetUserData(customer).KamtrokensSpent;
+
+            if(spent > 1) {
+                await AddTitle(customer, TitleIDs.FIRST_BUY);
+            } else if (spent > 50) {
+                await AddTitle(customer, TitleIDs.SHOPPER);
+            } else if (spent > 200) {
+                await AddTitle(customer, TitleIDs.FRIDAY_EXPERT);
+            } else if (spent > 1000) {
+                await AddTitle(customer, TitleIDs.SHOPMASTER);
+            } else {
+                return;
+            }
+
+            UserDataManager.SaveUserData();
         }
         #endregion
         #region Util

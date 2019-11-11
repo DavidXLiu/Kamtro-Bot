@@ -22,15 +22,12 @@ namespace Kamtro_Bot.Modules
         #region User Commands
         [Command("shop")]
         public async Task ShopAsync([Remainder] string args = "") {
-            if (!Program.Experimental) return;
-
             ShopEmbed shop = new ShopEmbed(Context);
             await shop.Display();
         }
 
         [Command("craft")]
         public async Task CraftAsync([Remainder] string args = "") {
-            if (!Program.Experimental) return;
             CraftingEmbed cre = new CraftingEmbed(Context);
             await cre.Display();
         }
@@ -39,9 +36,6 @@ namespace Kamtro_Bot.Modules
         [Alias("inv")]
         public async Task InventoryAsync([Remainder] string args = "") {
             // TODO: add feature where admins can look through a user's inventory
-
-            if (!Program.Experimental) return;
-
             InventoryEmbed ie = new InventoryEmbed(Context);
             await ie.Display();
         }
