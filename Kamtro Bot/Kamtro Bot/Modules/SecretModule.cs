@@ -58,6 +58,8 @@ namespace Kamtro_Bot.Modules
                 "Remember this breadstick? It's the one we got from Olive Garden. I slowly put it in your mouth and tell you to eat it, because that's all we got til Tuesday bitch.﻿";
 
             await ReplyAsync(BotUtils.KamtroText(copyPasta));
+
+            await AchievementManager.AddTitle(BotUtils.GetGUser(Context), AchievementManager.TitleIDs.OLIVE_GARDENER);
         }
 
         /// <summary>
