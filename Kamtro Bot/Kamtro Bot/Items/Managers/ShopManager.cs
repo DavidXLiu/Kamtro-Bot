@@ -105,7 +105,7 @@ namespace Kamtro_Bot.Items
 
             if (quantity > 0 && customer.Kamtrokens >= item.Price*quantity) {
                 customer.Kamtrokens -= item.Price * quantity;
-                UserDataManager.GetUserData(user).KamtrokensSpent += item.Price * quantity;
+                customer.KamtrokensSpent += item.Price * quantity;
 
                 UserInventoryManager.GetInventory(userid).AddItem(item.ItemID, quantity);
 

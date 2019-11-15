@@ -38,7 +38,10 @@ namespace Kamtro_Bot.Util
 
         public static SocketRole KamtroBotRole;
         public static SocketRole NSFWRole;
-        public static SocketRole Kamexican;
+        public static SocketRole Kamexican { 
+            get { return Server.GetRole(Program.Settings.KamexicanID); }
+            set { Kamexican = value; }
+        }
         public static SocketRole Retropolitan;
         public static SocketRole Lurker;
 

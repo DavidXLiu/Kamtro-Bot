@@ -34,6 +34,8 @@ namespace Kamtro_Bot.Managers
 
         public const int SCORE_NERF = 1000;
 
+        public static bool Saving = false;
+
         public UserDataManager() {
             UserData = LoadUserData();
             UserSettings = LoadUserSettings();
@@ -177,7 +179,14 @@ namespace Kamtro_Bot.Managers
         /// Saves the user data to it's file.
         /// </summary>
         public static void SaveUserData() {
-            BotUtils.WriteToJson(UserData, DataFileNames.UserDataFile);
+            if(!Saving && !BotUtils.SaveInProgress) {
+                Saving = true;
+                BotUtils.WriteToJson(UserData, DataFileNames.UserDataFile);
+                Saving = false;
+            } else {
+                KLog.Warning("Tried to save user data, but couldn't becuase it was already being saved!");
+            }
+           
         }
 
         /// <summary>

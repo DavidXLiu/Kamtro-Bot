@@ -136,7 +136,7 @@ namespace Kamtro_Bot
         /// </summary>
         public static void AutoSave() {
             while (SaveReady && SaveLoop) {
-                if (!PauseSave) {
+                if (!PauseSave && !UserDataManager.Saving) {
                     SaveInProgress = true;
                     UserDataManager.SaveUserData();  // Save the user data, but only if the thread is not paused.
                     SaveInProgress = false;

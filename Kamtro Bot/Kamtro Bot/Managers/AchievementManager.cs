@@ -82,10 +82,6 @@ namespace Kamtro_Bot.Managers
                 await AddTitle(from, TitleIDs.REPPER_OF_D);
             }
 
-            if (f.RepGiven >= 1000) {
-                await AddTitle(from, TitleIDs.THOUSAND_REP_GIVEN);
-            }
-
             // rep recieved
             if (t.Reputation >= 1) {
                 await AddTitle(to, TitleIDs.WARMLY_WELCOMED);
