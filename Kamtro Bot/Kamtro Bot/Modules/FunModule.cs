@@ -17,7 +17,7 @@ namespace Kamtro_Bot.Modules
 
         [Command("coinflip")]
         [Alias("coin", "cf")]
-        public async Task CoinFlipAsync() {
+        public async Task CoinFlipAsync([Remainder] string args = "") {
             Random r = new Random();
 
             if (r.Next() % 2 == 0) {
