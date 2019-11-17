@@ -99,14 +99,10 @@ namespace Kamtro_Bot.Modules
                     }
                     // Create temporary voice channel, move user, then delete voice channel
                     else if (users.Count == 1) {
+                        SocketVoiceChannel currentVc = users[0].VoiceChannel;
                         await users[0].ModifyAsync(x => x.Channel = null);
 
-                        if (users[0].Nickname != null) {
-                            await ReplyAsync(BotUtils.KamtroText($"{users[0].Nickname} has been removed from {currentVc.Name}."));
-                        } else {
-                            await ReplyAsync(BotUtils.KamtroText($"{users[0].Username} has been removed from {currentVc.Name}."));
-                        }
-
+                        await ReplyAsync(BotUtils.KamtroText($"{users[0].GetDisplayName()} has been removed from {currentVc.Name}."));
                         return;
                     }
                     // Name is too vague. More than 10 users found

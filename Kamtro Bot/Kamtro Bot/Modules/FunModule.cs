@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Discord.Commands;
 using Discord.WebSocket;
+using Kamtro_Bot.Interfaces.ActionEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -18,6 +19,12 @@ namespace Kamtro_Bot.Modules
         [Command("coinflip")]
         [Alias("coin", "cf")]
         public async Task CoinFlipAsync([Remainder] string args = "") {
+            if(Program.Experimental) {
+                CoinFlipEmbed cfe = new CoinFlipEmbed(Context);
+                await cfe.Display();
+                return;
+            }
+            
             Random r = new Random();
 
             if (r.Next() % 2 == 0) {
