@@ -44,10 +44,12 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             eb.AddField("Title", GetTitle());
 
             eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
-            eb.AddField("Kamtrokens", Data.Kamtrokens, true);
+            if (Program.Experimental) eb.AddField("Kamtrokens", Data.Kamtrokens, true);  // EXPARIMENTAL CHECK
+            else eb.AddField("Kamtrokens", "**Coming Soon!**", true);
             eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
             eb.AddField("Max Reputation per Week", Data.MaxReputation, true);
-            eb.AddField("Titles Obtained", GetTitleList(), true);
+            if (Program.Experimental) eb.AddField("Titles Obtained", GetTitleList(), true); // EXP CHECK
+            else eb.AddField("Titles Obtained", "**Coming Soon!**", true);
 
             if (!string.IsNullOrWhiteSpace(Data.Quote)) eb.WithFooter(Data.Quote);
 
