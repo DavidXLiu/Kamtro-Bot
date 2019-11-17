@@ -12,8 +12,13 @@ namespace Kamtro_Bot.Nodes
 {
     /// <summary>
     /// This is the node that will contain a user's stats
-    /// -C 
     /// </summary>
+    /// <remarks>
+    /// The stly guide for this class is as follows:
+    /// - For any fields which have a CONSTANT default value (such as a number, or null), assign that value in the class definition, not in the constructor
+    /// - For all other fields, assign in the constructor.
+    /// - Any fields which are not displayed on the profile page must be in the Statistics region
+    /// </remarks>
     public class UserDataNode
     {
         public string Username;
@@ -24,23 +29,24 @@ namespace Kamtro_Bot.Nodes
         public int ReputationToGive; // Rep they have left to give to others
         public int MaxReputation = 3; // Max rep to give
         public int Kamtrokens;  // Kamtrokens  -C
-        public int KamtrokensSpent = 0;
-        public int? CurrentTitle;  // The id of user's selected title.  -C
+        public int? CurrentTitle = null;  // The id of user's selected title.  -C
         public List<int> Titles;  // A list of title ids the user has  -C
-        public uint ProfileColor;
+        public uint ProfileColor = BotUtils.Kamtro.RawValue;
         public string Quote;
         public int Strikes;  // The number of strikes a user has. (This might end up getting removed, since the strike system is already in place) -C
         public bool Nsfw;  // if the user has access to NSFW
         public bool PorterSupporter; // if the user donated to porter  -C
 
         #region Statistics
-        public int CommandsUsed;
-        public int TimesCheckedProfile;
-        public int RepGiven;
+        public int CommandsUsed = 0;  // TO REMOVE
+        public int TimesCheckedProfile = 0;
+        public int RepGiven = 0;
+        public int KamtrokensSpent = 0;
+        public int MaxCFStreak = 0;
 
         // Secret Things
-        public int TimesLookedAtRetroButt;
-        public int TimesLookedAtKamexButt;
+        public int TimesLookedAtRetroButt = 0;
+        public int TimesLookedAtKamexButt = 0;
         #endregion
 
         [JsonIgnore]
@@ -58,12 +64,6 @@ namespace Kamtro_Bot.Nodes
             Nsfw = nsfw;
             Quote = quote;
             PorterSupporter = portersupporter;
-            ProfileColor = BotUtils.Kamtro.RawValue;
-            MaxReputation = 3;
-            CommandsUsed = 0;
-            TimesCheckedProfile = 0;
-            RepGiven = 0;
-            CurrentTitle = null;
 
             Titles = new List<int>();
         }
