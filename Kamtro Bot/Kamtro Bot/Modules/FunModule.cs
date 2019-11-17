@@ -12,7 +12,7 @@ namespace Kamtro_Bot.Modules
 {
     public class FunModule : ModuleBase<SocketCommandContext>
     {
-        private const int MAX_SIDES = 10000;
+        private const int MAX_SIDES = 2_000_000_000;
         private const int MAX_DICE = 10;
 
         [Command("coinflip")]
@@ -38,13 +38,28 @@ namespace Kamtro_Bot.Modules
             string[] s = args.ToLower().Split('d');
             int num, sides;
 
-            if (s.Length != 2 || !int.TryParse(s[0], out num) || !int.TryParse(s[1], out sides)) {
+            if(s.Length != 2) {
+                await ReplyAsync(BotUtils.KamtroText("Invalid Arguments. Make sure you specify parameters as <num>d<sides>"));
+                return;
+            }
+
+            if(s[0].Contains(".") || s[1].Contains(".")) {
+                await ReplyAsync(BotUtils.KamtroText("Invalid Arguments. Both numbers must be whole numbers."));
+                return;
+            }
+
+            if (!int.TryParse(s[0], out num) || !int.TryParse(s[1], out sides)) {
                 BigInteger bigNum, bigSides;
                 // Exceeds maximum int value
-                if (BigInteger.TryParse(s[0], out bigNum) || BigInteger.TryParse(s[0], out bigSides))
-                    await ReplyAsync(BotUtils.KamtroText("That number is waaaaay too big. Please try a smaller number!"));
-                else
-                    await ReplyAsync(BotUtils.KamtroText("Invalid Arguments. Make sure you specify parameters as <num>d<sides>"));
+                if (!BigInteger.TryParse(s[0], out bigNum) || !BigInteger.TryParse(s[0], out bigSides)) {
+                    await ReplyAsync(BotUtils.KamtroText("Something went wrong with your numbers. Please make sure you have no symbols in it except for '-'"));
+                } else {
+                    if (bigNum > MAX_SIDES || bigSides > MAX_SIDES) {
+                        await ReplyAsync(BotUtils.KamtroText("That number is waaaaay too big. Please try a smaller number! (Less than 2 Billion sides, and less than 10 dice)"));
+                    } else if(bigNum < -MAX_SIDES || bigSides < -MAX_SIDES) {
+                        await ReplyAsync(BotUtils.KamtroText("That number is waaaaay too small. Please try a larger number! (Greater than negative 2 Billion sides and dice)"));
+                    }
+                }
                 return;
             }
 

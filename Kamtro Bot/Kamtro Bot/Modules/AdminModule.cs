@@ -25,7 +25,7 @@ namespace Kamtro_Bot.Modules
         public async Task HackedAsync() {
             SocketGuildUser user = BotUtils.GetGUser(Context);
 
-            if (user.GuildPermissions.Administrator || ServerData.IsAdmin(user) || ServerData.IsModerator(user)) {
+            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.ADMIN)) {
                 await Hacked();
             }
         }
