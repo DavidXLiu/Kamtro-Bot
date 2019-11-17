@@ -25,44 +25,35 @@ namespace Kamtro_Bot.Modules
     public class ModeratorModule : ModuleBase<SocketCommandContext>
     {
         [Command("userinfo")]
-        [Alias("info","whois","identify")]
-        public async Task UserInfoAsync([Remainder] string args = null)
-        {
+        [Alias("info", "whois", "identify")]
+        public async Task UserInfoAsync([Remainder] string args = null) {
             // Moderator check
             SocketGuildUser user = BotUtils.GetGUser(Context);
-            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR) || user.Id == 118892308086128641)
-            {
+            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR)) {
                 // Only command was used. Get info on current user
-                if (string.IsNullOrWhiteSpace(args))
-                {
+                if (string.IsNullOrWhiteSpace(args)) {
                     await DisplayUserInfoEmbed(user);
                     return;
-                }
-                else
-                {
+                } else {
                     List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
                     // No user found
-                    if (users.Count == 0)
-                    {
+                    if (users.Count == 0) {
                         await ReplyAsync(BotUtils.KamtroText("I could not find that user. Please try again and make sure you are spelling the user correctly."));
                         return;
                     }
                     // Get info on user
-                    else if (users.Count == 1)
-                    {
+                    else if (users.Count == 1) {
                         await DisplayUserInfoEmbed(users[0]);
                         return;
                     }
                     // Name is too vague. More than 10 users found
-                    else if (users.Count > 10)
-                    {
+                    else if (users.Count > 10) {
                         await ReplyAsync(BotUtils.KamtroText("That name is too vague. Please try specifying the user."));
                         return;
                     }
                     // More than one user mentioned, or ambiguous user
-                    else
-                    {
+                    else {
                         UserSelectionEmbed use = new UserSelectionEmbed(users, DisplayUserInfoEmbed, BotUtils.GetGUser(Context.User.Id));
                         await use.Display(Context.Channel);
                     }
@@ -71,80 +62,60 @@ namespace Kamtro_Bot.Modules
         }
 
         [Command("voicekick")]
-        [Alias("vckick","kickvc","kickvoice","removevc","removevoicechat")]
-        public async Task VoiceKickAsync([Remainder] string args = null)
-        {
+        [Alias("vckick", "kickvc", "kickvoice", "removevc", "removevoicechat")]
+        public async Task VoiceKickAsync([Remainder] string args = null) {
             // Moderator check
             SocketGuildUser user = BotUtils.GetGUser(Context);
-            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR) || user.Id == 118892308086128641)
-            {
+            if (ServerData.HasPermissionLevel(user, ServerData.PermissionLevel.MODERATOR)) {
                 // Only command was used. Reply to user saying a user needs to be specified for the command.
-                if (String.IsNullOrWhiteSpace(args))
-                {
+                if (string.IsNullOrWhiteSpace(args)) {
                     await ReplyAsync(BotUtils.KamtroText("You did not specify the user to remove from voice chat."));
                     return;
-                }
-                else
-                {
+                } else {
                     List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
                     // No user found
-                    if (users.Count == 0)
-                    {
+                    if (users.Count == 0) {
                         await ReplyAsync(BotUtils.KamtroText("I could not find that user. Please try again and make sure you are spelling the user correctly."));
                         return;
                     }
                     // Check for users in voice channels and remove those that aren't
-                    else
-                    {
+                    else {
                         List<SocketGuildUser> removeUsers = new List<SocketGuildUser>();
-                        foreach (SocketGuildUser currentUser in users)
-                        {
-                            if (currentUser.VoiceChannel == null)
-                            {
+                        foreach (SocketGuildUser currentUser in users) {
+                            if (currentUser.VoiceChannel == null) {
                                 removeUsers.Add(currentUser);
                             }
                         }
 
-                        foreach (SocketGuildUser currentUser in removeUsers)
-                        {
+                        foreach (SocketGuildUser currentUser in removeUsers) {
                             users.Remove(currentUser);
                         }
                     }
 
                     // No users found in voice channels
-                    if (users.Count == 0)
-                    {
+                    if (users.Count == 0) {
                         await ReplyAsync(BotUtils.KamtroText("That user is not in a voice channel."));
                     }
                     // Create temporary voice channel, move user, then delete voice channel
-                    else if (users.Count == 1)
-                    {
-                        SocketVoiceChannel currentVc = users[0].VoiceChannel;
-                        RestVoiceChannel vcChannel = await ServerData.Server.CreateVoiceChannelAsync("Temporary");
-                        await users[0].ModifyAsync(x => x.Channel = vcChannel);
-                        await vcChannel.DeleteAsync();
+                    else if (users.Count == 1) {
+                        await users[0].ModifyAsync(x => x.Channel = null);
 
-                        if (users[0].Nickname != null)
-                        {
+                        if (users[0].Nickname != null) {
                             await ReplyAsync(BotUtils.KamtroText($"{users[0].Nickname} has been removed from {currentVc.Name}."));
-                        }
-                        else
-                        {
+                        } else {
                             await ReplyAsync(BotUtils.KamtroText($"{users[0].Username} has been removed from {currentVc.Name}."));
                         }
 
                         return;
                     }
                     // Name is too vague. More than 10 users found
-                    else if (users.Count > 10)
-                    {
+                    else if (users.Count > 10) {
                         await ReplyAsync(BotUtils.KamtroText("That name is too vague. Please try specifying the user."));
                         return;
                     }
                     // More than one user mentioned, or ambiguous user
-                    else
-                    {
+                    else {
                         UserSelectionEmbed use = new UserSelectionEmbed(users, VoiceKickUserAsync, BotUtils.GetGUser(Context.User.Id));
                         await use.Display(Context.Channel);
                     }
@@ -165,13 +136,13 @@ namespace Kamtro_Bot.Modules
 
             List<SocketGuildUser> users = BotUtils.GetUser(Context.Message);
 
-            if(users.Count == 0) {
+            if (users.Count == 0) {
                 await ReplyAsync(BotUtils.KamtroText("I can't find a user with that name. Make sure the name is spelt correctly!"));
                 return;
-            } else if(users.Count > 10) {
+            } else if (users.Count > 10) {
                 await ReplyAsync(BotUtils.KamtroText("Please be more specific! You can attach a discriminator if you need to (Username#1234)"));
                 return;
-            } else if(users.Count == 1) {
+            } else if (users.Count == 1) {
                 await StrikeUser(users[0]);
             } else {
                 UserSelectionEmbed use = new UserSelectionEmbed(users, StrikeUser, BotUtils.GetGUser(Context));
@@ -198,7 +169,7 @@ namespace Kamtro_Bot.Modules
         public async Task EditStrikeLogAsync() {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
 
-            if(Context.Message.Attachments.Count != 1) {
+            if (Context.Message.Attachments.Count != 1) {
                 StrikeLogEditEmbed sle = new StrikeLogEditEmbed(Context);
                 await sle.Display();
                 return;
@@ -207,7 +178,7 @@ namespace Kamtro_Bot.Modules
             // Alt version
             Attachment file = Context.Message.Attachments.ElementAt(0);
 
-            if(file.Filename != "strikelog.xlsx") {
+            if (file.Filename != "strikelog.xlsx") {
                 await ReplyAsync(BotUtils.KamtroText("The strike log must be an excel file named strikelog.xlsx!"));
                 return;
             }
@@ -262,8 +233,7 @@ namespace Kamtro_Bot.Modules
 
         [Command("purge")]
         [Alias("massdelete", "deleteall")]
-        public async Task PurgeAsync([Remainder] string name = "")
-        {
+        public async Task PurgeAsync([Remainder] string name = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
 
             ISocketMessageChannel channel = Context.Channel;
@@ -271,8 +241,7 @@ namespace Kamtro_Bot.Modules
             List<IMessage> messages = await channel.GetMessagesAsync(99999, CacheMode.AllowDownload).Flatten().ToList();
             List<IMessage> messagesToDelete = new List<IMessage>();
 
-            for (int i = 0; i < messages.Count; i++)
-            {
+            for (int i = 0; i < messages.Count; i++) {
                 // Check if message can be deleted and record it
                 if (messages[i].Timestamp.AddDays(14) > DateTimeOffset.Now)
                     messagesToDelete.Add(messages[i]);
@@ -283,8 +252,7 @@ namespace Kamtro_Bot.Modules
             StreamWriter sw = new StreamWriter("Admin/PurgeLog.txt");
 
             // Delete Messages
-            for (int i = messagesToDelete.Count - 1; i >= 0; i--)
-            {
+            for (int i = messagesToDelete.Count - 1; i >= 0; i--) {
                 sw.WriteLine($"[{messagesToDelete[i].Timestamp.DateTime.ToLongTimeString()}] {messagesToDelete[i].Author.Username}#{messagesToDelete[i].Author.Discriminator}: {messagesToDelete[i].Content}");
                 await messagesToDelete[i].DeleteAsync();
             }
@@ -297,20 +265,16 @@ namespace Kamtro_Bot.Modules
 
         [Command("deletebanmessages")]
         [Alias("dbm")]
-        public async Task DeleteBanMessagesAsync([Remainder] string name = "")
-        {
+        public async Task DeleteBanMessagesAsync([Remainder] string name = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
 
             SocketUser bannedUser = ServerData.BannedUser;
-            if (bannedUser != null)
-            {
+            if (bannedUser != null) {
                 await ServerData.Server.RemoveBanAsync(bannedUser);
                 await ServerData.Server.AddBanAsync(bannedUser, 7);
 
                 await ReplyAsync(BotUtils.KamtroText($"Messages from {bannedUser.Username}#{bannedUser.Discriminator} in the past 7 days have been deleted."));
-            }
-            else
-            {
+            } else {
                 await ReplyAsync(BotUtils.KamtroText("There is not a ban recently to delete messages from."));
             }
             /*
@@ -358,33 +322,28 @@ namespace Kamtro_Bot.Modules
         #region Helper Methods
         private async Task StrikeUser(SocketUser user) {
             // First, the classic null check
-            if (BotUtils.GetGUser(Context) == null)
-            {
+            if (BotUtils.GetGUser(Context) == null) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("That user does not exist!"));
                 KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike non-existant member {BotUtils.GetFullUsername(user)}");
                 return;
             }
 
             // Flavor text for trying to strike yourself
-            if (user.Id == Context.User.Id)
-            {
+            if (user.Id == Context.User.Id) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("We would like to save the strikes for those that deserve it."));
                 return;
             }
 
             // next, check to see if Kamtro has perms to ban the user
-            if (!BotUtils.HighestUser(BotUtils.GetGUser(Context.Client.CurrentUser.Id), BotUtils.GetGUser(user.Id)))
-            {
+            if (!BotUtils.HighestUser(BotUtils.GetGUser(Context.Client.CurrentUser.Id), BotUtils.GetGUser(user.Id))) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("The user is higher than me, so I cannot strike them."));
                 KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than bot");
                 return;
             }
 
             // next, check if the caller can ban the user
-            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN))
-            {
-                if (BotUtils.HighestUser(BotUtils.GetGUser(user.Id), BotUtils.GetGUser(Context), true))
-                {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) {
+                if (BotUtils.HighestUser(BotUtils.GetGUser(user.Id), BotUtils.GetGUser(Context), true)) {
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher or equal than you, and as such, you cannot strike them."));
                     KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to strike member {BotUtils.GetFullUsername(user)} of higher status than caller");
                     return;
@@ -409,8 +368,7 @@ namespace Kamtro_Bot.Modules
             }
 
             // Flavor text for trying to ban yourself
-            if (user.Id == Context.User.Id)
-            {
+            if (user.Id == Context.User.Id) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Sorry, but we still need you."));
                 return;
             }
@@ -423,10 +381,8 @@ namespace Kamtro_Bot.Modules
             }
 
             // next, check if the caller can ban the user
-            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN))
-            {
-                if (BotUtils.HighestUser(BotUtils.GetGUser(user.Id), BotUtils.GetGUser(Context), true))
-                {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) {
+                if (BotUtils.HighestUser(BotUtils.GetGUser(user.Id), BotUtils.GetGUser(Context), true)) {
                     await Context.Channel.SendMessageAsync(BotUtils.KamtroText("This user is higher or equal than you, and as such, you cannot ban them."));
                     KLog.Info($"User {BotUtils.GetFullUsername(Context.User)} attempted to ban member {BotUtils.GetFullUsername(user)} of higher status than caller");
                     return;
@@ -437,8 +393,7 @@ namespace Kamtro_Bot.Modules
             await be.Display();
         }
 
-        private async Task DisplayUserInfoEmbed(SocketGuildUser user)
-        {
+        private async Task DisplayUserInfoEmbed(SocketGuildUser user) {
             EmbedBuilder embed = new EmbedBuilder();
 
             string embedText = "";
@@ -448,10 +403,8 @@ namespace Kamtro_Bot.Modules
             embedText += $"Avatar URL: {user.GetAvatarUrl()}";
 
             Color color = new Color(0, 0, 0);
-            foreach (SocketRole role in user.Roles)
-            {
-                if (role.Color.RawValue != 0)
-                {
+            foreach (SocketRole role in user.Roles) {
+                if (role.Color.RawValue != 0) {
                     color = role.Color;
                     break;
                 }
@@ -464,19 +417,15 @@ namespace Kamtro_Bot.Modules
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-        private async Task VoiceKickUserAsync(SocketGuildUser user)
-        {
+        private async Task VoiceKickUserAsync(SocketGuildUser user) {
             SocketVoiceChannel currentVc = user.VoiceChannel;
             RestVoiceChannel vcChannel = await ServerData.Server.CreateVoiceChannelAsync("Temporary");
             await user.ModifyAsync(x => x.Channel = vcChannel);
             await vcChannel.DeleteAsync();
 
-            if (user.Nickname != null)
-            {
+            if (user.Nickname != null) {
                 await ReplyAsync(BotUtils.KamtroText($"{user.Nickname} has been removed from {currentVc.Name}."));
-            }
-            else
-            {
+            } else {
                 await ReplyAsync(BotUtils.KamtroText($"{user.Username} has been removed from {currentVc.Name}."));
             }
         }

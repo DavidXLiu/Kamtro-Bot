@@ -131,6 +131,8 @@ namespace Kamtro_Bot.Modules
         
         [Command("convert")]
         public async Task ConvertAsync() {
+            if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
+
             FileInfo f = new FileInfo("Strike_Log.xlsx");
             ExcelPackage p = new ExcelPackage(f);
 
