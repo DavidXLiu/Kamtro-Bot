@@ -259,33 +259,11 @@ namespace Kamtro_Bot.Managers
         public static async Task AddScore(SocketGuildUser user, int score) {
             AddUserIfNotExists(user);
 
-            UserData[user.Id].Score += score;  // Add to the score
-            UserData[user.Id].WeeklyScore += score;
+            UserDataNode data = GetUserData(user);
+            data.Score += score;  // Add to the score
+            data.WeeklyScore += score;
 
-            if(Program.Experimental) {
-                int s = UserData[user.Id].Score;
-
-                // for titles
-                if (s >= 1) {
-                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.KAMTRO_SQUIRE);
-                }
-
-                if (s >= 10_000) {
-                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.TALKATIVE);
-                }
-
-                if (s >= 50_000) {
-                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.CHATTERBOX);
-                }
-
-                if (s >= 100_000) {
-                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.REGULAR);
-                }
-
-                if (s >= 500_000) {
-                    await AchievementManager.AddTitle(user, AchievementManager.TitleIDs.KAMTRO_VETERAN);
-                }
-            }
+            await AchievementManager.OnScore(user);
 
             SaveUserData();  // Save the updated data.
         }

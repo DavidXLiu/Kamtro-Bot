@@ -121,6 +121,47 @@ namespace Kamtro_Bot.Managers
 
             UserDataManager.SaveUserData();
         }
+        
+        public static async Task OnScore(SocketGuildUser user) {
+            int s = UserDataManager.GetUserData(user).Score;
+
+            // for titles
+            if (s >= 1) {
+                await AddTitle(user, TitleIDs.KAMTRO_SQUIRE);
+            }
+
+            if (s >= 10_000) {
+                await AddTitle(user, TitleIDs.TALKATIVE);
+            }
+
+            if (s >= 50_000) {
+                await AddTitle(user, TitleIDs.CHATTERBOX);
+            }
+
+            if (s >= 100_000) {
+                await AddTitle(user, TitleIDs.REGULAR);
+            }
+
+            if (s >= 500_000) {
+                await AddTitle(user, TitleIDs.KAMTRO_VETERAN);
+            }
+        }
+
+        public static async Task OnTitle(SocketGuildUser user, int titleId) {
+            if (titleId == 0) return;
+            
+            // Kamtro God
+            bool god = false;
+
+            foreach (int i in NodeMap.Keys) {
+                if (i == 0) continue;
+                if (!UserDataManager.GetUserData(user).Titles.Contains(i)) god = true;
+            }
+
+            if(god) {
+                await AddTitle(user, TitleIDs.KAMTRO_GOD);
+            }
+        }
         #endregion
         #region Util
         public static async Task AddTitle(SocketGuildUser user, int titleid) {

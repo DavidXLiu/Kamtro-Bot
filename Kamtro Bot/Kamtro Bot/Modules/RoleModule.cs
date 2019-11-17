@@ -50,7 +50,7 @@ namespace Kamtro_Bot.Modules
                     if (UtilStringComparison.CompareWordScore(message, role.Name) >= 0.66) {
                         /// ALREADY HAS ROLE
                         // Check if user already has the role - Arcy
-                        if (user.Roles.Contains(role)) {
+                        if (user.HasRole(role)) {
                             // First person response if DMs - Arcy
                             if (Context.Channel is IDMChannel) {
                                 await ReplyAsync(BotUtils.KamtroText($"You already have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));
@@ -179,7 +179,7 @@ namespace Kamtro_Bot.Modules
                     if (UtilStringComparison.CompareWordScore(message, role.Name) >= 0.66) {
                         // ALREADY DOESN'T HAVE ROLE
                         // Check if user already doesn't have the role - Arcy
-                        if (!user.Roles.Contains(role)) {
+                        if (!user.HasRole(role)) {
                             // First person response if DMs - Arcy
                             if (Context.Channel is IDMChannel) {
                                 await ReplyAsync(BotUtils.KamtroText($"You already do not have the {CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role.Name.ToLower())} role."));

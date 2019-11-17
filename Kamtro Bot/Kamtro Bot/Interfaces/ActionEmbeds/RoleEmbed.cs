@@ -111,7 +111,7 @@ namespace Kamtro_Bot.Interfaces
                     break;
 
                 case ReactionHandler.SELECT_STR:
-                    if (!BotUtils.GetGUser(Context).Roles.Contains(ServerData.ModifiableRoles[cursorPos])) {
+                    if (!BotUtils.GetGUser(Context).HasRole(ServerData.ModifiableRoles[cursorPos])) {
                         // If the user doesn't have the role
                         await BotUtils.GetGUser(Context).AddRoleAsync(ServerData.ModifiableRoles[cursorPos]);  // Give the user the role
                         boldOverride = true;

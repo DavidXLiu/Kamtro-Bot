@@ -22,12 +22,14 @@ namespace Kamtro_Bot.Modules
         #region User Commands
         [Command("shop")]
         public async Task ShopAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
             ShopEmbed shop = new ShopEmbed(Context);
             await shop.Display();
         }
 
         [Command("craft")]
         public async Task CraftAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
             CraftingEmbed cre = new CraftingEmbed(Context);
             await cre.Display();
         }
@@ -35,6 +37,7 @@ namespace Kamtro_Bot.Modules
         [Command("inventory")]
         [Alias("inv")]
         public async Task InventoryAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
             // TODO: add feature where admins can look through a user's inventory
             InventoryEmbed ie = new InventoryEmbed(Context);
             await ie.Display();
@@ -44,6 +47,7 @@ namespace Kamtro_Bot.Modules
         [Command("refreshshop")]
         [Alias("refresh shop", "rfsh")]
         public async Task RefreshShopAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
             ShopManager.GenShopSelection();
             await ReplyAsync(BotUtils.KamtroText("Shop Refreshed."));
@@ -52,6 +56,7 @@ namespace Kamtro_Bot.Modules
         [Command("giveitem")]
         [Alias("gi", "give")]
         public async Task GiveItemAsync([Remainder] string args = "") {
+            if (!Program.Experimental) return;
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
             List<string> data = args.Split(' ').ToList();

@@ -452,7 +452,11 @@ namespace Kamtro_Bot
         }
 
         public static bool HasRole(this SocketGuildUser user, SocketRole role) {
-            return user.Roles.Contains(role);
+            foreach(SocketRole r in user.Roles) {
+                if (r.Id == role.Id) return true;
+            }
+
+            return false;
         }
     }
     #endregion

@@ -15,6 +15,7 @@ namespace Kamtro_Bot.Util
     /// </summary>
     public class ServerData
     {
+        #region Variables
         // Main Server
         public static SocketGuild Server;
 
@@ -38,10 +39,7 @@ namespace Kamtro_Bot.Util
 
         public static SocketRole KamtroBotRole;
         public static SocketRole NSFWRole;
-        public static SocketRole Kamexican { 
-            get { return Server.GetRole(Program.Settings.KamexicanID); }
-            set { Kamexican = value; }
-        }
+        public static SocketRole Kamexican;
         public static SocketRole Retropolitan;
         public static SocketRole Lurker;
 
@@ -52,7 +50,7 @@ namespace Kamtro_Bot.Util
 
         // Information
         public static SocketUser BannedUser; // Used to track what user to delete messages from for the DeleteBanMessages command
-
+        #endregion
         /// <summary>
         /// Permission level enum. For checking perms easily
         /// </summary>
@@ -64,7 +62,7 @@ namespace Kamtro_Bot.Util
             MODERATOR,
             ADMIN
         }
-
+        #region Methods
         /// <summary>
         /// Goes through the process of initializing and populating all data collections with the passed in data.
         /// </summary>
@@ -251,5 +249,6 @@ namespace Kamtro_Bot.Util
 
             return false;
         }
+        #endregion
     }
 }

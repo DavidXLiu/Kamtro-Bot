@@ -138,7 +138,7 @@ namespace Kamtro_Bot.Handlers
             if ((await msg.GetOrDownloadAsync()).Id == Program.Settings.RoleSelectMessageID && channel as SocketTextChannel != null && RoleMap.ContainsKey(reaction.Emote.Name)) {
                 SocketTextChannel chan = channel as SocketTextChannel;
                 // this method only checks for this message. Ignore in other cases
-                if (chan.Guild.GetUser(reaction.UserId).Roles.Contains(chan.Guild.GetRole(RoleMap[reaction.Emote.Name]))) {
+                if (chan.Guild.GetUser(reaction.UserId).HasRole(chan.Guild.GetRole(RoleMap[reaction.Emote.Name]))) {
                     await chan.Guild.GetUser(reaction.UserId).RemoveRoleAsync(chan.Guild.GetRole(RoleMap[reaction.Emote.Name]));
                 }
             }
@@ -159,7 +159,7 @@ namespace Kamtro_Bot.Handlers
                     {
                         SocketRole role = ServerData.Server.GetRole(pair.Value);
 
-                        if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+                        if (channel.Guild.GetUser(reaction.UserId).HasRole(role)) return; // if they already have the role, don't bother giving it to them again
 
                         await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
                     }
@@ -168,7 +168,7 @@ namespace Kamtro_Bot.Handlers
                 {
                     SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
 
-                    if (channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+                    if (channel.Guild.GetUser(reaction.UserId).HasRole(role)) return; // if they already have the role, don't bother giving it to them again
 
                     await channel.Guild.GetUser(reaction.UserId).AddRoleAsync(role);
                 }
@@ -190,7 +190,7 @@ namespace Kamtro_Bot.Handlers
                     {
                         SocketRole role = ServerData.Server.GetRole(pair.Value);
 
-                        if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+                        if (!channel.Guild.GetUser(reaction.UserId).HasRole(role)) return; // if they already have the role, don't bother giving it to them again
 
                         await channel.Guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                     }
@@ -199,7 +199,7 @@ namespace Kamtro_Bot.Handlers
                 {
                     SocketRole role = ServerData.Server.GetRole(RoleMap[reaction.Emote.ToString()]);
 
-                    if (!channel.Guild.GetUser(reaction.UserId).Roles.Contains(role)) return; // if they already have the role, don't bother giving it to them again
+                    if (!channel.Guild.GetUser(reaction.UserId).HasRole(role)) return; // if they already have the role, don't bother giving it to them again
 
                     await channel.Guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }

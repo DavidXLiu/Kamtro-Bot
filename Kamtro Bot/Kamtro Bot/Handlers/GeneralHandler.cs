@@ -152,15 +152,15 @@ namespace Kamtro_Bot.Handlers
             if (before.Roles.Count != after.Roles.Count) {
                 // role update
                 KLog.Debug($"Role Update user {BotUtils.GetFullUsername(after)}");
-                if (!before.Roles.Contains(ServerData.Lurker) && after.Roles.Contains(ServerData.Lurker)) return; // if it was just a lurker update, don worry bout it.  -C
+                if (!before.HasRole(ServerData.Lurker) && after.HasRole(ServerData.Lurker)) return; // if it was just a lurker update, don worry bout it.  -C
                 KLog.Debug("FLAG GH-D");
-                if(after.Roles.Contains(ServerData.Lurker) && (after.Roles.Contains(ServerData.Kamexican) || after.Roles.Contains(ServerData.Retropolitan))) {
+                if(after.HasRole(ServerData.Lurker) && (after.HasRole(ServerData.Kamexican) || after.HasRole(ServerData.Retropolitan))) {
                     KLog.Debug("FLAG GH-E");
                     await after.RemoveRoleAsync(ServerData.Lurker); 
                 }
                 KLog.Debug("FLAG GH-F");
                 // for lurker
-                if (!after.Roles.Contains(ServerData.Kamexican) && !after.Roles.Contains(ServerData.Retropolitan) && !after.Roles.Contains(ServerData.Lurker)) {
+                if (!after.HasRole(ServerData.Kamexican) && !after.HasRole(ServerData.Retropolitan) && !after.HasRole(ServerData.Lurker)) {
                     KLog.Debug("FLAG GH-G");
                     await after.AddRoleAsync(ServerData.Lurker);
                     KLog.Debug("FLAG GH-H");
@@ -169,13 +169,12 @@ namespace Kamtro_Bot.Handlers
                 KLog.Debug("FLAG GH-I");
 
                 // for nsfw remove
-                foreach (SocketRole role in after.Roles) {
-                    if(ServerData.SilencedRoles.Contains(role)) {
-                        // remove mature role if user has it
-                        if(after.Roles.Contains(ServerData.NSFWRole)) {
-                            KLog.Debug("FLAG GH-J");
-                            await after.RemoveRoleAsync(ServerData.NSFWRole);
-                        }
+                if(ServerData.IsSilenced(after)) {
+                    // remove mature role if user has it
+                    
+                    if(after.HasRole(ServerData.NSFWRole)) {
+                        KLog.Debug("FLAG GH-J");
+                        await after.RemoveRoleAsync(ServerData.NSFWRole);
                     }
                 }
             }
