@@ -164,6 +164,7 @@
     <Compile Include="Interfaces\BasicEmbeds\AvatarUpdateEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\BanNotifyEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\CreditsEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\DiceRollEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\ErrorReportEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\MessageDeleteEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\MessageEditEmbed.cs" />

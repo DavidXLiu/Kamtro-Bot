@@ -55,7 +55,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if(State != GameState.NEUTRAL) {
                 eb.AddField("Result", Result ? "Heads" : "Tails");
             }
-
+         
             eb.AddField("Current Streak", Streak, true);
             eb.AddField("Highest Streak", Data.MaxCFStreak, true);
             eb.AddField("% Chance of Getting This Streak", $"{Math.Round(1.0/(Math.Pow(2, Streak + 1)) * 100, 2)}%");

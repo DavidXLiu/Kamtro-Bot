@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Interfaces.ActionEmbeds;
+using Kamtro_Bot.Interfaces.BasicEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -91,6 +92,18 @@ namespace Kamtro_Bot.Modules
             }
 
             Random dice = new Random();
+            
+            if(Program.Experimental) {
+                List<int> r = new List<int>();
+
+                for (int i = 0; i < num; i++) {
+                    r.Add(dice.Next(Math.Min(1, sides), Math.Max(0, sides)));
+                }
+
+                DiceRollEmbed dre = new DiceRollEmbed(sides, r);
+                await dre.Display();
+                return;
+            }
 
             string result = $"Rolled {num} {(num == 1 ? "die" : "dice")}:\n\n";
 
