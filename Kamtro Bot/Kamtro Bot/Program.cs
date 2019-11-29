@@ -69,7 +69,7 @@ namespace Kamtro_Bot
 
             Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
             GarbageCollection = new Thread(new ThreadStart(BotUtils.GarbageCollection));
-            DateCheck = new Thread(new ThreadStart(BotUtils.DateEventCheckLoop));
+            DateCheck = new Thread(new ThreadStart(BotUtils.WeeklyReset));
             AutobanReset = new Thread(new ThreadStart(GeneralHandler.ResetThread));
 
             SetupFiles();  // This is to keep the Main method more readable

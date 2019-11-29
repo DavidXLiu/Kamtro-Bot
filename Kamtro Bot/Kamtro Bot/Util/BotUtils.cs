@@ -245,24 +245,74 @@ namespace Kamtro_Bot
         /// <summary>
         /// Thread that handles all events that depend on the date
         /// </summary>
-        public static void DateEventCheckLoop() {
+        public static void WeeklyReset() {
             while (true) {
-                // Check for weekly reset
-                if (DateTime.Now - LastWeeklyReset > new TimeSpan(7, 0, 0, 0)) {
+                // Check for missed reset
+                if (DateTime.UtcNow.RoundUp(TimeSpan.FromDays(1)) - LastWeeklyReset.RoundUp(TimeSpan.FromDays(1)) >= new TimeSpan(7, 0, 0, 0)) {
                     // reset things
                     UserDataManager.ResetWeekly();
                     UserDataManager.ResetRep();
 
                     // set the new time
-                    LastWeeklyReset = DateTime.Now.LastSunday();
+                    LastWeeklyReset = DateTime.UtcNow.LastSunday();
 
+                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
+                } else {
+                    // if no reset was missed, wait for the next one.
+                    Thread.Sleep(GetTimeDelay(TimeScale.WEEK));
+                    // now reset rep
+                    UserDataManager.ResetRep();
+                    UserDataManager.ResetWeekly();
+                    LastWeeklyReset = DateTime.UtcNow.AddDays(-1).AddSeconds(1).RoundUp(TimeSpan.FromDays(1));
                     File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
                 }
 
                 KLog.Debug($"Last Weekly Reset: [{LastWeeklyReset.ToString("F")}]");
 
-                Thread.Sleep(new TimeSpan(0, 1, 0));
+                Thread.Sleep(new TimeSpan(0, 0, 5));  // SAFETY CLOCK, If the loop goes haywire it's not going to overload the bot.
             }
+        }
+        #endregion
+        #region Time Utils
+        /// <summary>
+        /// Gets the amount of time between when the method is called, and the desired event
+        /// </summary>
+        /// <param name="scale">The scale of the time</param>
+        /// <returns>A TimeSpan object representing how long it will be until the next time specified by the scale field</returns>
+        public static TimeSpan GetTimeDelay(TimeScale scale) {
+            DateTime next = DateTime.UtcNow;
+
+            switch(scale) {
+                case TimeScale.SECOND:
+                    next.RoundUp(TimeSpan.FromSeconds(1));
+                    break;
+
+                case TimeScale.MINUTE:
+                    next.RoundUp(TimeSpan.FromMinutes(1));
+                    break;
+
+                case TimeScale.HOUR:
+                    next.RoundUp(TimeSpan.FromHours(1));
+                    break;
+
+                case TimeScale.DAY:
+                    next.RoundUp(TimeSpan.FromDays(1));
+                    break;
+
+                case TimeScale.WEEK:
+                    next.RoundUp(TimeSpan.FromDays(7));
+                    break;
+
+                case TimeScale.MONTH:
+                    next.RoundUp(TimeSpan.FromDays(30));
+                    break;
+
+                case TimeScale.YEAR:
+                    next.RoundUp(TimeSpan.FromDays(365));
+                    break;
+            }
+
+            return next - DateTime.UtcNow;
         }
         #endregion
         #region Server Utils
@@ -469,6 +519,16 @@ namespace Kamtro_Bot
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Rounds a DateTime object UP to the nearest timespan specified
+        /// </summary>
+        /// <param name="dt">The DateTime to round</param>
+        /// <param name="d">The TimeSpan to round to</param>
+        /// <returns>The rounded DateTime</returns>
+        public static DateTime RoundUp(this DateTime dt, TimeSpan d) {
+            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind);
         }
     }
     #endregion
