@@ -52,6 +52,18 @@ namespace Kamtro_Bot
 
         public static string BadDMResponse = KamtroText("I tried to send the user a message, but they had me blocked and/or disabled direct messages from server members, so I couldn't message them!");
 
+        #region Enums
+        public enum TimeScale
+        {
+            SECOND,
+            MINUTE,
+            HOUR,
+            DAY,
+            WEEK,
+            MONTH,
+            YEAR
+        }
+        #endregion
         #region Text Utils
         /// <summary>
         /// Formats the message so the text is blue (AKA Kamtro speak)

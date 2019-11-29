@@ -261,11 +261,26 @@ namespace Kamtro_Bot.Managers
 
             UserDataNode data = GetUserData(user);
             data.Score += score;  // Add to the score
+            
+            if(data.KamtrokensEarned < 10) data.KamtrokenEarnProgress += score;
+            
+            if(data.KamtrokenEarnProgress >= 100 && data.KamtrokensEarned < 10) {
+                data.KamtrokenEarnProgress -= 100;
+                data.Kamtrokens++;
+                data.KamtrokensEarned++;
+
+                SaveUserData(); 
+            }
+                
             data.WeeklyScore += score;
 
             await AchievementManager.OnScore(user);
 
             SaveUserData();  // Save the updated data.
+        }
+
+        public static void EarnKamtroken() {
+
         }
 
         public static void ResetWeekly() {
