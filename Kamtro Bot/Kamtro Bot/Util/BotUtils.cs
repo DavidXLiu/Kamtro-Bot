@@ -158,7 +158,7 @@ namespace Kamtro_Bot
                     SaveInProgress = false;
                 }
 
-                Thread.Sleep(new TimeSpan(0, 1, 0));  // Pause for 1 minute
+                Thread.Sleep(new TimeSpan(0, 10, 0));  // Pause for 10 minutea
             }
         }
 

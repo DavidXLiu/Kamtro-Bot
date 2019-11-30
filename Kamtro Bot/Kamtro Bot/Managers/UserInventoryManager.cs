@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Kamtro_Bot.Managers
 {
-    public class UserInventoryManager
+    public static class UserInventoryManager
     {
         public static void LoadInventories() {
             string data = FileManager.ReadFullFile(DataFileNames.UserInventoriesFile);

@@ -279,8 +279,15 @@ namespace Kamtro_Bot.Managers
             SaveUserData();  // Save the updated data.
         }
 
-        public static void EarnKamtroken() {
+        public static void ResetKamtrokenEarns() {
+            foreach (ulong key in UserData.Keys) {
+                UserData[key].KamtrokensEarned = 0;
+                UserData[key].KamtrokenEarnProgress = 0;
+            }
 
+            SaveUserData();
+
+            KLog.Info("Reset daily earned kamtrokens");
         }
 
         public static void ResetWeekly() {
