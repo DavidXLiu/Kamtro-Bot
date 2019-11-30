@@ -29,6 +29,6 @@ namespace Kamtro_Bot
         // Ban List
         public const string AutoBanFile = @"Admin\AutoBans.json";
 
-        public const string LastDateFile = @"User Data\LastWeeklyReset.txt";
+        public const string LastDateFile = @"User Data\LastResets.json";
     }
 }

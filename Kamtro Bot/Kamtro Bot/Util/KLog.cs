@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kamtro_Bot
 {
-    public class KLog {
+    public static class KLog {
         public static void Debug(string msg) {
             if(Program.Debug) {
                 Console.WriteLine("[debug] " + msg);

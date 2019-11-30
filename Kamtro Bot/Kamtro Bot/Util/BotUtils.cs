@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
 using Discord.Commands;
+using System.Globalization;
 
 namespace Kamtro_Bot
 {
@@ -22,7 +23,7 @@ namespace Kamtro_Bot
     /// General utility functions for Kamtro
     /// -C
     /// </summary>
-    public class BotUtils
+    public static class BotUtils
     {
         public const string ZeroSpace = "​"; // This is a zero-width space. (it's invisible)  -C
 
@@ -119,6 +120,7 @@ namespace Kamtro_Bot
         /// <param name="user">The user to inspect</param>
         /// <returns>The user's full name and discriminator</returns>
         public static string GetFullUsername(SocketUser user) {
+            if (user == null) return "**NULL_USER**";
             return user.Username + "#" + user.Discriminator;
         }
 
@@ -133,6 +135,8 @@ namespace Kamtro_Bot
         /// <param name="filename">The name of the file</param>
         /// <returns>The file's extension</returns>
         public static string GetFileExtension(string filename) {
+            if (filename == null) return "";
+
             if (!filename.Contains(".") || filename.LastIndexOf('.') + 1 == filename.Length) return "";
 
             string ext = filename.Substring(filename.LastIndexOf('.') + 1);
@@ -256,7 +260,7 @@ namespace Kamtro_Bot
                     // set the new time
                     LastWeeklyReset = DateTime.UtcNow.LastSunday();
 
-                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
+                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
                 } else {
                     // if no reset was missed, wait for the next one.
                     Thread.Sleep(GetTimeDelay(TimeScale.WEEK));
@@ -264,12 +268,20 @@ namespace Kamtro_Bot
                     UserDataManager.ResetRep();
                     UserDataManager.ResetWeekly();
                     LastWeeklyReset = DateTime.UtcNow.AddDays(-1).AddSeconds(1).RoundUp(TimeSpan.FromDays(1));
-                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString());
+                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
                 }
 
-                KLog.Debug($"Last Weekly Reset: [{LastWeeklyReset.ToString("F")}]");
+                KLog.Debug($"Last Weekly Reset: [{LastWeeklyReset.ToString("F", CultureInfo.InvariantCulture)}]");
 
-                Thread.Sleep(new TimeSpan(0, 0, 5));  // SAFETY CLOCK, If the loop goes haywire it's not going to overload the bot.
+                Thread.Sleep(5000);  // SAFETY CLOCK, If the loop goes haywire it's not going to overload the bot.
+            }
+        }
+        
+        public static void DailyReset() {
+            while(true) {
+
+
+                Thread.Sleep(5000); // SAFETY THROTTLE
             }
         }
         #endregion
@@ -327,6 +339,8 @@ namespace Kamtro_Bot
         public static List<SocketGuildUser> GetUser(SocketMessage message, string command = "") {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
 
+            if (message == null) return users;
+
             // Find mentions
             if (message.MentionedUsers.Count > 0) {
                 foreach (SocketUser user in message.MentionedUsers.ToList()) {
@@ -355,6 +369,7 @@ namespace Kamtro_Bot
 
         public static List<SocketGuildUser> GetUsers(string name) {
             List<SocketGuildUser> users = new List<SocketGuildUser>();
+            if (name == null) return users;
 
             name = name.ToLower();
 
@@ -425,6 +440,9 @@ namespace Kamtro_Bot
         /// <param name="b">The user to compare</param>
         /// <returns>True if A is higher up than B, false if A is equal to, or lower than B.</returns>
         public static bool HighestUser(SocketGuildUser a, SocketGuildUser b, bool orEqual = false) {
+            if (a == null) return false;
+            if (b == null) return true;
+            
             if (orEqual)
                 return a.Hierarchy >= b.Hierarchy;
             else
@@ -452,7 +470,8 @@ namespace Kamtro_Bot
         }
 
         public static SocketGuildUser GetGUser(SocketCommandContext ctx) {
-            return BotUtils.GetGUser(ctx.User.Id);
+            if (ctx == null) return null;
+            return GetGUser(ctx.User.Id);
         }
 
         public static SocketGuildUser GetGUser(ulong id) {
@@ -509,11 +528,14 @@ namespace Kamtro_Bot
         /// <param name="desc">Whether or not to include the descriminator in the case of no nickname. Default is false.</param>
         /// <returns>The display name of the user.</returns>
         public static string GetDisplayName(this SocketGuildUser user, bool desc = false) {
+            if (user == null) return "**NULL_USER**";
             // If user.Nickname is not null, return it. Otherwise, return the username optionally with descriminator
             return user.Nickname ?? (desc ? BotUtils.GetFullUsername(user) : user.Username);
         }
 
         public static bool HasRole(this SocketGuildUser user, SocketRole role) {
+            if (user == null || role == null) return false;
+
             foreach(SocketRole r in user.Roles) {
                 if (r.Id == role.Id) return true;
             }
