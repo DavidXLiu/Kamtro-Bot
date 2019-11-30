@@ -39,7 +39,7 @@ namespace Kamtro_Bot
         public static readonly Color Grey = new Color(185, 200, 203);
         public static readonly Color Kamtro = new Color(137, 232, 249);
 
-        public static DateTime LastWeeklyReset = DateTime.Now.LastSunday();
+        public static LastDateNode LastDate;
 
         public static bool SaveReady = false; // This is set to true once the files are safe to save to.  -C
         public static bool SaveLoop = true;  // This is set to false to turn off the infinite save loop.  -C
@@ -252,26 +252,26 @@ namespace Kamtro_Bot
         public static void WeeklyReset() {
             while (true) {
                 // Check for missed reset
-                if (DateTime.UtcNow.RoundUp(TimeSpan.FromDays(1)) - LastWeeklyReset.RoundUp(TimeSpan.FromDays(1)) >= new TimeSpan(7, 0, 0, 0)) {
+                if (DateTime.UtcNow.RoundUp(TimeSpan.FromDays(1)) - LastDate.LastWeeklyReset.RoundUp(TimeSpan.FromDays(1)) >= new TimeSpan(7, 0, 0, 0)) {
                     // reset things
                     UserDataManager.ResetWeekly();
                     UserDataManager.ResetRep();
 
                     // set the new time
-                    LastWeeklyReset = DateTime.UtcNow.LastSunday();
+                    LastDate.LastWeeklyReset = DateTime.UtcNow.LastSunday();
 
-                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
+                    File.WriteAllText(DataFileNames.LastDateFile, LastDate.LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
                 } else {
                     // if no reset was missed, wait for the next one.
                     Thread.Sleep(GetTimeDelay(TimeScale.WEEK));
                     // now reset rep
                     UserDataManager.ResetRep();
                     UserDataManager.ResetWeekly();
-                    LastWeeklyReset = DateTime.UtcNow.AddDays(-1).AddSeconds(1).RoundUp(TimeSpan.FromDays(1));
-                    File.WriteAllText(DataFileNames.LastDateFile, LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
+                    LastDate.LastWeeklyReset = DateTime.UtcNow.AddDays(-1).AddSeconds(1).RoundUp(TimeSpan.FromDays(1));
+                    File.WriteAllText(DataFileNames.LastDateFile, LastDate.LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
                 }
 
-                KLog.Debug($"Last Weekly Reset: [{LastWeeklyReset.ToString("F", CultureInfo.InvariantCulture)}]");
+                KLog.Debug($"Last Weekly Reset: [{BotUtils.LastDate.LastWeeklyReset.ToString("F", CultureInfo.InvariantCulture)}]");
 
                 Thread.Sleep(5000);  // SAFETY CLOCK, If the loop goes haywire it's not going to overload the bot.
             }
@@ -344,7 +344,7 @@ namespace Kamtro_Bot
             // Find mentions
             if (message.MentionedUsers.Count > 0) {
                 foreach (SocketUser user in message.MentionedUsers.ToList()) {
-                    users.Add(BotUtils.GetGUser(user.Id));
+                    users.Add(GetGUser(user.Id));
                 }
 
                 return users;

@@ -178,11 +178,13 @@ namespace Kamtro_Bot
 
             AchievementManager.LoadNodeMap();
 
-            long date;
+            LastDateNode dates = JsonConvert.DeserializeObject<LastDateNode>(FileManager.ReadFullFile(DataFileNames.LastDateFile));
 
-            if (long.TryParse(FileManager.ReadFullFile(DataFileNames.LastDateFile), out date)) {
-                BotUtils.LastWeeklyReset = new DateTime(date);
+            if(dates == null) {
+                dates = new LastDateNode(DateTime.UtcNow.LastSunday(), DateTime.UtcNow);
             }
+
+            BotUtils.LastDate = dates;
         }
 
         private static void SetupGeneral() {

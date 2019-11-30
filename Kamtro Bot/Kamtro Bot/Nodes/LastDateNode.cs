@@ -10,8 +10,13 @@ namespace Kamtro_Bot.Nodes
 {
     public class LastDateNode
     {
-        public string LastWeeklyReset = "";
-        public string LastDailyReset = "";
+        public DateTime LastWeeklyReset;
+        public DateTime LastDailyReset;
+
+        public LastDateNode(DateTime lwr, DateTime ldr) {
+            LastWeeklyReset = lwr;
+            LastDailyReset = ldr;
+        }
 
         public void Save() {
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
