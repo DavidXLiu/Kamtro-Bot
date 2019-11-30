@@ -22,15 +22,14 @@ namespace Kamtro_Bot.Modules
         [Command("rep")]
         [Alias("giverep")]
         public async Task RepUserAsync([Remainder] string username = "") {
-            TimeSpan ts = new TimeSpan(7, 0, 0, 0);
-            ts -= DateTime.Now - DateTime.Now.LastSunday();
+            TimeSpan ts = BotUtils.GetTimeDelay(BotUtils.TimeScale.WEEK);
 
             if (!UserDataManager.CanAddRep(BotUtils.GetGUser(Context))) {
                 await ReplyAsync(BotUtils.KamtroText($"You have no more reputation points left to give! Resets in {ts.Days} day{((ts.Days == 1) ? "" : "s")}, {ts.Hours} hour{((ts.Hours == 1) ? "" : "s")}, {ts.Minutes} minute{((ts.Minutes == 1) ? "" : "s")}, and {ts.Seconds} second{((ts.Seconds == 1) ? "" : "s")}"));
                 return;
             }
 
-            if (username == "") {
+            if (string.IsNullOrEmpty(username)) {
                 int rep = UserDataManager.GetUserData(BotUtils.GetGUser(Context)).ReputationToGive;
                 await ReplyAsync(BotUtils.KamtroText($"You have {rep} reputation point{(rep == 1 ? "" : "s")} left to give. Resets in {ts.Days} day{((ts.Days == 1) ? "" : "s")}, {ts.Hours} hour{((ts.Hours == 1) ? "" : "s")}, {ts.Minutes} minute{((ts.Minutes == 1) ? "" : "s")}, and {ts.Seconds} second{((ts.Seconds == 1) ? "" : "s")}"));
                 return;

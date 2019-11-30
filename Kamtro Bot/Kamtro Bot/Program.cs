@@ -42,6 +42,7 @@ namespace Kamtro_Bot
         public static Thread GarbageCollection;
         public static Thread DateCheck;
         public static Thread AutobanReset;
+        public static Thread DailyReset;
 
         public static DiscordSocketClient Client;
         private DiscordSocketConfig config;
@@ -71,6 +72,7 @@ namespace Kamtro_Bot
             GarbageCollection = new Thread(new ThreadStart(BotUtils.GarbageCollection));
             DateCheck = new Thread(new ThreadStart(BotUtils.WeeklyReset));
             AutobanReset = new Thread(new ThreadStart(GeneralHandler.ResetThread));
+            DailyReset = new Thread(new ThreadStart(BotUtils.DailyReset));
 
             SetupFiles();  // This is to keep the Main method more readable
             LoadFiles();
@@ -99,10 +101,12 @@ namespace Kamtro_Bot
 
             BotUtils.SaveReady = true; // Tell the class that the autosave loop should start
             BotUtils.GCReady = true;
+            
             Autosave.Start();  // Start the autosave loop
             GarbageCollection.Start();
             DateCheck.Start();
             AutobanReset.Start();
+            DailyReset.Start();
 
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();

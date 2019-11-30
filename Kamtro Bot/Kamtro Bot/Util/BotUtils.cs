@@ -281,18 +281,17 @@ namespace Kamtro_Bot
             while(true) {
                 if (DateTime.UtcNow.RoundUp(TimeSpan.FromHours(1)) - LastDate.LastDailyReset.RoundUp(TimeSpan.FromDays(1)) >= new TimeSpan(1, 0, 0, 0)) {
                     // reset things
-                    UserDataManager.ResetWeekly();
-                    UserDataManager.ResetRep();
+                    UserDataManager.ResetKamtrokenEarns();
 
                     // set the new time
                     LastDate.LastDailyReset = DateTime.UtcNow;
-
                     LastDate.Save();
                 } else {
                     // if no reset was missed, wait for the next one.
                     Thread.Sleep(GetTimeDelay(TimeScale.DAY));
                     // now reset rep
-                    // RESET KANTROKEN EARNED AND PROGRESS
+                    UserDataManager.ResetKamtrokenEarns();
+
                     LastDate.LastDailyReset = DateTime.UtcNow;
                     LastDate.Save();
                 }
@@ -312,31 +311,31 @@ namespace Kamtro_Bot
 
             switch(scale) {
                 case TimeScale.SECOND:
-                    next.RoundUp(TimeSpan.FromSeconds(1));
+                    next = next.RoundUp(TimeSpan.FromSeconds(1));
                     break;
 
                 case TimeScale.MINUTE:
-                    next.RoundUp(TimeSpan.FromMinutes(1));
+                    next = next.RoundUp(TimeSpan.FromMinutes(1));
                     break;
 
                 case TimeScale.HOUR:
-                    next.RoundUp(TimeSpan.FromHours(1));
+                    next = next.RoundUp(TimeSpan.FromHours(1));
                     break;
 
                 case TimeScale.DAY:
-                    next.RoundUp(TimeSpan.FromDays(1));
+                    next = next.RoundUp(TimeSpan.FromDays(1));
                     break;
 
                 case TimeScale.WEEK:
-                    next.RoundUp(TimeSpan.FromDays(7));
+                    next = next.RoundUp(TimeSpan.FromDays(7)).Subtract(TimeSpan.FromDays(1));
                     break;
 
                 case TimeScale.MONTH:
-                    next.RoundUp(TimeSpan.FromDays(30));
+                    next = next.RoundUp(TimeSpan.FromDays(30));
                     break;
 
                 case TimeScale.YEAR:
-                    next.RoundUp(TimeSpan.FromDays(365));
+                    next = next.RoundUp(TimeSpan.FromDays(365));
                     break;
             }
 
@@ -529,11 +528,7 @@ namespace Kamtro_Bot
     {
         // DateTime
         public static DateTime LastSunday(this DateTime dt) {
-
-
             int diff = dt.DayOfWeek - DayOfWeek.Sunday;
-
-
             return dt.AddDays(-1 * diff).Date;
         }
 
@@ -566,7 +561,7 @@ namespace Kamtro_Bot
         /// <param name="d">The TimeSpan to round to</param>
         /// <returns>The rounded DateTime</returns>
         public static DateTime RoundUp(this DateTime dt, TimeSpan d) {
-            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind);
+            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind); ;
         }
     }
     #endregion
