@@ -260,7 +260,7 @@ namespace Kamtro_Bot
                     // set the new time
                     LastDate.LastWeeklyReset = DateTime.UtcNow.LastSunday();
 
-                    File.WriteAllText(DataFileNames.LastDateFile, LastDate.LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
+                    LastDate.Save();
                 } else {
                     // if no reset was missed, wait for the next one.
                     Thread.Sleep(GetTimeDelay(TimeScale.WEEK));
@@ -268,10 +268,10 @@ namespace Kamtro_Bot
                     UserDataManager.ResetRep();
                     UserDataManager.ResetWeekly();
                     LastDate.LastWeeklyReset = DateTime.UtcNow.AddDays(-1).AddSeconds(1).RoundUp(TimeSpan.FromDays(1));
-                    File.WriteAllText(DataFileNames.LastDateFile, LastDate.LastWeeklyReset.Ticks.ToString(CultureInfo.InvariantCulture));
+                    LastDate.Save();
                 }
 
-                KLog.Debug($"Last Weekly Reset: [{BotUtils.LastDate.LastWeeklyReset.ToString("F", CultureInfo.InvariantCulture)}]");
+                KLog.Debug($"Last Weekly Reset: [{LastDate.LastWeeklyReset.ToString("F", CultureInfo.InvariantCulture)}]");
 
                 Thread.Sleep(5000);  // SAFETY CLOCK, If the loop goes haywire it's not going to overload the bot.
             }
@@ -279,7 +279,23 @@ namespace Kamtro_Bot
         
         public static void DailyReset() {
             while(true) {
+                if (DateTime.UtcNow.RoundUp(TimeSpan.FromHours(1)) - LastDate.LastDailyReset.RoundUp(TimeSpan.FromDays(1)) >= new TimeSpan(1, 0, 0, 0)) {
+                    // reset things
+                    UserDataManager.ResetWeekly();
+                    UserDataManager.ResetRep();
 
+                    // set the new time
+                    LastDate.LastDailyReset = DateTime.UtcNow;
+
+                    LastDate.Save();
+                } else {
+                    // if no reset was missed, wait for the next one.
+                    Thread.Sleep(GetTimeDelay(TimeScale.DAY));
+                    // now reset rep
+                    // RESET KANTROKEN EARNED AND PROGRESS
+                    LastDate.LastDailyReset = DateTime.UtcNow;
+                    LastDate.Save();
+                }
 
                 Thread.Sleep(5000); // SAFETY THROTTLE
             }
