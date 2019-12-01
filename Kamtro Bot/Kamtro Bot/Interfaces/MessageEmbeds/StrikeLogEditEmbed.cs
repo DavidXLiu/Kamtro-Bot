@@ -30,8 +30,6 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         private string Strike1Reason11;
         private string Strike2Reason12;
         private string BanReason13;
-        
-
 
         #region Input Fields
         [InputField("Enter Server User", 2, 1)]
@@ -147,12 +145,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             switch(action.Emote.ToString()) {
                 case ReactionHandler.DOWN_STR:
                     await MoveCursorUp();
-                    await OpCursorUp();
+                    await OpCursorDown();
                     break;
 
                 case ReactionHandler.UP_STR:
                     await MoveCursorDown();
-                    await OpCursorDown();
+                    await OpCursorUp();
                     break;
 
                 default:
@@ -265,11 +263,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 if (users.Count < 1) {
                     // fail check
                     if (PageNum == 2) {
-                        ServerUsername = $"Unable to find user: {ServerUsername}";
+                        InputFields[PageNum][CursorPos].SetValue($"Unable to find user: {ServerUsername}");
                     } else if (PageNum == 4) {
-                        ServerUsername4 = $"Unable to find user: {ServerUsername4}";
+                        InputFields[PageNum][CursorPos].SetValue($"Unable to find user: {ServerUsername4}");
                     } else if (PageNum == 9) {
-                        ServerUsername9 = $"Unable to find user: {ServerUsername9}";
+                        InputFields[PageNum][CursorPos].SetValue($"Unable to find user: {ServerUsername9}");
                     }
 
                     Autofill = null;
@@ -328,33 +326,33 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         bool strike2Added = false;
 
                         if(!string.IsNullOrWhiteSpace(Strike1Reason) && Strike1Reason != DefaultText) {
-                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(Context.User));
+                            AdminDataManager.AddStrike(id, new StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(BotUtils.GetGUser(id)), AdminDataManager.GetStrikes(id) >= 1);
                             strike1Added = true;
                         }
 
                         if(!string.IsNullOrWhiteSpace(Strike2Reason) && Strike2Reason != DefaultText) {
                             if(!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
                                 // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
-                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(Context.User));
+                                AdminDataManager.AddStrike(id, new StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(BotUtils.GetGUser(id)), AdminDataManager.GetStrikes(id) >= 1);
                                 strike1Added = true;
                             }
 
                             // Add strike 2
-                            AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason), BotUtils.GetFullUsername(Context.User));
+                            AdminDataManager.AddStrike(id, new StrikeDataNode(Context.User, Strike2Reason), BotUtils.GetFullUsername(BotUtils.GetGUser(id)), AdminDataManager.GetStrikes(id) >= 2);
                             strike2Added = true;
                         }
 
                         if(!string.IsNullOrWhiteSpace(BanReason) && BanReason != DefaultText) {
                             if (!strike1Added && AdminDataManager.GetStrikes(id) == 0) {
                                 // Add strike 1 if it wasn't added a few lines ago, and it isn't already there
-                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(Context.User));
+                                AdminDataManager.AddStrike(id, new StrikeDataNode(Context.User, Strike1Reason), BotUtils.GetFullUsername(BotUtils.GetGUser(id)), AdminDataManager.GetStrikes(id) >= 1);
                             }
 
                             if (!strike2Added && AdminDataManager.GetStrikes(id) == 1) {
-                                AdminDataManager.AddStrike(id, new Nodes.StrikeDataNode(Context.User, Strike2Reason), BotUtils.GetFullUsername(Context.User));
+                                AdminDataManager.AddStrike(id, new StrikeDataNode(Context.User, Strike2Reason), BotUtils.GetFullUsername(BotUtils.GetGUser(id)), AdminDataManager.GetStrikes(id) >= 2);
                             }
 
-                            AdminDataManager.AddBan(id, new Nodes.BanDataNode(Context.User, BanReason), BotUtils.GetFullUsername(Context.User));
+                            AdminDataManager.AddBan(id, new BanDataNode(Context.User, BanReason), BotUtils.GetFullUsername(BotUtils.GetGUser(id)));
                         }
 
                         PageNum = 14;
@@ -461,16 +459,16 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             }
         }
         
-        private async Task OpCursorUp() {
+        private async Task OpCursorDown() {
             OpCursor++;
-            if (PageNum-1 >= Options.Count() || Options[PageNum - 1].Count() - 1 < OpCursor) {
+            if (PageNum-1 >= Options.Count || Options[PageNum - 1].Count - 1 < OpCursor) {
                 OpCursor = 0;
             }
 
             await UpdateEmbed();
         }
 
-        private async Task OpCursorDown() {
+        private async Task OpCursorUp() {
             OpCursor--;
             if (PageNum-1 >= Options.Count() || OpCursor < 0) {
                 OpCursor = Options[PageNum - 1].Count() - 1;

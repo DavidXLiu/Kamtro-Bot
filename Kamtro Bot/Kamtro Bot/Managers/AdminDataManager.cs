@@ -11,12 +11,10 @@ using OfficeOpenXml;
 
 namespace Kamtro_Bot.Managers
 {
-    public class AdminDataManager {
+    public static class AdminDataManager {
         public const string StrikeLogPath = @"Admin\strikelog.xlsx";
         public const string SettingsJsonPath = @"Config\settings.json";
         private const string StrikeLogPage = "Strike Log";
-
-        private const string IDColumn = "A";
 
         private static ExcelPackage StrikeLog;
 
@@ -192,53 +190,57 @@ namespace Kamtro_Bot.Managers
             SaveExcel();
         }
 
-        public static int AddStrike(ulong targetId, StrikeDataNode strike, string username = "") {
-            int pos = 2;
+        public static int AddStrike(ulong targetId, StrikeDataNode strike, string username = "", bool mod = false) {
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
-            while (cells["A" + pos].Value != null) {
-                ExcelRange cell = cells["A" + pos];
-                object test = cell.Value;
-                if (test == null) break;
+            int row = GetEntryPos(targetId);
+            
+            if (!IsRowNew(row)) {
+                // Add the srike to this row.
 
-                if (Convert.ToUInt64(test.ToString().Substring(1)) == targetId) {
-                    // Add the srike to this row.
+                if(!string.IsNullOrEmpty(username)) cells["B" + row].Value = username;
 
-                    if(username != "") cells["B" + pos].Value = username;
+                // now for the strike address. This will be based off of the number of strikes.
+                // This is in column C
+                int strikes = cells["C" + row].GetValue<int>();
 
-                    // now for the strike address. This will be based off of the number of strikes.
-                    // This is in column C
-                    int strikes = cells["C" + pos].GetValue<int>();
+                string rr;
 
+                if (!mod) {
                     if (strikes == 2) return 4;  // 4 is the signal
 
                     // now to get the column. Fun ascii math.
                     // 68 = ASCII for capital D. 
-                    string rr = char.ConvertFromUtf32(68 + strikes * 3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
+                    rr = char.ConvertFromUtf32(68 + strikes * 3) + row + ":" + char.ConvertFromUtf32(70 + strikes * 3) + row;
 
                     cells[rr].LoadFromArrays(strike.GetStrikeForExcel());
 
-                    cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) + 1).ToString();
-                    StrikeLog.Save();
+                    cells[$"C:{row}"].Value = (Convert.ToInt32(cells[$"C{row}"].Text) + 1).ToString();
+                } else {
+                    // This does nothing really. Probably for the best.
+                    strikes--;
 
-                    KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {(username == "" ? targetId.ToString() : username)} in cell range {rr}");
-
-                    return Convert.ToInt32(cells[$"C{pos}"].Text);
+                    rr = char.ConvertFromUtf32(68 + strikes * 3) + row + ":" + char.ConvertFromUtf32(70 + strikes * 3) + row;
+                    cells[rr].LoadFromArrays(strike.GetStrikeForExcel());
                 }
 
-                pos++;
+                StrikeLog.Save();
+
+                KLog.Info($"Added strike {cells[$"C:{row}"].Value.ToString()} for {(string.IsNullOrEmpty(username) ? targetId.ToString() : username)} in cell range {rr}");
+
+                return Convert.ToInt32(cells[$"C{row}"].Text);
             }
 
             // The user doesn't have an entry. So make one.
-            GenUserStrike(pos, targetId, username);
+            GenUserStrike(row, targetId, username);
 
             // Now add the strike
-            // 68 = ASCII for capital D. 
-            string range = char.ConvertFromUtf32(68 + GetStrikes(targetId) * 3) + pos + ":" + char.ConvertFromUtf32(70 + GetStrikes(targetId) * 3) + pos;
+            // 68 = ASCII for   capital D. 
+            string range = char.ConvertFromUtf32(68 + GetStrikes(targetId) * 3) + row + ":" + char.ConvertFromUtf32(70 + GetStrikes(targetId) * 3) + row;
             cells[range].LoadFromArrays(strike.GetStrikeForExcel());
             // Set auto fit
             cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             StrikeLog.Save();
-            KLog.Info($"Added strike for {(username == "" ? targetId.ToString() : username)} in cell range D{pos}:F{pos}");
+            KLog.Info($"Added strike for {(string.IsNullOrEmpty(username) ? targetId.ToString() : username)} in cell range D{row}:F{row}");
 
             return 1;
         }
@@ -258,7 +260,7 @@ namespace Kamtro_Bot.Managers
         }
 
         private static void GenUserStrike(int pos, ulong target, string username = "", int strikes = 1) {
-            KLog.Info($"User {(username == "" ? target.ToString() : username)} doesn't have a strike entry, creating one...");
+            KLog.Info($"User {(string.IsNullOrEmpty(username) ? target.ToString() : username)} doesn't have a strike entry, creating one...");
             List<string[]> entry = new List<string[]>();
 
             entry.Add(new string[] { target.ToString(), username, strikes.ToString() });
@@ -324,7 +326,7 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while (cells["A" + pos].Value != null) {
-                target = Convert.ToUInt64(cells["A" + pos].Value.ToString().Substring(1));
+                target = Convert.ToUInt64(cells["A" + pos].Value.ToString());
                 if (target == id) {
                     int strikes = Convert.ToInt32(cells["C" + pos].Value);
                     return strikes;
@@ -339,12 +341,18 @@ namespace Kamtro_Bot.Managers
             return 0;
         }
 
+        /// <summary>
+        /// Method for getting the correct position for the user's entry. 
+        /// First available one if the user has no entry already.
+        /// </summary>
+        /// <param name="id">The ID of the user</param>
+        /// <returns>The row number for the entry</returns>
         public static int GetEntryPos(ulong id) {
             int i = 2;
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while(cells["A"+i].Value != null) {
-                if(Convert.ToUInt64(cells[$"A{i}"].Value.ToString().Substring(1)) == id) {
+                if(Convert.ToUInt64(cells[$"A{i}"].Value.ToString()) == id) {
                     return i;
                 }
 
@@ -362,9 +370,25 @@ namespace Kamtro_Bot.Managers
         /// <returns></returns>
         public static int GetEntryCount()
         {
-            int rows = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells.Rows;
+            ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            int rows = 0;
+            object r = cells[$"A2"].Value;
 
-            return rows - 2;
+            while(r != null) {
+                rows++;
+                r = cells[$"A{rows+2}"].Value;
+            }
+
+            return rows;
+        }
+
+        /// <summary>
+        /// Mehtod used to check if a row is newly added (as in, is not pre-existing
+        /// </summary>
+        /// <param name="row">The row number</param>
+        /// <returns>True if the row is new, false otherwise.</returns>
+        public static bool IsRowNew(int row) {
+            return row == GetEntryCount() + 2;
         }
 
         /// <summary>
