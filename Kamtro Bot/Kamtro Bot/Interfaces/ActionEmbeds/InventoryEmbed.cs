@@ -203,7 +203,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if (Page == HOME_PAGE) {
                 Cursor--;
 
-                if (Cursor < 0) Cursor = Inventory.Items.Count() - 1;
+                if (Cursor < 0) Cursor = Inventory.Items.Count - 1;
 
                 List<uint> Items = Inventory.Items.Keys.ToList();
                 Items.Sort();

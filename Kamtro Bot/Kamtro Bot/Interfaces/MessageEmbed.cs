@@ -166,7 +166,7 @@ namespace Kamtro_Bot.Interfaces
                 AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN);
             }
 
-            PageCount = InputFields.Values.Count(); // set the number of pages
+            PageCount = InputFields.Values.Count; // set the number of pages
 
             // TODO: Add left and right buttons
         }

@@ -33,7 +33,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             Titles = AchievementManager.GetTitles();
             User = BotUtils.GetGUser(ctx);
 
-            AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.SELECT, ReactionHandler.BACK);
+            AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.BACK);
         }
 
         public override Embed GetEmbed() {

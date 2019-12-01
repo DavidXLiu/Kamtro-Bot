@@ -23,7 +23,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private bool Mod;
 
         public HelpEmbed(SocketCommandContext ctx, bool mod = false, bool admin = false) {
-            AddMenuOptions(ReactionHandler.SELECT, new MenuOptionNode(GoBack, "Go back"), ReactionHandler.UP, ReactionHandler.DOWN);
+            AddMenuOptions(ReactionHandler.SELECT,  ReactionHandler.UP, ReactionHandler.DOWN, new MenuOptionNode(GoBack, "Go back"));
             SetCtx(ctx);
             Path = @"Help";
             Cursor = 0;

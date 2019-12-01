@@ -32,7 +32,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
             Settings = UserDataManager.GetUserSettings(BotUtils.GetGUser(ctx));
 
-            AddMenuOptions(ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.SELECT, ReactionHandler.DONE);
+            AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.UP, ReactionHandler.DOWN, ReactionHandler.DONE);
         }
 
         public override Embed GetEmbed() {
