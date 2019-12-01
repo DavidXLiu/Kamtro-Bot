@@ -186,6 +186,7 @@ namespace Kamtro_Bot
 
             if(dates == null) {
                 dates = new LastDateNode(DateTime.UtcNow.LastSunday(), DateTime.UtcNow);
+                dates.Save();
             }
 
             BotUtils.LastDate = dates;

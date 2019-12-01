@@ -289,6 +289,7 @@ namespace Kamtro_Bot
                 } else {
                     // if no reset was missed, wait for the next one.
                     Thread.Sleep(GetTimeDelay(TimeScale.DAY));
+
                     // now reset rep
                     UserDataManager.ResetKamtrokenEarns();
 
@@ -307,35 +308,35 @@ namespace Kamtro_Bot
         /// <param name="scale">The scale of the time</param>
         /// <returns>A TimeSpan object representing how long it will be until the next time specified by the scale field</returns>
         public static TimeSpan GetTimeDelay(TimeScale scale) {
-            DateTime next = DateTime.UtcNow;
+            DateTime next = new DateTime();
 
             switch(scale) {
                 case TimeScale.SECOND:
-                    next = next.RoundUp(TimeSpan.FromSeconds(1));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromSeconds(1));
                     break;
 
                 case TimeScale.MINUTE:
-                    next = next.RoundUp(TimeSpan.FromMinutes(1));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromMinutes(1));
                     break;
 
                 case TimeScale.HOUR:
-                    next = next.RoundUp(TimeSpan.FromHours(1));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromHours(1));
                     break;
 
                 case TimeScale.DAY:
-                    next = next.RoundUp(TimeSpan.FromDays(1));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromDays(1));
                     break;
 
                 case TimeScale.WEEK:
-                    next = next.RoundUp(TimeSpan.FromDays(7)).Subtract(TimeSpan.FromDays(1));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromDays(7));
                     break;
 
                 case TimeScale.MONTH:
-                    next = next.RoundUp(TimeSpan.FromDays(30));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromDays(30));
                     break;
 
                 case TimeScale.YEAR:
-                    next = next.RoundUp(TimeSpan.FromDays(365));
+                    next = DateTime.UtcNow.RoundUp(TimeSpan.FromDays(365));
                     break;
             }
 
@@ -561,10 +562,13 @@ namespace Kamtro_Bot
         /// <param name="d">The TimeSpan to round to</param>
         /// <returns>The rounded DateTime</returns>
         public static DateTime RoundUp(this DateTime dt, TimeSpan d) {
-            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind); ;
+            if(d.Days == 7) {
+                return dt.LastSunday().AddDays(7);
+            }
+
+            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind);
         }
     }
     #endregion
 }
-
 
