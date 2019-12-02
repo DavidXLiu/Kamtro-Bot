@@ -43,7 +43,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     break;
 
                 case ReactionHandler.SELECT_STR:
-                    if (HelpManager.GetDirList(Path, Admin, Mod).Count() < 1) return;
+                    if (HelpManager.GetDirList(Path, Admin, Mod).Length < 1) return;
                     await Select(HelpManager.GetDirList(Path, Admin, Mod)[Cursor]);
                     break;
 

@@ -59,7 +59,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly Emoji SELECT_EM = new Emoji(SELECT_STR);
         public static readonly Emoji BACK_EM = new Emoji(BACK_STR);
 
-        public static readonly MenuOptionNode DONE = new MenuOptionNode(DONE_STR, "Done");  // This is also for convinience
+        public static readonly MenuOptionNode DONE = new MenuOptionNode(DONE_STR, "Close Embed");  // This is also for convinience
         public static readonly MenuOptionNode CHECK = new MenuOptionNode(CHECK_STR, "Confirm");
         public static readonly MenuOptionNode DECLINE = new MenuOptionNode(DECLINE_STR, "Cancel");
         public static readonly MenuOptionNode UP = new MenuOptionNode(UP_STR, "Cursor Up");

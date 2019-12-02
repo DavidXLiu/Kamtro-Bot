@@ -43,8 +43,8 @@ namespace Kamtro_Bot.Interfaces
         /// This method performs the interface's action for the option chosen by the user.
         /// </summary>
         /// -C
-        /// <param name="option"></param>
-        public abstract Task PerformAction(SocketReaction option);
+        /// <param name="button"></param>
+        public abstract Task PerformAction(SocketReaction button);
 
         /// <summary>
         /// Adds the menu options at the bottom of the embed.
@@ -56,7 +56,9 @@ namespace Kamtro_Bot.Interfaces
             string footerText = "";
             MenuOptionNode option;
 
-            for (int i = 0; i < MenuOptions.Count(); i++) {
+            if (!MenuOptions.Contains(ReactionHandler.DONE)) MenuOptions.Add(ReactionHandler.DONE);
+
+            for (int i = 0; i < MenuOptions.Count; i++) {
                 option = MenuOptions[i];
                 footerText += $"{option.Icon} {option.Description} {((i != MenuOptions.Count - 1) ? "| " : "")}";  // There are 3 variables in this line, 
                                                                                                                    // The first two are self-explanitory, but the last one is

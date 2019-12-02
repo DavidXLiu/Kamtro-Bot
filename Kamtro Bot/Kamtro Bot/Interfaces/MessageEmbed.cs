@@ -167,8 +167,6 @@ namespace Kamtro_Bot.Interfaces
             }
 
             PageCount = InputFields.Values.Count; // set the number of pages
-
-            // TODO: Add left and right buttons
         }
 
         /// <summary>
