@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Util.Exceptions;
 
 namespace Kamtro_Bot.Interfaces
 {

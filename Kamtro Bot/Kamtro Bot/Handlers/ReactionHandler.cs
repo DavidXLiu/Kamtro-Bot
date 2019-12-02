@@ -50,6 +50,7 @@ namespace Kamtro_Bot.Handlers
         public const string DOWN_STR = "\u2b07";
         public const string SELECT_STR = "\U0001f537";
         public const string BACK_STR = "⏫";
+        public const string REFRESH_STR = "♻️";
 
         public static readonly Emoji DONE_EM = new Emoji(DONE_STR);  // For utility
         public static readonly Emoji CHECK_EM = new Emoji(CHECK_STR);
@@ -58,6 +59,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly Emoji DOWN_EM = new Emoji(DOWN_STR);
         public static readonly Emoji SELECT_EM = new Emoji(SELECT_STR);
         public static readonly Emoji BACK_EM = new Emoji(BACK_STR);
+        public static readonly Emoji REFRESH_EM = new Emoji(REFRESH_STR);
 
         public static readonly MenuOptionNode DONE = new MenuOptionNode(DONE_STR, "Close Embed");  // This is also for convinience
         public static readonly MenuOptionNode CHECK = new MenuOptionNode(CHECK_STR, "Confirm");
@@ -66,6 +68,7 @@ namespace Kamtro_Bot.Handlers
         public static readonly MenuOptionNode DOWN = new MenuOptionNode(DOWN_STR, "Cursor Down");
         public static readonly MenuOptionNode SELECT = new MenuOptionNode(SELECT_STR, "Select");
         public static readonly MenuOptionNode BACK = new MenuOptionNode(BACK_STR, "Back");
+        public static readonly MenuOptionNode REFRESH = new MenuOptionNode(REFRESH_STR, "Refresh Embed");
 
         public static Dictionary<string, ulong> RoleMap = null;
 
@@ -118,6 +121,11 @@ namespace Kamtro_Bot.Handlers
                         await CloseActionEmbedAsync(action.EventAction);
                         awaitingActions.Remove(action);
                         return;  // Also exit the method
+                    }
+
+                    if(reaction.Emote.ToString() == REFRESH_STR) {
+                        await action.EventAction.UpdateEmbed();
+                        return;
                     }
 
                     await action.EventAction.PerformAction(reaction);  // Do the action with the reaction specified
