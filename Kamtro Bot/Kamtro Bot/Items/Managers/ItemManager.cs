@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Kamtro_Bot.Items
 {
-    public class ItemManager
+    public static class ItemManager
     {
-        public const string DefaultItemImageUrl = "https://cdn.discordapp.com/attachments/631239436365070372/631239508435795998/New_Piskel.png";
+        public const string DefaultItemImageUrl = "https://media.discordapp.net/attachments/652718315042766879/652718513466769447/UnknownItemLarge.png";
 
         public static Dictionary<uint, Item> Items = null;
         
