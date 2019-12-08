@@ -64,7 +64,7 @@ namespace Kamtro_Bot.Items
             }
 
             BotUtils.WriteToJson(data, DataFileNames.ItemMapFile);
-        }
+        }   
 
         public static bool IsBuyable(uint id) {
             return Items[id].Buyable;

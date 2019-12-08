@@ -162,7 +162,27 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText($"Conveted {dates} dates for {users} users."));
         }
 
-        private DateTime ConvertDT(string _d, int i) {
+        [Command("debuglog")]
+        [Alias("dlog", "printdebug")]
+        public async Task DebugLogAsync([Remainder] string args = "") {
+            int c = 40;
+
+            if(!string.IsNullOrEmpty(args)) {
+                if(!int.TryParse(args, out c)) {
+                    await ReplyAsync(BotUtils.KamtroText("Please enter a valid number less than or eual to 40, or leave blank for 40."));
+                }
+            }
+
+            string s = "";
+
+            for(int i = 0; i < Math.Min(c, KLog.log.Count); i++) {
+                s += $"```\n{KLog.log[i]}\n```";
+            }
+
+            await ReplyAsync(s);
+        }
+
+        private DateTime ConvertDT(string _d) {
             string[] dt = _d.Split(' ');
 
             string[] date = dt[0].Split('/');
