@@ -13,7 +13,7 @@ namespace Kamtro_Bot
         /// If you add a folder name to this list then the bot will create the dir on startup
         /// Make sure any necessary folders are in this list.
         /// </summary>
-        public static readonly string[] Folders = {"Config", "User Data", "Admin", "Help"};
+        public static readonly string[] Folders = {"Config", "User Data", "Admin", "Help", "Change Log"};
 
         // Config Files  -C
         public const string GeneralConfigFile = @"Config\settings.json";
@@ -28,6 +28,9 @@ namespace Kamtro_Bot
 
         // Ban List
         public const string AutoBanFile = @"Admin\AutoBans.json";
+
+        // Change Log
+        public const string ChangeLogOrderFile = @"Change Log\ChangeLogOrder.txt";
 
         public const string LastDateFile = @"User Data\LastResets.json";
     }

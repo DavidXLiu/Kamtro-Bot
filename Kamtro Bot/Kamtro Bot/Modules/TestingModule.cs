@@ -103,6 +103,12 @@ namespace Kamtro_Bot.Modules
             await ce.Display(Context.Channel);
         }
         
+        [Command("changelog")]
+        [Alias("cl")]
+        public async Task ChangeLogAsync([Remainder] string args = "") {
+            
+        }
+
         [Command("experimental")]
         [Alias("exp")]
         public async Task Experimental([Remainder] string args = "") {
