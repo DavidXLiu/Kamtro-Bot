@@ -42,10 +42,12 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
             if(!VersionFileExists()) {
                 entry = "No File Found. Please ping Arcy or Carbon";
             } else {
-                entry = string.IsNullOrWhiteSpace(GetLogEntry()) ? BotUtils.ZeroSpace : GetLogEntry();
+                entry = string.IsNullOrWhiteSpace(GetLogEntry()) ? "[Empty]" : GetLogEntry();
             }
 
             eb.AddField(Version, entry);
+
+            AddMenu(eb);
 
             return eb.Build();
         }
