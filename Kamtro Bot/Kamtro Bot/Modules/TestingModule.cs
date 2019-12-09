@@ -15,6 +15,7 @@ using Kamtro_Bot.Util;
 using Kamtro_Bot.Interfaces.BasicEmbeds;
 
 using OfficeOpenXml;
+using Kamtro_Bot.Interfaces.ActionEmbeds;
 
 namespace Kamtro_Bot.Modules
 {
@@ -106,7 +107,8 @@ namespace Kamtro_Bot.Modules
         [Command("changelog")]
         [Alias("cl")]
         public async Task ChangeLogAsync([Remainder] string args = "") {
-            
+            ChangeLogEmbed cle = new ChangeLogEmbed(Context);
+            await cle.Display();
         }
 
         [Command("experimental")]
@@ -188,7 +190,9 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(s);
         }
 
-        private DateTime ConvertDT(string _d) {
+        private DateTime ConvertDT(string _d, int i) {
+            KLog.Debug($"{i}");  // LOOK AT THIS, i Might be useless
+
             string[] dt = _d.Split(' ');
 
             string[] date = dt[0].Split('/');
