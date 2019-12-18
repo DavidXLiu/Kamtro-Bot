@@ -106,8 +106,8 @@ namespace Kamtro_Bot.Modules
         
         [Command("changelog")]
         [Alias("cl")]
-        public async Task ChangeLogAsync([Remainder] string args = "") {
-            ChangeLogEmbed cle = new ChangeLogEmbed(Context);
+        public async Task ChangeLogAsync([Remainder] string args = "DEFAULT") {
+            ChangeLogEmbed cle = new ChangeLogEmbed(Context, args);
             await cle.Display();
         }
 
