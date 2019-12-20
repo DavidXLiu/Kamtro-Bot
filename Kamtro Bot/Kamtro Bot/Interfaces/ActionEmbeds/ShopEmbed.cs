@@ -136,6 +136,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
                             if(bought) {
                                 PurchaseThank = true;
+                                ItemCount = 0;
                                 await UpdateEmbed();
                             } else {
                                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Something went wrong with the purchase, you have been refunded."));
