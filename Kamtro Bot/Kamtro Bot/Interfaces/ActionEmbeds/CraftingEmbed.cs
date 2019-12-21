@@ -20,7 +20,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
 
         private int Page = -1;
         private int Cursor = 0;
-        private int ItemCount = 0;
+        private int ItemCount = 1;
         private uint? SelectedItem = null;
 
         private bool ConfirmOut = false;  // protect against spam

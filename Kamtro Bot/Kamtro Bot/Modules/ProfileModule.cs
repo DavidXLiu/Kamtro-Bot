@@ -230,7 +230,7 @@ namespace Kamtro_Bot.Modules
         public async Task RewardUserAsync([Remainder] string args = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.ADMIN)) return;
 
-            if(args == "") {
+            if(string.IsNullOrWhiteSpace(args)) {
                 await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
                 return;
             }

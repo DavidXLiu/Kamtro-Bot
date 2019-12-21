@@ -146,6 +146,7 @@ namespace Kamtro_Bot.Interfaces
                     // Add the field.
                     MessageFieldNode node = new MessageFieldNode(info.Name, info.Page, info.Position, info.Value, info.Type); // create the node
                     node.ClassPtr = this; // give it a pointer to this class, so it can modify the variable it's attached to
+                    node.SetValue(info.Value);
                     InputFields[info.Page][info.Position] = node;  // And add the appropriate node to the dict where it belongs
                 }
             }
@@ -249,17 +250,19 @@ namespace Kamtro_Bot.Interfaces
         protected async Task MoveCursorDown(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
-            if (num < 0) await MoveCursorUp(-num); // if num is negative, use the other method with positive num
+            if (num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
-                CursorPos--;
+                CursorPos++;
 
-                if (CursorPos < 1) {
+                if (CursorPos > GetFieldCount()) {
                     // If the cursor goes out of bounds, correct it
-                    CursorPos = GetFieldCount();
+                    CursorPos = 1;
                 }
             }
+
+            await Message.ModifyAsync(_msg => _msg.Embed = GetEmbed());
         }
 
         /// <summary>
@@ -270,15 +273,15 @@ namespace Kamtro_Bot.Interfaces
         protected async Task MoveCursorUp(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
-            if (num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
+            if (num < 0) await MoveCursorUp(-num); // if num is negative, use the other method with positive num
 
             // Move the cursor
             for (int i = 0; i < num; i++) {
-                CursorPos++;
+                CursorPos--;
 
-                if (CursorPos > GetFieldCount()) {
+                if (CursorPos < 1) {
                     // If the cursor goes out of bounds, correct it
-                    CursorPos = 1;
+                    CursorPos = GetFieldCount();
                 }
             }
 

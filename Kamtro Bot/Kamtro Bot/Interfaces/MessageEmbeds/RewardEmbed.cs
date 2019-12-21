@@ -23,18 +23,19 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("Message Text", 1, 2)]
         public string MessageText;
 
-        [InputField("Kamtroken Reward", 1, 3)]
+        [InputField("Kamtroken Reward", 1, 3, Value ="0")]
         public string KamtrokenReward;
 
-        [InputField("Temporary Rep Reward", 1, 4)]
+        [InputField("Temporary Rep Reward", 1, 4, Value = "0")]
         public string TempRepReward;
 
-        [InputField("Permanant Rep Reward", 1, 5)]
+        [InputField("Permanant Rep Reward", 1, 5, Value = "0")]
         public string PermRepReward;
         #endregion
 
         private bool InvalidNumberWarning = false;
         private bool GiftSent = false;
+        private Color EmbedColorObj = BotUtils.Orange;
 
         SocketGuildUser Winner;
 
@@ -80,10 +81,18 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     // Send the gift
                     string wins = "";
                     
-                    if (k > 0) wins += $"{k} Kamtroken{(k == 1 ? "":"s")}, ";
-                    if (t > 0) wins += $"{t} Temporary Reputation Point{(t == 1 ? "" : "s")}";
+                    if (k > 0) wins += $"{k} Kamtroken{(k == 1 ? "":"s")}";
+
+                    if (t > 0) {
+                        if (wins.Length != 0) wins += ", ";
+                        wins += $"{t} Temporary Reputation Point{(t == 1 ? "" : "s")}";
+                    }
+
                     wins.TrimEnd(',', ' ');
-                    if (p > 0) wins += $"\n\nIn addition, the amount of repuation you get per week has been increaced by {k}";
+
+                    if (k == 0 && t == 0) wins = "";
+
+                    if (p > 0) wins += $"\n\nIn addition, the amount of repuation you get per week has been increaced by {p}";
 
                     await BotUtils.DMUserAsync(Winner, new BasicEmbed("Congradulations!", $"You have won {(string.IsNullOrWhiteSpace(wins) ? "my appreciation!":wins)}", "Winnings", ec, "", MessageText).GetEmbed());
                     
@@ -101,11 +110,25 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             }
         }
 
+        public override async Task PerformMessageAction(SocketUserMessage message) {
+            await base.PerformMessageAction(message);
+
+            // Color
+            string c = EmbedColor.Replace("#", "").Replace("0x", "").Replace("x", "");
+            uint cc;
+
+            if (uint.TryParse(c, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out cc)) {
+                Color ec = new Color(cc);
+                EmbedColorObj = ec;
+                await UpdateEmbed();
+            }
+        }
+
         public override Embed GetEmbed() {
             EmbedBuilder eb = new EmbedBuilder();
 
             eb.WithTitle("Award");
-            eb.WithColor(BotUtils.Orange);
+            eb.WithColor(EmbedColorObj);
 
             if (!GiftSent) {
                 eb.AddField("Rewarded User", $"{Winner.Mention}");
