@@ -199,6 +199,7 @@
     <Compile Include="Managers\EventQueueManager.cs" />
     <Compile Include="Managers\HelpManager.cs" />
     <Compile Include="Items\Managers\ShopManager.cs" />
+    <Compile Include="Managers\ReminderManager.cs" />
     <Compile Include="Managers\UserDataManager.cs" />
     <Compile Include="Managers\UserInventoryManager.cs" />
     <Compile Include="Modules\AdminModule.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Nodes\LastDateNode.cs" />
     <Compile Include="Nodes\MenuOptionNode.cs" />
     <Compile Include="Nodes\MessageEventNode.cs" />
+    <Compile Include="Nodes\ReminderNode.cs" />
     <Compile Include="Nodes\RoleInfoNode.cs" />
     <Compile Include="Items\Nodes\ShopNode.cs" />
     <Compile Include="Nodes\StrikeDataNode.cs" />
