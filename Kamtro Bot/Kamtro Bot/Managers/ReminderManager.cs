@@ -13,7 +13,7 @@ namespace Kamtro_Bot.Managers
 
         public static void LoadReminders() {
             string json = FileManager.ReadFullFile(DataFileNames.UserRemindersFile);
-            Reminders = JsonConvert.DeserializeObject<Dictionary<ulong, Dictionary<string, List<ReminderNode>>>>(json);
+            Reminders = JsonConvert.DeserializeObject<Dictionary<ulong, Dictionary<string, List<ReminderNode>>>>(json) ?? new Dictionary<ulong, Dictionary<string, List<ReminderNode>>>();
             KLog.Info("Reminders Loaded");
         }
 
