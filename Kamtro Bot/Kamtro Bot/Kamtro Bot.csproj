@@ -223,6 +223,7 @@
     <Compile Include="Nodes\MenuOptionNode.cs" />
     <Compile Include="Nodes\MessageEventNode.cs" />
     <Compile Include="Nodes\ReminderNode.cs" />
+    <Compile Include="Nodes\ReminderPointer.cs" />
     <Compile Include="Nodes\RoleInfoNode.cs" />
     <Compile Include="Items\Nodes\ShopNode.cs" />
     <Compile Include="Nodes\StrikeDataNode.cs" />
