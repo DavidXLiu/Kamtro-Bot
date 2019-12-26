@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Kamtro_Bot.Interfaces;
 using Kamtro_Bot.Nodes;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -40,6 +41,21 @@ namespace Kamtro_Bot.Managers
 
         public static List<ReminderPointer> GetAllRemindersForUser(SocketGuildUser user) {
             return GetAllRemindersForUser(user.Id);
+        }
+
+        public static void AddReminder(ulong user, string name, DateTime time, string desc) {
+            if (string.IsNullOrWhiteSpace(name)) name = BotUtils.ZeroSpace;
+            if (string.IsNullOrWhiteSpace(desc)) desc = BotUtils.ZeroSpace;
+
+            ReminderNode node = new ReminderNode(name, desc);
+
+            string dtime = time.ToString();
+
+            if (!Reminders.ContainsKey(user)) Reminders.Add(user, new Dictionary<string, List<ReminderNode>>());
+            if (!Reminders[user].ContainsKey(dtime)) Reminders[user].Add(dtime, new List<ReminderNode>());
+            Reminders[user][dtime].Add(node);
+
+            SaveReminders();
         }
 
         public static void EditReminder(ReminderPointer rp, string newName = null, string newDesc = null, string newDate = null) {
