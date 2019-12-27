@@ -20,6 +20,7 @@ namespace Kamtro_Bot
         public const string TitleListFile = @"Config\Titles.json";
         public const string ItemMapFile = @"Config\Items.json";
         public const string RoleSelectMapFile = @"Config\RoleMap.json";
+        public const string ShopDataFile = @"Config\ShopData.json";
 
         // User Data  -C
         public const string UserDataFile = @"User Data\UserData.json";

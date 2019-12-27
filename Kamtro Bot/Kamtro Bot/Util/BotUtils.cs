@@ -2,6 +2,7 @@
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
+using Kamtro_Bot.Items;
 
 using Newtonsoft.Json;
 using System;
@@ -282,6 +283,7 @@ namespace Kamtro_Bot
                 if (DateTime.UtcNow.RoundUp(TimeSpan.FromHours(1)) - LastDate.LastDailyReset.RoundUp(TimeSpan.FromDays(1)) >= new TimeSpan(1, 0, 0, 0)) {
                     // reset things
                     UserDataManager.ResetKamtrokenEarns();
+                    ShopManager.GenShopSelection();
 
                     // set the new time
                     LastDate.LastDailyReset = DateTime.UtcNow;
