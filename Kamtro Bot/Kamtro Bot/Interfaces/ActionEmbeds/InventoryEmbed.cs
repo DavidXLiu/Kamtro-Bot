@@ -174,7 +174,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                         Page--;
                         ItCursor = 0;
 
-                        if (Cursor >= Inventory.Items.Count()) Cursor = Inventory.Items.Count();
+                        if (Cursor >= Inventory.Items.Count) Cursor = Inventory.Items.Count;
 
                         if (Page == -1) {
                             List<uint> Items = Inventory.Items.Keys.ToList();
