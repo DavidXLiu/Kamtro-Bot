@@ -143,6 +143,23 @@ namespace Kamtro_Bot
             string ext = filename.Substring(filename.LastIndexOf('.') + 1);
             return ext;
         }
+
+        /// <summary>
+        /// Shortens a string, placing 3 ellipses at the end if a string is too long.
+        /// The string will be shortened only if adding '...' at the end will result in a shorter string than the long one. 
+        /// </summary>
+        /// <param name="str">The string to shorten</param>
+        /// <param name="threshold">The threshold in number of chars to aim for</param>
+        /// <returns>The shortened string</returns>
+        public static string ShortenLongString(string str, int threshold) {
+            if (threshold <= 0) return "";
+            if (threshold > str.Length) threshold = str.Length;
+            
+            string nst = str.Substring(0, threshold) + "...";
+
+            if (nst.Length < str.Length) return nst;
+            else return str;
+        }
         #endregion
         #region Threads
         /// <summary>

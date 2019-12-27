@@ -195,6 +195,7 @@ namespace Kamtro_Bot
         private static void SetupGeneral() {
             ServerData.SetupServerData(Settings);
             UserInventoryManager.LoadInventories();
+            ReminderManager.LoadReminders();
         }
 
         private static void LoadFiles() {

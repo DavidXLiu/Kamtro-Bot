@@ -186,7 +186,6 @@ namespace Kamtro_Bot.Managers
             } else {
                 KLog.Warning("Tried to save user data, but couldn't becuase it was already being saved!");
             }
-           
         }
 
         /// <summary>
