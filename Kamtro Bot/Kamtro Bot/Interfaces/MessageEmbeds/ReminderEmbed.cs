@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
+using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
 {
@@ -22,16 +23,32 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
     public class ReminderEmbed : MessageEmbed {
         #region Variables
         public const string PENCIL = "✏️";
+        public const string ASTERISK_NEW = "\u2733\uFE0F";
 
         private bool ModifySuccess = false;
+        private bool ErrorHappened = false;
+
+        private string ErrorMessage = "";
+        private int PageStore = 1;
         private SocketGuildUser User;
 
         private List<ReminderPointer> ReminderList;
-
+        private ReminderPointer CurrentReminder = null;
         #endregion
 
         #region Message Fields
-        #region Page 2
+        #region Page 3
+        [InputField("Reminder Name", 3, 1)]
+        public string Name;
+
+        [InputField("Reminder Description", 3, 2)]
+        public string Description;
+
+        [InputField("Date (DD/MM/YYYY)", 3, 3)]
+        public string Date;
+
+        [InputField("Time (HH:MM AM/PM)", 3, 4)]
+        public string Time;
         #endregion
         #endregion
 
@@ -39,17 +56,27 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             SetCtx(ctx);
             User = BotUtils.GetGUser(ctx);
 
+            ReminderList = ReminderManager.GetAllRemindersForUser(User);
 
-
-            AddMenuOptions(ReactionHandler.SELECT, ReactionHandler.UP, ReactionHandler.DOWN, new MenuOptionNode(ReactionHandler.DECLINE_STR, "Delete"), new MenuOptionNode(PENCIL, "Edit"), ReactionHandler.BACK);
+            AddMenuOptions(ReactionHandler.SELECT, new MenuOptionNode(ASTERISK_NEW, "Add"), ReactionHandler.UP, ReactionHandler.DOWN, new MenuOptionNode(ReactionHandler.DECLINE_STR, "Delete"), new MenuOptionNode(PENCIL, "Edit"), ReactionHandler.BACK);
             RegisterMenuFields();
         }
 
         public override async Task ButtonAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.SELECT_STR:
+                    switch(PageNum) {
+                        case 1:
+                            CurrentReminder = ReminderList[CursorPos - 1];
+                            PageNum = 2;  // move to next page
+                            await UpdateEmbed();
+                            break;
 
-                    await UpdateEmbed();
+                        case 3:
+                            // TODO: HANDLE TIME ZONES HERE
+                            await UpdateEmbed();
+                            break;
+                    }
                     break;
             }
         }
@@ -82,6 +109,25 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         eb.AddField("Date M/D/Y", dates, true);
                     }
 
+                    break;
+
+                case 2:
+                    string name, desc;
+
+                    if(CurrentReminder == null) {
+                        name = "ERROR";
+                        desc = "Something went wrong! Please contact arcy or carbon!\nTry clicking the back button!";
+                    } else {
+                        name = ReminderManager.GetReminder(CurrentReminder).Name;
+                        desc = ReminderManager.GetReminder(CurrentReminder).Description;
+                    }
+
+                    eb.AddField("Name", name);
+                    eb.AddField("Description", desc);
+                    break;
+
+                case 3:
+                    eb.WithDescription("When adding a reminder, make sure that you use a 24 hour clock instead of AM/PM. This means that midnight is 0:00, noon is 12:00, and for any other time in PM, add 12 to the hour. Minutes stay the same.");
                     break;
             }
 

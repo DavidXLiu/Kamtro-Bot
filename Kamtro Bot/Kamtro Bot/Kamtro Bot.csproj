@@ -187,6 +187,7 @@
     <Compile Include="Interfaces\MessageEmbeds\RoleAdditionEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\StrikeLogEditEmbed.cs" />
+    <Compile Include="Interfaces\MessageEmbeds\TimeZoneSelectEmbed.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Items\Special Items\ItemBreadstick.cs" />
     <Compile Include="Items\Special Items\ItemPasta.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Modules\MessagingModule.cs" />
     <Compile Include="Modules\ModeratorModule.cs" />
     <Compile Include="Modules\ProfileModule.cs" />
+    <Compile Include="Modules\RemindersModule.cs" />
     <Compile Include="Modules\RoleModule.cs" />
     <Compile Include="Modules\SecretModule.cs" />
     <Compile Include="Modules\TestingModule.cs" />

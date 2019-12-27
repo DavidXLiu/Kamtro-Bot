@@ -30,7 +30,9 @@ namespace Kamtro_Bot.Managers
             // return a list of pointers to all reminders
             List<ReminderPointer> rps = new List<ReminderPointer>();
 
-            foreach(string date in Reminders[user].Keys) {
+            if (!Reminders.ContainsKey(user)) Reminders.Add(user, new Dictionary<string, List<ReminderNode>>());
+
+            foreach (string date in Reminders[user].Keys) {
                 for(int i = 0; i < Reminders[user][date].Count; i++) {
                     rps.Add(new ReminderPointer(user, date, i));
                 }
