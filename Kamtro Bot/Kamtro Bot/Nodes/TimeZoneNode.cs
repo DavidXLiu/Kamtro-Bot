@@ -11,6 +11,12 @@ namespace Kamtro_Bot.Nodes
         public int Hour;
         public int Minute;
 
+        public TimeZoneNode(string offset) {
+            string[] match = offset.Split(':');
+            Hour = int.Parse(match[0]);
+            Minute = int.Parse(match[1]);
+        }
+
         public TimeZoneNode(int h, int m) {
             Hour = h;
             Minute = m;

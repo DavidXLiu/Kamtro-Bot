@@ -8,12 +8,15 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
 
 namespace Kamtro_Bot.Interfaces.MessageEmbeds
 {
     public class TimeZoneSelectEmbed : MessageEmbed
     {
+        private const string PATTERN = @"\-[0-9]{1,2}:[0-5][0-9]";
+
         [InputField("Time Zone Offset", 1, 1)]
         public string TimeZone;
 
@@ -27,8 +30,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         public override async Task ButtonAction(SocketReaction action) {
             if(action.Emote.ToString() == ReactionHandler.CHECK_STR) {
-                if (Regex.IsMatch(TimeZone, @"[0-9]{1,2}:")) {
-                    // TODO: THIS
+                if (Regex.IsMatch(TimeZone, PATTERN)) {
+                    TimeZoneNode node = new TimeZoneNode(Regex.Match(TimeZone, PATTERN).Value);
                 }
             }
         }
