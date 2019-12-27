@@ -230,6 +230,7 @@
     <Compile Include="Nodes\RoleInfoNode.cs" />
     <Compile Include="Items\Nodes\ShopNode.cs" />
     <Compile Include="Nodes\StrikeDataNode.cs" />
+    <Compile Include="Nodes\TimeZoneNode.cs" />
     <Compile Include="Nodes\TitleNode.cs" />
     <Compile Include="Nodes\UserDataNode.cs" />
     <Compile Include="Nodes\UserInventoryNode.cs" />
