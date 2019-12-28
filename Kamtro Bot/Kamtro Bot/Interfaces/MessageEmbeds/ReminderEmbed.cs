@@ -29,9 +29,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         private bool ModifySuccess = false;
         private bool ErrorHappened = false;
 
-        private string ErrorMessage = "";
+        private string ErrorMessage = BotUtils.ZeroSpace;
+        private string SuccessMessage = BotUtils.ZeroSpace;
         private int PageStore = 1;
         private SocketGuildUser User;
+        private TimeZoneNode UserTimeZone;
 
         private List<ReminderPointer> ReminderList;
         private ReminderPointer CurrentReminder = null;
@@ -55,7 +57,9 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         public ReminderEmbed(SocketCommandContext ctx) {
             SetCtx(ctx);
+            
             User = BotUtils.GetGUser(ctx);
+            UserTimeZone = UserDataManager.GetUserData(User).TimeZone;
 
             ReminderList = ReminderManager.GetAllRemindersForUser(User);
 
@@ -74,10 +78,82 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                             break;
 
                         case 3:
-                            // TODO: HANDLE TIME ZONES HERE
+                            if (Regex.IsMatch(Time, @"^[0-2]{0,1}[0-9]:\d\d ([AP]M){0,1}$") && Regex.IsMatch(Date, @"^\d{1,2}/\d{1,2}/\d{1,4}$")) {
+                                string[] t;
+
+                                if (Time.Length <= 5) t = Time.Split(':');  // 24 hour clock, so no AM/PM. [XX:XX]
+                                else t = Time.Split(':', ' ');  // 12 hour clock, so AM/PM [XX:XX AM]
+
+                                int hour = int.Parse(t[0]);
+                                int min = int.Parse(t[1]);
+                                
+
+                                if (Time.Length <= 5) {
+                                    // if 24 hour, check for valid hour
+                                    if (hour > 23) {
+                                        ErrorHappened = true;
+                                        ErrorMessage += "Please input a valid number for the hour. If using 24 hour clock the hour must be between 0 and 23 inclusive.\n";
+                                        await UpdateEmbed();
+                                        break;
+                                    }
+                                } else {
+                                    // 12 hour. Verify this way and fix hour
+                                    if(hour > 12 || hour < 1) {
+                                        ErrorHappened = true;
+                                        ErrorMessage += "Please input a valid number for the hour. If you are using a 12 hour clock make sure that the hour is between 1 and 12 inclusive.\n";
+                                        await UpdateEmbed();
+                                        break;
+                                    }
+
+                                    if(t[2].ToLower() == "pm") {
+                                        hour += 12;
+                                        if (hour == 24) hour = 0;
+                                    }
+                                }
+
+                                if (min > 59) {
+                                    ErrorHappened = true;
+                                    ErrorMessage += "Please input a valid number for the minute. It must be a number from 00-59 inclusive.\n";
+                                    await UpdateEmbed();
+                                    break;
+                                }
+
+                                string[] d = Date.Split('/');
+
+                                int month = int.Parse(d[0]);
+                                int day = int.Parse(d[1]);
+                                int year = int.Parse(d[2]);
+
+                                DateTime dtime = new DateTime(year, month, day, hour, min, 0);
+
+                                dtime.AddHours(UserTimeZone.Hour);
+                                dtime.AddMinutes(UserTimeZone.Minute);
+
+                                if(dtime < DateTime.UtcNow) {
+                                    ErrorHappened = true;
+                                    ErrorMessage += "The reminder must be set for a date/time in the future!\n";
+                                    await UpdateEmbed();
+                                    break;
+                                }
+
+                                // All good, so add it.
+                                ReminderManager.AddReminder(User.Id, Name, dtime, Description);
+                                ModifySuccess = true;
+                                SuccessMessage += "The reminder has been added!\n";
+                                PageNum = 1;
+                            } else {
+                                ErrorHappened = true;
+                                ErrorMessage += "Your date or time are in an invalid format. Reminders can only be set for dates/times in the future and cannot be set past year 9999.\n";
+                            }
+
                             await UpdateEmbed();
                             break;
                     }
+                    break;
+
+                case ASTERISK_NEW:
+                    PageNum = 3;
+                    await UpdateEmbed();
                     break;
             }
         }
@@ -138,22 +214,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 3:
-                    eb.WithDescription("When adding a reminder, make sure that you add a space in between the time, and the AM/PM if you are using a 12 hour clock. AM/PM are not nessecary in a 24 hour clock");
-
-                    if(Regex.IsMatch(Time, @"[0-2]{0,1}[0-9]:\d\d ([AP]M){0,1}")) {
-                        if (Time.Length <= 5) {
-                            // 24 hour clock
-                            string[] t = Time.Split(':');
-                            int hour = int.Parse(t[0]);
-                            int min = int.Parse(t[1]);
-
-                            if (hour > 23) {
-                                ErrorHappened = true;
-                                ErrorMessage += "Please input a valid number for the hour. If using 24 hour clock the hour must be between 0 and 23 inclusive.\n";
-                            }
-                        }
-                    }
-                    
+                    eb.WithTitle("Add Reminder");
+                    eb.WithDescription("When adding a reminder, make sure that you add a space in between the time, and the AM/PM if you are using a 12 hour clock. AM/PM are not nessecary in a 24 hour clock.\nDates MUST be in MM/DD/YYYY format. Months are in number form, January is 1 (or 01, single digit numbers can have a single zero in front if you want), December is 12.");
                     break;
             }
 
@@ -161,7 +223,17 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             AddMenu(eb);
 
             if(ModifySuccess) {
-                eb.AddField("Success", "The action has been performed successfully");
+                eb.AddField("Success", SuccessMessage);
+
+                ModifySuccess = false;
+                SuccessMessage = BotUtils.ZeroSpace;
+            }
+
+            if(ErrorHappened) {
+                eb.AddField("ERROR", ErrorMessage);
+
+                ErrorHappened = false;
+                ErrorMessage = BotUtils.ZeroSpace;
             }
 
             return eb.Build();
