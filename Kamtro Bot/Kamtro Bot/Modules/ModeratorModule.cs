@@ -125,7 +125,7 @@ namespace Kamtro_Bot.Modules
             SocketGuildUser caller = BotUtils.GetGUser(Context);
             if (!ServerData.HasPermissionLevel(caller, ServerData.PermissionLevel.MODERATOR)) return;
 
-            if (name == "") {
+            if (string.IsNullOrWhiteSpace(name)) {
                 await ReplyAsync(BotUtils.KamtroText("Please specify a user!"));
                 return;
             }

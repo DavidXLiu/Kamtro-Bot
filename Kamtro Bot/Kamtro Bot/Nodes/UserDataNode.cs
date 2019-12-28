@@ -36,6 +36,8 @@ namespace Kamtro_Bot.Nodes
         public bool Nsfw;  // if the user has access to NSFW
         public bool PorterSupporter; // if the user donated to porter  -C
 
+        public TimeZoneNode TimeZone = null;
+
         #region Kamtrokens
         public int Kamtrokens;  // Kamtrokens  -C
         public int KamtrokensSpent = 0;
