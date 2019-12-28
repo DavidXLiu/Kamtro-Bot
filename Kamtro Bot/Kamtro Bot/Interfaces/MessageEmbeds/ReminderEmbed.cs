@@ -8,6 +8,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Handlers;
+using Kamtro_Bot.Interfaces.ActionEmbeds;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
@@ -31,7 +32,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         private string ErrorMessage = BotUtils.ZeroSpace;
         private string SuccessMessage = BotUtils.ZeroSpace;
-        private int PageStore = 1;
+
         private SocketGuildUser User;
         private TimeZoneNode UserTimeZone;
 
@@ -47,7 +48,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("Reminder Description", 3, 2)]
         public string Description;
 
-        [InputField("Date (DD/MM/YYYY)", 3, 3)]
+        [InputField("Date (MM/DD/YYYY)", 3, 3)]
         public string Date;
 
         [InputField("Time (HH:MM AM/PM)", 3, 4)]
@@ -61,7 +62,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             User = BotUtils.GetGUser(ctx);
             UserTimeZone = UserDataManager.GetUserData(User).TimeZone;
 
-            ReminderList = ReminderManager.GetAllRemindersForUser(User);
+            RefreshList();
 
             AddMenuOptions(ReactionHandler.SELECT, new MenuOptionNode(ASTERISK_NEW, "Add"), ReactionHandler.UP, ReactionHandler.DOWN, new MenuOptionNode(ReactionHandler.DECLINE_STR, "Delete"), new MenuOptionNode(PENCIL, "Edit"), ReactionHandler.BACK);
             RegisterMenuFields();
@@ -138,6 +139,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                                 // All good, so add it.
                                 ReminderManager.AddReminder(User.Id, Name, dtime, Description);
+                                RefreshList();
+
                                 ModifySuccess = true;
                                 SuccessMessage += "The reminder has been added!\n";
                                 PageNum = 1;
@@ -152,7 +155,46 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case ASTERISK_NEW:
+                    if (PageNum >= 4 && PageNum <= 7) break;  // if on edit embed pages, don't do anything.
                     PageNum = 3;
+                    await UpdateEmbed();
+                    break;
+
+                case ReactionHandler.DECLINE_STR:
+                    if (ReminderList.Count == 0) return;
+                    
+                    ConfirmEmbed ce = new ConfirmEmbed(Context, $"Are you sure you want to delete the reminder {ReminderManager.GetReminder(CurrentReminder).Name}?", DeleteRemidnerConfirm);
+
+                    switch (PageNum) {
+                        case 1:
+                            CurrentReminder = ReminderList[CursorPos - 1];
+                            await ce.Display();
+                            break;
+
+                        case 2:
+                            await ce.Display();
+                            break;
+                    }
+                    break;
+
+                case ReactionHandler.BACK_STR:
+                    switch(PageNum) {
+                        case 1:
+                            return;
+
+                        case 2:
+                        case 3:
+                        case 4:
+                            PageNum = 1;
+                            break;
+
+                        case 5:
+                        case 6:
+                        case 7:
+                            PageNum = 4;
+                            break;
+                    }
+
                     await UpdateEmbed();
                     break;
             }
@@ -205,7 +247,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                         d.AddHours(node.Hour);
                         d.AddMinutes(node.Minute);
 
-                        dt = d.ToString("dd/MM/yyyy hh:mm tt");
+                        dt = d.ToString("dd/MM/yyyy") + " at " + d.ToString("hh:mm tt");
                     }
 
                     eb.AddField("Name", name);
@@ -248,6 +290,17 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             DateTime dt = DateTime.Parse(rp.Date);
 
             return dt.ToString("MM/dd/yyyy h:mm tt");
+        }
+
+        public async Task DeleteRemidnerConfirm(bool b) {
+            if(b) {
+                await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Reminder successfully deleted."));
+                ReminderManager.DeleteReminder(CurrentReminder);
+            }
+        }
+
+        private void RefreshList() {
+            ReminderList = ReminderManager.GetAllRemindersForUser(User);
         }
     }
 }
