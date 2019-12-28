@@ -38,6 +38,9 @@ namespace Kamtro_Bot.Items
                 Shop.Add(new ShopNode(i, ItemManager.GetItem(i).BuyPrice, ItemManager.GetItem(i).Buyable));
             }
 
+            // Save new items to file
+            BotUtils.WriteToJson(final, DataFileNames.ShopItemsFile);
+
             KLog.Info("Shop Refreshed.");
 
             return final;
