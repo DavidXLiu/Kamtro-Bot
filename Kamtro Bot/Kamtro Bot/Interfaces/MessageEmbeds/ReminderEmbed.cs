@@ -54,6 +54,14 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("Time (HH:MM AM/PM)", 3, 4)]
         public string Time;
         #endregion
+        [InputField("Reminder Name", 5, 1)]
+        public string EName;
+
+        [InputField("Reminder Name", 6, 1)]
+        public string EDesc;
+
+        [InputField("Reminder Name", 7, 1)]
+        public string EDate;
         #endregion
 
         public ReminderEmbed(SocketCommandContext ctx) {
@@ -71,15 +79,18 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public override async Task ButtonAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.SELECT_STR:
-                    switch(PageNum) {
+                    CursorPos = 1;
+
+                    switch (PageNum) {
                         case 1:
+                            if (ReminderList.Count == 0) return;
                             CurrentReminder = ReminderList[CursorPos - 1];
                             PageNum = 2;  // move to next page
                             await UpdateEmbed();
                             break;
 
                         case 3:
-                            if (Regex.IsMatch(Time, @"^[0-2]{0,1}[0-9]:\d\d ([AP]M){0,1}$") && Regex.IsMatch(Date, @"^\d{1,2}/\d{1,2}/\d{1,4}$")) {
+                            if (Regex.IsMatch(Time, @"^[0-2]{0,1}[0-9]:\d\d( [AP]M){0,1}$") && Regex.IsMatch(Date, @"^\d{1,2}/\d{1,2}/\d{1,4}$")) {
                                 string[] t;
 
                                 if (Time.Length <= 5) t = Time.Split(':');  // 24 hour clock, so no AM/PM. [XX:XX]
@@ -155,6 +166,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case ASTERISK_NEW:
+                    CursorPos = 1;
+
                     if (PageNum >= 4 && PageNum <= 7) break;  // if on edit embed pages, don't do anything.
                     PageNum = 3;
                     await UpdateEmbed();
@@ -163,14 +176,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 case ReactionHandler.DECLINE_STR:
                     if (ReminderList.Count == 0) return;
                     
+                    CurrentReminder = ReminderList[CursorPos - 1];
+
                     ConfirmEmbed ce = new ConfirmEmbed(Context, $"Are you sure you want to delete the reminder {ReminderManager.GetReminder(CurrentReminder).Name}?", DeleteRemidnerConfirm);
 
                     switch (PageNum) {
                         case 1:
-                            CurrentReminder = ReminderList[CursorPos - 1];
-                            await ce.Display();
-                            break;
-
                         case 2:
                             await ce.Display();
                             break;
@@ -194,6 +205,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                             PageNum = 4;
                             break;
                     }
+
+                    CursorPos = 1;
 
                     await UpdateEmbed();
                     break;
@@ -259,6 +272,11 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     eb.WithTitle("Add Reminder");
                     eb.WithDescription("When adding a reminder, make sure that you add a space in between the time, and the AM/PM if you are using a 12 hour clock. AM/PM are not nessecary in a 24 hour clock.\nDates MUST be in MM/DD/YYYY format. Months are in number form, January is 1 (or 01, single digit numbers can have a single zero in front if you want), December is 12.");
                     break;
+
+                case 4:
+                    eb.WithTitle("Edit Remidner");
+                    eb.AddField("Options", $"OPTION LIST");
+                    break;
             }
 
             AddEmbedFields(eb);
@@ -292,10 +310,63 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             return dt.ToString("MM/dd/yyyy h:mm tt");
         }
 
+        protected override async Task MoveCursorDown(int num = 1) {
+            switch(PageNum) {
+                case 1:
+                    if (ReminderList.Count == 0) return;
+                    CursorPos++;
+                    if (CursorPos > ReminderList.Count) CursorPos = 1;
+                    await UpdateEmbed();
+                    break;
+
+                case 2:
+                    break;
+
+                case 4:
+                    CursorPos++;
+                    if (CursorPos > 3) CursorPos = 1;
+                    await UpdateEmbed();
+                    break;
+
+                default:
+                    await base.MoveCursorDown(num);
+                    break;
+
+            }
+        }
+
+        protected override async Task MoveCursorUp(int num = 1) {
+            switch(PageNum) {
+                case 1:
+                    if (ReminderList.Count == 0) return;
+                    CursorPos--;
+                    if (CursorPos < 1) CursorPos = ReminderList.Count;
+                    await UpdateEmbed();
+                    break;
+
+                case 2:
+                    break;
+
+                case 4:
+                    CursorPos--;
+                    if (CursorPos < 1) CursorPos = 3;
+                    await UpdateEmbed();
+                    break;
+
+                default:
+                    await base.MoveCursorUp(num);
+                    break;
+
+            }
+        }
+
         public async Task DeleteRemidnerConfirm(bool b) {
             if(b) {
                 await Context.Channel.SendMessageAsync(BotUtils.KamtroText("Reminder successfully deleted."));
                 ReminderManager.DeleteReminder(CurrentReminder);
+                RefreshList();
+                CursorPos = 1;
+                await UpdateEmbed();
             }
         }
 

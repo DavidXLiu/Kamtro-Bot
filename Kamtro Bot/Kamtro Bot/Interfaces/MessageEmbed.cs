@@ -243,7 +243,7 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// -C
         /// <param name="num">The number of times to move the cursor up. Default is 1.</param>
-        protected async Task MoveCursorDown(int num = 1) {
+        protected virtual async Task MoveCursorDown(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
             if (num < 0) await MoveCursorDown(-num); // if num is negative, use the other method with positive num
@@ -266,7 +266,7 @@ namespace Kamtro_Bot.Interfaces
         /// </summary>
         /// -C
         /// <param name="num">The number of times to move the cursor down. Default is 1.</param>
-        protected async Task MoveCursorUp(int num = 1) {
+        protected virtual async Task MoveCursorUp(int num = 1) {
             if (num == 0) return; // if num is 0 just do nothing
 
             if (num < 0) await MoveCursorUp(-num); // if num is negative, use the other method with positive num
