@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -112,22 +113,47 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     break;
 
                 case 2:
-                    string name, desc;
+                    string name, desc, dt;
 
                     if(CurrentReminder == null) {
                         name = "ERROR";
                         desc = "Something went wrong! Please contact arcy or carbon!\nTry clicking the back button!";
+                        dt = "NONE";
                     } else {
                         name = ReminderManager.GetReminder(CurrentReminder).Name;
                         desc = ReminderManager.GetReminder(CurrentReminder).Description;
+
+                        DateTime d = DateTime.Parse(CurrentReminder.Date);
+                        TimeZoneNode node = UserDataManager.GetUserData(BotUtils.GetGUser(CurrentReminder.User)).TimeZone;
+
+                        d.AddHours(node.Hour);
+                        d.AddMinutes(node.Minute);
+
+                        dt = d.ToString("dd/MM/yyyy hh:mm tt");
                     }
 
                     eb.AddField("Name", name);
+                    eb.AddField("Time", dt);
                     eb.AddField("Description", desc);
                     break;
 
                 case 3:
-                    eb.WithDescription("When adding a reminder, make sure that you use a 24 hour clock instead of AM/PM. This means that midnight is 0:00, noon is 12:00, and for any other time in PM, add 12 to the hour. Minutes stay the same.");
+                    eb.WithDescription("When adding a reminder, make sure that you add a space in between the time, and the AM/PM if you are using a 12 hour clock. AM/PM are not nessecary in a 24 hour clock");
+
+                    if(Regex.IsMatch(Time, @"[0-2]{0,1}[0-9]:\d\d ([AP]M){0,1}")) {
+                        if (Time.Length <= 5) {
+                            // 24 hour clock
+                            string[] t = Time.Split(':');
+                            int hour = int.Parse(t[0]);
+                            int min = int.Parse(t[1]);
+
+                            if (hour > 23) {
+                                ErrorHappened = true;
+                                ErrorMessage += "Please input a valid number for the hour. If using 24 hour clock the hour must be between 0 and 23 inclusive.\n";
+                            }
+                        }
+                    }
+                    
                     break;
             }
 
