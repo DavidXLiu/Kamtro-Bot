@@ -193,6 +193,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                             // Edit Name
                             if (string.IsNullOrWhiteSpace(EName)) EName = BotUtils.ZeroSpace;
                             ReminderManager.EditReminder(CurrentReminder, EName);
+
+                            ModifySuccess = true;
+                            SuccessMessage += "The reminder has been updated!\n";
+
                             PageNum = 4;
                             await UpdateEmbed();
                             break;
@@ -201,6 +205,10 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                             // Edit Desc
                             if (string.IsNullOrWhiteSpace(EDesc)) EDesc = BotUtils.ZeroSpace;
                             ReminderManager.EditReminder(CurrentReminder, newDesc: EDesc);
+
+                            ModifySuccess = true;
+                            SuccessMessage += "The reminder has been updated!\n";
+
                             PageNum = 4;
                             await UpdateEmbed();
                             break;
@@ -332,9 +340,13 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     if(PageNum == 1) {
                         CurrentReminder = ReminderList[CursorPos - 1];
                         PageNum = 4;
+                        await UpdateEmbed();
                     } else if(PageNum == 2) {
                         PageNum = 4;
+                        await UpdateEmbed();
                     }
+
+                    
                     break;
             }
         }
@@ -402,11 +414,17 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 case 4:
                     eb.WithTitle("Edit Remidner");
 
-                    string options = $"{(CursorPos == 1 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}\n";
-                    options += $"{(CursorPos == 2 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}\n";
-                    options += $"{(CursorPos == 3 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}";
+                    string options = $"{(CursorPos == 1 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}Edit Name\n";
+                    options += $"{(CursorPos == 2 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}Edit Description\n";
+                    options += $"{(CursorPos == 3 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}Edit Date/Time";
 
                     eb.AddField("Options", options);
+                    break;
+
+                case 5:
+                case 6:
+                case 7:
+                    eb.WithTitle("Edit Remidner");
                     break;
             }
 

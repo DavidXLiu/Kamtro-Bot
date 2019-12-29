@@ -84,9 +84,6 @@ namespace Kamtro_Bot
             config = new DiscordSocketConfig() { MessageCacheSize = 1000000 }; // initialize the config for the client, and set the message cache size
             Client = new DiscordSocketClient(config); // get the client with the configurations we want
 
-            // Initialize 
-            ItemManager.SetupItems();
-
             // Managers
             userDataManager = new UserDataManager(); // This sets up the user data files and loads them into memory
             fileManager = new FileManager();  // initialize the file manager
@@ -200,6 +197,7 @@ namespace Kamtro_Bot
 
         private static void LoadFiles() {
             LoadSettings();
+            ItemManager.SetupItems();
             ShopManager.LoadShopItems();
         }
 
