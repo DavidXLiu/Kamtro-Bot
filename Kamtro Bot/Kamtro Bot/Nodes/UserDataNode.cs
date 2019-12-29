@@ -25,6 +25,7 @@ namespace Kamtro_Bot.Nodes
         public string Nickname;
         public int Score;  // Message score  -C
         public int WeeklyScore;
+        public int LegacyScore = 0;
         public int Reputation;  // Reputation points  -C
         public int ReputationToGive; // Rep they have left to give to others
         public int MaxReputation = 3; // Max rep to give
