@@ -28,6 +28,7 @@ namespace Kamtro_Bot.Nodes
         public int LegacyScore = 0;
         public int Reputation;  // Reputation points  -C
         public int ReputationToGive; // Rep they have left to give to others
+        public int RepGiven = 0;
         public int MaxReputation = 3; // Max rep to give
         public int? CurrentTitle = null;  // The id of user's selected title.  -C
         public List<int> Titles;  // A list of title ids the user has  -C
@@ -48,7 +49,6 @@ namespace Kamtro_Bot.Nodes
         #region Statistics
         public int CommandsUsed = 0;  // TO REMOVE
         public int TimesCheckedProfile = 0;
-        public int RepGiven = 0;
         public int MaxCFStreak = 0;
 
         // Secret Things
