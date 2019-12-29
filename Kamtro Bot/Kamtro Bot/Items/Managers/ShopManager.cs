@@ -168,7 +168,11 @@ namespace Kamtro_Bot.Items
         }
 
         public static void LoadShopItems() {
-            Shop = JsonConvert.DeserializeObject<List<ShopNode>>(FileManager.ReadFullFile(DataFileNames.ShopItemsFile));  // Load from the file
+            List<uint> items = JsonConvert.DeserializeObject<List<uint>>(FileManager.ReadFullFile(DataFileNames.ShopItemsFile));
+
+            foreach(uint item in items) {
+                Shop.Add(new ShopNode(item, ItemManager.GetItem(item).BuyPrice, ItemManager.GetItem(item).Buyable));
+            }
             
             if(Shop == null || Shop.Count == 0) GenShopSelection(); // if shop is empty or null, generate items
         }
