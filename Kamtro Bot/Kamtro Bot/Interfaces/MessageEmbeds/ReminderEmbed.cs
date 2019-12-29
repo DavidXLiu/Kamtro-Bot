@@ -54,14 +54,18 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         [InputField("Time (HH:MM AM/PM)", 3, 4)]
         public string Time;
         #endregion
-        [InputField("Reminder Name", 5, 1)]
+        [InputField("New Reminder Name", 5, 1)]
         public string EName;
 
-        [InputField("Reminder Name", 6, 1)]
+        [InputField("New Reminder Desription", 6, 1)]
         public string EDesc;
 
-        [InputField("Reminder Name", 7, 1)]
+        [InputField("New Reminder Date", 7, 1)]
         public string EDate;
+
+        [InputField("New Reminder Time", 7, 2)]
+        public string ETime;
+
         #endregion
 
         public ReminderEmbed(SocketCommandContext ctx) {
@@ -162,6 +166,119 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                             await UpdateEmbed();
                             break;
+
+                        case 4:
+                            switch(CursorPos) {
+                                case 1:
+                                    PageNum = 5;
+                                    break;
+
+                                case 2:
+                                    PageNum = 6;
+                                    break;
+
+                                case 3:
+                                    PageNum = 7;
+                                    break;
+
+                                default:
+                                    CursorPos = 1;
+                                    break;
+                            }
+
+                            await UpdateEmbed();
+                            break;
+
+                        case 5:
+                            // Edit Name
+                            if (string.IsNullOrWhiteSpace(EName)) EName = BotUtils.ZeroSpace;
+                            ReminderManager.EditReminder(CurrentReminder, EName);
+                            PageNum = 4;
+                            await UpdateEmbed();
+                            break;
+
+                        case 6:
+                            // Edit Desc
+                            if (string.IsNullOrWhiteSpace(EDesc)) EDesc = BotUtils.ZeroSpace;
+                            ReminderManager.EditReminder(CurrentReminder, newDesc: EDesc);
+                            PageNum = 4;
+                            await UpdateEmbed();
+                            break;
+
+                        case 7:
+                            // Edit Time
+                            if (Regex.IsMatch(ETime, @"^[0-2]{0,1}[0-9]:\d\d( [AP]M){0,1}$") && Regex.IsMatch(EDate, @"^\d{1,2}/\d{1,2}/\d{1,4}$")) {
+                                string[] t;
+
+                                if (ETime.Length <= 5) t = ETime.Split(':');  // 24 hour clock, so no AM/PM. [XX:XX]
+                                else t = ETime.Split(':', ' ');  // 12 hour clock, so AM/PM [XX:XX AM]
+
+                                int hour = int.Parse(t[0]);
+                                int min = int.Parse(t[1]);
+
+
+                                if (Time.Length <= 5) {
+                                    // if 24 hour, check for valid hour
+                                    if (hour > 23) {
+                                        ErrorHappened = true;
+                                        ErrorMessage += "Please input a valid number for the hour. If using 24 hour clock the hour must be between 0 and 23 inclusive.\n";
+                                        await UpdateEmbed();
+                                        break;
+                                    }
+                                } else {
+                                    // 12 hour. Verify this way and fix hour
+                                    if (hour > 12 || hour < 1) {
+                                        ErrorHappened = true;
+                                        ErrorMessage += "Please input a valid number for the hour. If you are using a 12 hour clock make sure that the hour is between 1 and 12 inclusive.\n";
+                                        await UpdateEmbed();
+                                        break;
+                                    }
+
+                                    if (t[2].ToLower() == "pm") {
+                                        hour += 12;
+                                        if (hour == 24) hour = 0;
+                                    }
+                                }
+
+                                if (min > 59) {
+                                    ErrorHappened = true;
+                                    ErrorMessage += "Please input a valid number for the minute. It must be a number from 00-59 inclusive.\n";
+                                    await UpdateEmbed();
+                                    break;
+                                }
+
+                                string[] d = EDate.Split('/');
+
+                                int month = int.Parse(d[0]);
+                                int day = int.Parse(d[1]);
+                                int year = int.Parse(d[2]);
+
+                                DateTime dtime = new DateTime(year, month, day, hour, min, 0);
+
+                                dtime.AddHours(UserTimeZone.Hour);
+                                dtime.AddMinutes(UserTimeZone.Minute);
+
+                                if (dtime < DateTime.UtcNow) {
+                                    ErrorHappened = true;
+                                    ErrorMessage += "The reminder must be set for a date/time in the future!\n";
+                                    await UpdateEmbed();
+                                    break;
+                                }
+
+                                // All good, so add it.
+                                ReminderManager.EditReminder(CurrentReminder, newDate: dtime.ToString());
+                                RefreshList();
+
+                                ModifySuccess = true;
+                                SuccessMessage += "The reminder has been updated!\n";
+                            } else {
+                                ErrorHappened = true;
+                                ErrorMessage += "Your date or time are in an invalid format. Reminders can only be set for dates/times in the future and cannot be set past year 9999.\n";
+                            }
+
+                            PageNum = 4;
+                            await UpdateEmbed();
+                            break;
                     }
                     break;
 
@@ -176,7 +293,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                 case ReactionHandler.DECLINE_STR:
                     if (ReminderList.Count == 0) return;
                     
-                    CurrentReminder = ReminderList[CursorPos - 1];
+                    if(PageNum == 1) CurrentReminder = ReminderList[CursorPos - 1];
 
                     ConfirmEmbed ce = new ConfirmEmbed(Context, $"Are you sure you want to delete the reminder {ReminderManager.GetReminder(CurrentReminder).Name}?", DeleteRemidnerConfirm);
 
@@ -209,6 +326,15 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
                     CursorPos = 1;
 
                     await UpdateEmbed();
+                    break;
+
+                case PENCIL:
+                    if(PageNum == 1) {
+                        CurrentReminder = ReminderList[CursorPos - 1];
+                        PageNum = 4;
+                    } else if(PageNum == 2) {
+                        PageNum = 4;
+                    }
                     break;
             }
         }
@@ -275,7 +401,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case 4:
                     eb.WithTitle("Edit Remidner");
-                    eb.AddField("Options", $"OPTION LIST");
+
+                    string options = $"{(CursorPos == 1 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}\n";
+                    options += $"{(CursorPos == 2 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}\n";
+                    options += $"{(CursorPos == 3 ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}";
+
+                    eb.AddField("Options", options);
                     break;
             }
 

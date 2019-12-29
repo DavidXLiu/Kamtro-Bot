@@ -136,21 +136,6 @@ namespace Kamtro_Bot
             }
         }
 
-        public static void LoadShopItems()
-        {
-            // File creation
-            if (!File.Exists(DataFileNames.ShopItemsFile))
-            {
-                File.CreateText(DataFileNames.ShopItemsFile).Close();
-                ShopManager.GenShopSelection(); // Generate shop items
-            }
-            // Read file
-            else
-            {
-                ShopManager.Shop = JsonConvert.DeserializeObject<List<ShopNode>>(FileManager.ReadFullFile(DataFileNames.ShopItemsFile));  // Load from the file
-            }
-        }
-
         public static void ReloadConfig() {
             LoadSettings();
             ServerData.SetupServerData(Settings);
@@ -215,7 +200,7 @@ namespace Kamtro_Bot
 
         private static void LoadFiles() {
             LoadSettings();
-            LoadShopItems();
+            ShopManager.LoadShopItems();
         }
 
         /// <summary>

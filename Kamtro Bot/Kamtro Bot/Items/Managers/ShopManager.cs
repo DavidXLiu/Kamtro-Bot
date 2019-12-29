@@ -3,15 +3,17 @@ using Kamtro_Bot.Items;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Nodes;
 using Kamtro_Bot.Util;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Kamtro_Bot.Items
 {
-    public class ShopManager
+    public static class ShopManager
     {
         public static List<ShopNode> Shop = new List<ShopNode>();
 
@@ -20,7 +22,8 @@ namespace Kamtro_Bot.Items
         /// </summary>
         /// <returns>The new selection of items</returns>
         public static List<uint> GenShopSelection() {
-            Shop.Clear();
+            if(Shop != null) Shop.Clear();
+            else Shop = new List<ShopNode>();
 
             List<uint> final = new List<uint>();
             List<uint> options = GetSellableItems();
@@ -162,6 +165,12 @@ namespace Kamtro_Bot.Items
             uint id = tmp[new Random().Next(0, tmp.Count)];
 
             return new ShopNode(id, GetPrice(id), true);
+        }
+
+        public static void LoadShopItems() {
+            Shop = JsonConvert.DeserializeObject<List<ShopNode>>(FileManager.ReadFullFile(DataFileNames.ShopItemsFile));  // Load from the file
+            
+            if(Shop == null || Shop.Count == 0) GenShopSelection(); // if shop is empty or null, generate items
         }
     }
 }
