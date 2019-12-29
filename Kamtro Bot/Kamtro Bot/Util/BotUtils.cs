@@ -319,6 +319,36 @@ namespace Kamtro_Bot
                 Thread.Sleep(5000); // SAFETY THROTTLE
             }
         }
+        
+        public static void ReminderNotifs() {
+            while(true) {
+                List<ReminderPointer> toRemove = new List<ReminderPointer>();
+                if(ReminderManager.Reminders == null) {
+                    Thread.Sleep(new TimeSpan(0, 0, 1));
+                    continue;
+                }
+
+                foreach(ulong user in ReminderManager.Reminders.Keys) {
+                    foreach (ReminderPointer reminder in ReminderManager.GetAllRemindersForUser(user)) {
+                        DateTime dt = DateTime.Parse(reminder.Date);
+                        if (dt <= DateTime.UtcNow) {
+                            if(DateTime.UtcNow - dt <= new TimeSpan(0, 10, 0)) {
+                                // if it's within 10 mins, notify user
+                                ReminderManager.RemindUser(reminder); 
+                            }
+
+                            toRemove.Add(reminder);
+                        }
+                    }
+                }
+
+                foreach(ReminderPointer r in toRemove) {
+                    ReminderManager.DeleteReminder(r);
+                }
+
+                Thread.Sleep(new TimeSpan(0,1,0));
+            }
+        }
         #endregion
         #region Time Utils
         /// <summary>

@@ -43,6 +43,7 @@ namespace Kamtro_Bot
         public static Thread DateCheck;
         public static Thread AutobanReset;
         public static Thread DailyReset;
+        public static Thread Reminders;
 
         public static DiscordSocketClient Client;
         private DiscordSocketConfig config;
@@ -68,11 +69,7 @@ namespace Kamtro_Bot
             Console.WriteLine("╚════════════════╝");
             Console.WriteLine("\n------------------\n");
 
-            Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
-            GarbageCollection = new Thread(new ThreadStart(BotUtils.GarbageCollection));
-            DateCheck = new Thread(new ThreadStart(BotUtils.WeeklyReset));
-            AutobanReset = new Thread(new ThreadStart(GeneralHandler.ResetThread));
-            DailyReset = new Thread(new ThreadStart(BotUtils.DailyReset));
+            
 
             SetupFiles();  // This is to keep the Main method more readable
             LoadFiles();
@@ -98,12 +95,8 @@ namespace Kamtro_Bot
 
             BotUtils.SaveReady = true; // Tell the class that the autosave loop should start
             BotUtils.GCReady = true;
-            
-            Autosave.Start();  // Start the autosave loop
-            GarbageCollection.Start();
-            DateCheck.Start();
-            AutobanReset.Start();
-            DailyReset.Start();
+
+            StartThreads();
 
             await Client.LoginAsync(TokenType.Bot, GetToken());
             await Client.StartAsync();
@@ -131,6 +124,22 @@ namespace Kamtro_Bot
             } else {
                 Settings = JsonConvert.DeserializeObject<BotSettings>(FileManager.ReadFullFile(DataFileNames.GeneralConfigFile));  // Load from the file
             }
+        }
+
+        public static void StartThreads() {
+            Autosave = new Thread(new ThreadStart(BotUtils.AutoSave));  // Create the thread. This will be started in StartAsync.
+            GarbageCollection = new Thread(new ThreadStart(BotUtils.GarbageCollection));
+            DateCheck = new Thread(new ThreadStart(BotUtils.WeeklyReset));
+            AutobanReset = new Thread(new ThreadStart(GeneralHandler.ResetThread));
+            DailyReset = new Thread(new ThreadStart(BotUtils.DailyReset));
+            Reminders = new Thread(new ThreadStart(BotUtils.ReminderNotifs));
+
+            Autosave.Start(); 
+            GarbageCollection.Start();
+            DateCheck.Start();
+            AutobanReset.Start();
+            DailyReset.Start();
+            Reminders.Start();
         }
 
         public static void ReloadConfig() {
@@ -189,6 +198,9 @@ namespace Kamtro_Bot
             BotUtils.LastDate = dates;
         }
 
+        /// <summary>
+        /// Called after OnReady. For anything that needs discord user info
+        /// </summary>
         private static void SetupGeneral() {
             ServerData.SetupServerData(Settings);
             UserInventoryManager.LoadInventories();

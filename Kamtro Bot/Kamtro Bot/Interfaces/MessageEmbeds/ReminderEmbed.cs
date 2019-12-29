@@ -74,6 +74,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
             User = BotUtils.GetGUser(ctx);
             UserTimeZone = UserDataManager.GetUserData(User).TimeZone;
 
+            Timeout = new TimeSpan(0, 30, 0);
+
             RefreshList();
 
             AddMenuOptions(ReactionHandler.SELECT, new MenuOptionNode(ASTERISK_NEW, "Add"), ReactionHandler.UP, ReactionHandler.DOWN, new MenuOptionNode(ReactionHandler.DECLINE_STR, "Delete"), new MenuOptionNode(PENCIL, "Edit"), ReactionHandler.BACK);
@@ -142,8 +144,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                                 DateTime dtime = new DateTime(year, month, day, hour, min, 0);
 
-                                dtime.AddHours(UserTimeZone.Hour);
-                                dtime.AddMinutes(UserTimeZone.Minute);
+                                dtime = dtime.AddHours(-UserTimeZone.Hour).AddMinutes(-UserTimeZone.Minute);
 
                                 if(dtime < DateTime.UtcNow) {
                                     ErrorHappened = true;
@@ -263,8 +264,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                                 DateTime dtime = new DateTime(year, month, day, hour, min, 0);
 
-                                dtime.AddHours(UserTimeZone.Hour);
-                                dtime.AddMinutes(UserTimeZone.Minute);
+                                dtime.AddHours(-UserTimeZone.Hour).AddMinutes(-UserTimeZone.Minute);
 
                                 if (dtime < DateTime.UtcNow) {
                                     ErrorHappened = true;
@@ -456,7 +456,7 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         private string GetDateString(ReminderPointer rp) {
             DateTime dt = DateTime.Parse(rp.Date);
 
-            return dt.ToString("MM/dd/yyyy h:mm tt");
+            return dt.AddHours(UserTimeZone.Hour).AddMinutes(UserTimeZone.Minute).ToString("MM/dd/yyyy h:mm tt");
         }
 
         protected override async Task MoveCursorDown(int num = 1) {
