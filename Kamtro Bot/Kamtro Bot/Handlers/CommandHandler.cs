@@ -259,32 +259,51 @@ namespace Kamtro_Bot.Handlers
                     foreach (string s in thanksStringsEn)
                     {
                         if (message.Content.ToLower().Contains(s))
+                        {
                             await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsEn[rnd.Next(0, welcomeStringsEn.Length)]));
+                            break;
+                        }
+               
                     }
                     foreach (string s in thanksStringsEs)
                     {
                         if (message.Content.ToLower().Contains(s))
+                        {
                             await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsEs[rnd.Next(0, welcomeStringsEs.Length)]));
+                            break;
+                        }
                     }
                     foreach (string s in thanksStringsDe)
                     {
                         if (message.Content.ToLower().Contains(s))
+                        {
                             await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsDe[rnd.Next(0, welcomeStringsDe.Length)]));
+                            break;
+                        }
                     }
                     foreach (string s in thanksStringsJp)
                     {
                         if (message.Content.ToLower().Contains(s))
+                        {
                             await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsJp[rnd.Next(0, welcomeStringsJp.Length)]));
+                            break;
+                        }
                     }
                     foreach (string s in thanksStringsCn)
                     {
                         if (message.Content.ToLower().Contains(s))
+                        {
                             await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsCn[rnd.Next(0, welcomeStringsCn.Length)]));
+                            break;
+                        }
                     }
                     foreach (string s in thanksStringsBinary)
                     {
                         if (message.Content.ToLower().Contains(s))
+                        {
                             await message.Channel.SendMessageAsync(BotUtils.KamtroText(welcomeStringsBinary[rnd.Next(0, welcomeStringsBinary.Length)]));
+                            break;
+                        }
                     }
                     #endregion
                 }
