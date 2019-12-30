@@ -170,6 +170,26 @@ namespace Kamtro_Bot.Modules
             await ReplyAsync(BotUtils.KamtroText($"Conveted {dates} dates for {users} users."));
         }
 
+        [Command("suggest")]
+        [Alias("addsuggestion")]
+        public async Task SuggestionAsync([Remainder] string suggestion = "") {
+            if(string.IsNullOrWhiteSpace(suggestion)) {
+                await ReplyAsync(BotUtils.KamtroText("You need to enter a suggestion!"));
+                return;
+            }
+
+            SuggestionEmbed se = new SuggestionEmbed(BotUtils.GetGUser(Context), suggestion);
+
+            // DM it to both devs
+            // TEMPORARY SOLUTION
+            // FULL INTERFACE TO BE ADDED
+            const ulong arcy = 118892308086128641;
+            const ulong carbon = 201419965390258177;
+
+            await se.Display(await BotUtils.GetGUser(arcy).GetOrCreateDMChannelAsync());
+            await se.Display(await BotUtils.GetGUser(carbon).GetOrCreateDMChannelAsync());
+        }
+
         [Command("debuglog")]
         [Alias("dlog", "printdebug")]
         public async Task DebugLogAsync([Remainder] string args = "") {

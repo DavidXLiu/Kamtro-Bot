@@ -178,6 +178,7 @@
     <Compile Include="Interfaces\BasicEmbeds\ProfileEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\ScanInfoEmbed.cs" />
     <Compile Include="Interfaces\BasicEmbeds\StrikeNotifyEmbed.cs" />
+    <Compile Include="Interfaces\BasicEmbeds\SuggestionEmbed.cs" />
     <Compile Include="Interfaces\KamtroEmbedBase.cs" />
     <Compile Include="Interfaces\MessageEmbed.cs" />
     <Compile Include="Interfaces\MessageEmbeds\BanEmbed.cs" />
