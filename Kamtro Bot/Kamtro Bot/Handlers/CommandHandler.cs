@@ -140,9 +140,9 @@ namespace Kamtro_Bot.Handlers
 
                 /// MOVE THIS SOMEWHERE ELSE WHEN CLASS IS MADE
                 // Check if directed at Kamtro - Arcy
-                if ((message.Channel.Id == Program.Settings.BotChannelID || message.Channel is IDMChannel)
-                    && (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro") 
-                    || message.Content.ToLower().EndsWith("kamtro"))) {
+                if ((message.Channel.Id == Program.Settings.BotChannelID || message.Channel is IDMChannel || (BotUtils.GetGUser(message.Author.Id) != null && ServerData.HasPermissionLevel(BotUtils.GetGUser(message.Author.Id), ServerData.PermissionLevel.ADMIN)))
+                    && (message.Content.Contains(_client.CurrentUser.Id.ToString()) || message.Content.ToLower().StartsWith("kamtro", StringComparison.InvariantCultureIgnoreCase) 
+                    || message.Content.ToLower().EndsWith("kamtro", StringComparison.InvariantCultureIgnoreCase))) {
                     /// ORDER THESE CHECKS FROM LEAST TIME TO MOST TIME
 
                     #region Ping Ask
@@ -228,8 +228,20 @@ namespace Kamtro_Bot.Handlers
                             "I am a bot. I cannot tell.", "...", "Maybe someday.", "Error 404: Response not found.",
                             "Let me think about that.", "Soon."
                         };
-                        Random rnd2 = new Random();
 
+                        string[] noResponse = {
+                            "kill myself", "suicide", "kms", "kys"
+                        };
+                        
+                        // make sure that the bot doesn't answer one of these questions
+                        foreach(string r in noResponse) {
+                            if(message.Content.ToLower().Contains(r)) {
+                                await message.Channel.SendMessageAsync(BotUtils.KamtroText("Error 404: Response not found."));
+                                return;
+                            }
+                        }
+
+                        Random rnd2 = new Random();
                         // Send a random response from the array
                         await message.Channel.SendMessageAsync(BotUtils.KamtroText(responseStrings[rnd2.Next(0, responseStrings.Length)]));
                         return;

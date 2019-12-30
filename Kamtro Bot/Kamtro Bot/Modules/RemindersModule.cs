@@ -25,5 +25,12 @@ namespace Kamtro_Bot.Modules
             ReminderEmbed re = new ReminderEmbed(Context);
             await re.Display();
         }
+
+        [Command("resettimezone")]
+        [Alias("rtz", "settimezone")]
+        public async Task EditTimeZoneAsync([Remainder] string args = "") {
+            TimeZoneSelectEmbed te = new TimeZoneSelectEmbed(Context);
+            await te.Display();
+        }
     }
 }
