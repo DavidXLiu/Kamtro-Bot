@@ -296,6 +296,11 @@ namespace Kamtro_Bot.Handlers
         public static async Task UpdateRoleMessage() {
             IMessage roleMessage = await ServerData.Server.GetTextChannel(Program.Settings.RoleSelectChannelID).GetMessageAsync(Program.Settings.RoleSelectMessageID);
 
+            if(roleMessage == null) {
+                KLog.Warning("No role message found!");
+                return;
+            }
+
             List<string> cleanup = new List<string>();
 
             // Form message with each pair in the role map
