@@ -108,6 +108,8 @@ namespace Kamtro_Bot.Managers
         #endregion
         #region User Data
         public static UserDataNode GetUserData(SocketGuildUser user) {
+            if(user == null) return null;
+
             AddUserIfNotExists(user);
 
             return UserData[user.Id];

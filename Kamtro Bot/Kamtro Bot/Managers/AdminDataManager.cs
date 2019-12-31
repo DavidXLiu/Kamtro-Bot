@@ -293,14 +293,20 @@ namespace Kamtro_Bot.Managers
         /// <param name="id">ID of the user</param>
         /// <param name="strike">The number of the strike (3 for ban)</param>
         /// <param name="reason">New reason for the strike</param>
-        public static void SetStrikeReason(ulong id, int strike, string reason) {
+        public static void SetStrikeReason(ulong id, int strike, string reason, SocketGuildUser mod) {
             if (strike < 1 || strike > 3) return;
 
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             if (cells[$"F{GetEntryPos(id)}"].Value == null) {
                 // gen strike if it doesn't exist
-                GenUserStrike(GetEntryPos(id), BotUtils.GetGUser(id), 1);
+                GenUserStrike(GetEntryPos(id), BotUtils.GetGUser(id), 0);
+            }
+
+            if(GetStrikes(id) < strike) {
+                for(int i = 0; i < (strike - GetStrikes(id)); i++) {
+                    AddStrike(id, new StrikeDataNode(mod, "[Auto-Generated]"));
+                }
             }
 
             if (strike == 1) {
@@ -330,24 +336,12 @@ namespace Kamtro_Bot.Managers
         }
 
         public static int GetStrikes(ulong id) {
-            int pos = 2;
-            ulong target;
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
-            while (cells["A" + pos].Value != null) {
-                target = Convert.ToUInt64(cells["A" + pos].Value.ToString());
-                if (target == id) {
-                    int strikes = Convert.ToInt32(cells["C" + pos].Value);
-                    return strikes;
-                }
+            if (cells["A" + GetEntryPos(id)].Value == null) return 0;
 
-                pos++;
-            }
-
-            // Don't create new logs for those without strikes/bans - Arcy
-            // GenUserStrike(pos, id, "", 0);
-            // SaveExcel();
-            return 0;
+            int strikes = Convert.ToInt32(cells["C" + GetEntryPos(id)].Value);
+            return strikes;
         }
 
         /// <summary>

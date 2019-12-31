@@ -392,19 +392,19 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
                 case 6:
                     // handle confirm
-                    AdminDataManager.SetStrikeReason(Autofill.Id, 1, Strike1Reason6);
+                    AdminDataManager.SetStrikeReason(Autofill.Id, 1, Strike1Reason6, BotUtils.GetGUser(Context));
                     PageNum = 14;
                     break;
 
                 case 7:
                     // handle confirm
-                    AdminDataManager.SetStrikeReason(Autofill.Id, 2, Strike2Reason7);
+                    AdminDataManager.SetStrikeReason(Autofill.Id, 2, Strike2Reason7, BotUtils.GetGUser(Context));
                     PageNum = 14;
                     break;
 
                 case 8:
                     // handle confirm
-                    AdminDataManager.SetStrikeReason(Autofill.Id, 3, BanReason8);
+                    AdminDataManager.SetStrikeReason(Autofill.Id, 3, BanReason8, BotUtils.GetGUser(Context));
                     PageNum = 14;
                     break;
 
