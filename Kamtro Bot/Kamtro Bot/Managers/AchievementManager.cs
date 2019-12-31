@@ -165,8 +165,6 @@ namespace Kamtro_Bot.Managers
         #endregion
         #region Util
         public static async Task AddTitle(SocketGuildUser user, int titleid) {
-            if (!Program.Experimental) return;  
-
             if (!NodeMap.ContainsKey(titleid)) {
                 KLog.Error($"Attempted to give user {BotUtils.GetFullUsername(user)} invalid title ID #{titleid}");
                 return;

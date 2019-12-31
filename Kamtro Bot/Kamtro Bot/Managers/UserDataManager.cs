@@ -209,9 +209,7 @@ namespace Kamtro_Bot.Managers
 
             GetUserData(from).RepGiven++;
 
-            if(Program.Experimental) {
-                await AchievementManager.OnRep(from, to);
-            }
+            await AchievementManager.OnRep(from, to);
 
             SaveUserData();
 

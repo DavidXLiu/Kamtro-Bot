@@ -20,19 +20,8 @@ namespace Kamtro_Bot.Modules
         [Command("coinflip")]
         [Alias("coin", "cf")]
         public async Task CoinFlipAsync([Remainder] string args = "") {
-            if(Program.Experimental) {
-                CoinFlipEmbed cfe = new CoinFlipEmbed(Context);
-                await cfe.Display();
-                return;
-            }
-            
-            Random r = new Random();
-
-            if (r.Next() % 2 == 0) {
-                await ReplyAsync(BotUtils.KamtroText("Heads."));
-            } else {
-                await ReplyAsync(BotUtils.KamtroText("Tails."));
-            }
+            CoinFlipEmbed cfe = new CoinFlipEmbed(Context);
+            await cfe.Display();
         }
 
         [Command("roll")]
@@ -93,25 +82,14 @@ namespace Kamtro_Bot.Modules
 
             Random dice = new Random();
             
-            if(Program.Experimental) {
-                List<int> r = new List<int>();
-
-                for (int i = 0; i < num; i++) {
-                    r.Add(dice.Next(Math.Min(1, sides), Math.Max(0, sides)));
-                }
-
-                DiceRollEmbed dre = new DiceRollEmbed(sides, r);
-                await dre.Display();
-                return;
-            }
-
-            string result = $"Rolled {num} {(num == 1 ? "die" : "dice")}:\n\n";
+            List<int> r = new List<int>();
 
             for (int i = 0; i < num; i++) {
-                result += $"({i + 1}){((i+1 < 10) ? " ":"")} rolled a {dice.Next(Math.Min(1, sides), Math.Max(0, sides))}\n";
+                r.Add(dice.Next(Math.Min(1, sides), Math.Max(0, sides)));
             }
 
-            await ReplyAsync(BotUtils.KamtroText(result + "\n"));
+            DiceRollEmbed dre = new DiceRollEmbed(sides, r);
+            await dre.Display();
         }
     }
 }
