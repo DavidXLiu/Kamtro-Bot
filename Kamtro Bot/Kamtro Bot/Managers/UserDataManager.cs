@@ -166,7 +166,7 @@ namespace Kamtro_Bot.Managers
         public static bool AddUserIfNotExists(SocketGuildUser user) {
             bool added = false;
 
-            if (!UserData.ContainsKey(user.Id) || !UserSettings.ContainsKey(user.Id)) {
+            if (user != null && (!UserData.ContainsKey(user.Id) || !UserSettings.ContainsKey(user.Id))) {
                 AddUser(user);
                 added =  true;
             }

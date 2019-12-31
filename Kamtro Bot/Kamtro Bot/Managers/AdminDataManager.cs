@@ -297,6 +297,7 @@ namespace Kamtro_Bot.Managers
             if (strike < 1 || strike > 3) return;
 
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+
             if (strike == 1) {
                 cells[$"F{GetEntryPos(id)}"].Value = reason;
             } else if (strike == 2) {
@@ -305,6 +306,9 @@ namespace Kamtro_Bot.Managers
                 cells[$"L{GetEntryPos(id)}"].Value = reason;
             }
 
+            // Fix the count
+            cells[$"C{GetEntryPos(id)}"].Value = Math.Max(Convert.ToInt32(cells[$"C{GetEntryPos(id)}"].Value), strike);
+            
             // Set auto fit
             cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             SaveExcel();
