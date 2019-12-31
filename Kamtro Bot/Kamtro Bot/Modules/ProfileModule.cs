@@ -193,8 +193,8 @@ namespace Kamtro_Bot.Modules
             await te.Display();
         }
 
-        [Command("equiptitle")]
-        [Alias("et")]
+        [Command("settitle")]
+        [Alias("equiptitle", "et", "st")]
         public async Task AddTitleAsync([Remainder] string tn = "") {
             if(string.IsNullOrWhiteSpace(tn)) {
                 TitleEmbed te = new TitleEmbed(Context);
@@ -219,7 +219,7 @@ namespace Kamtro_Bot.Modules
 
             if(UserDataManager.HasTitle(BotUtils.GetGUser(Context), select.Value)) {
                 UserDataManager.EquipTitle(BotUtils.GetGUser(Context), select.Value);
-                await ReplyAsync(BotUtils.KamtroText("Title Equipped!"));
+                await ReplyAsync(BotUtils.KamtroText($"The {AchievementManager.GetTitle(select.Value).Name} title has been set!"));
             } else {
                 await ReplyAsync($"You don't have the {AchievementManager.GetTitle(select.Value).Name} title");
             }

@@ -28,6 +28,7 @@ namespace Kamtro_Bot.Modules
         }
 
         [Command("craft")]
+        [Alias("crafting", "create", "mix")]
         public async Task CraftAsync([Remainder] string args = "") {
             if (!Program.Experimental) return;
             CraftingEmbed cre = new CraftingEmbed(Context);
