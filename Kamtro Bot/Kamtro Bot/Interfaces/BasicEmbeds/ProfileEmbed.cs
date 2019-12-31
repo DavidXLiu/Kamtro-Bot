@@ -65,7 +65,9 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
         }
 
         private string GetTitleList() {
-            if(Data.Titles.Count == 0) {
+            return $"{Data.Titles.Count}";
+            
+            /*if(Data.Titles.Count == 0) {
                 return "No Titles Obtained.";
             }
 
@@ -75,7 +77,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
                 titles += $"{AchievementManager.GetTitle(id).Name}, ";
             }
 
-            return titles.TrimEnd(',', ' ');
+            return titles.TrimEnd(',', ' ');*/
         }
     }
 }
