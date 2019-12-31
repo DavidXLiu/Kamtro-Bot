@@ -46,6 +46,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
             eb.AddField("Total Activity Rating", Data.Score.ToString(), true);
             eb.AddField("Kamtrokens", Data.Kamtrokens, true); 
             eb.AddField("Reputation Score", Data.Reputation.ToString(), true);
+            eb.AddField("Legacy Score", Data.LegacyScore.ToString(), true);
             eb.AddField("Max Reputation per Week", Data.MaxReputation, true);
             eb.AddField("Titles Obtained", GetTitleList(), true); 
 
