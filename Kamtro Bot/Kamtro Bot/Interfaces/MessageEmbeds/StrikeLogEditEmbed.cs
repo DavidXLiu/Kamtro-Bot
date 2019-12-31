@@ -144,12 +144,12 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
         public async override Task PerformAction(SocketReaction action) {
             switch(action.Emote.ToString()) {
                 case ReactionHandler.DOWN_STR:
-                    await MoveCursorUp();
+                    await MoveCursorDown();
                     await OpCursorDown();
                     break;
 
                 case ReactionHandler.UP_STR:
-                    await MoveCursorDown();
+                    await MoveCursorUp();
                     await OpCursorUp();
                     break;
 
@@ -470,8 +470,8 @@ namespace Kamtro_Bot.Interfaces.MessageEmbeds
 
         private async Task OpCursorUp() {
             OpCursor--;
-            if (PageNum-1 >= Options.Count() || OpCursor < 0) {
-                OpCursor = Options[PageNum - 1].Count() - 1;
+            if (PageNum-1 >= Options.Count || OpCursor < 0) {
+                OpCursor = Options[PageNum - 1].Count - 1;
             }
 
             await UpdateEmbed();

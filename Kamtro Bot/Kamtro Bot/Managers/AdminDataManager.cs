@@ -98,7 +98,7 @@ namespace Kamtro_Bot.Managers
                 object test = cell.Value;
                 if (test == null) break;
 
-                if (Convert.ToUInt64(test.ToString().Substring(1)) == targetId) {
+                if (Convert.ToUInt64(test.ToString()) == targetId) {
                     // Add the srike to this row.
 
                     // First, check the username. 
@@ -149,7 +149,7 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while (cells["A" + pos].Value != null) {
-                if (Convert.ToUInt64(cells["A" + pos].Value.ToString().Substring(1)) == target.Id) {
+                if (Convert.ToUInt64(cells["A" + pos].Value.ToString()) == target.Id) {
                     cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
                     KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
                     SaveExcel();
@@ -172,9 +172,9 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while (cells["A" + pos].Value != null) {
-                if (Convert.ToUInt64(cells["A" + pos].Value.ToString().Substring(1)) == id) {
+                if (Convert.ToUInt64(cells["A" + pos].Value.ToString()) == id) {
                     cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
-                    KLog.Info($"Banned user {(username == "" ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
+                    KLog.Info($"Banned user {(string.IsNullOrWhiteSpace(username) ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
                     SaveExcel();
                     return;
                 }
@@ -186,7 +186,7 @@ namespace Kamtro_Bot.Managers
             cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
             // Set auto fit
             cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
-            KLog.Info($"Banned user {(username == "" ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
+            KLog.Info($"Banned user {(string.IsNullOrWhiteSpace(username) ? id.ToString() : username)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
             SaveExcel();
         }
 

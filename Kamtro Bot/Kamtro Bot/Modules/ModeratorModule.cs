@@ -148,7 +148,7 @@ namespace Kamtro_Bot.Modules
 
         [Command("strikelog")]
         [Alias("getstrikelog", "sl")]
-        public async Task StrikeLogAsync() {
+        public async Task StrikeLogAsync([Remainder] string args = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
 
             if (File.Exists(AdminDataManager.StrikeLogPath)) {
@@ -162,7 +162,7 @@ namespace Kamtro_Bot.Modules
 
         [Command("editstrikelog")]
         [Alias("esl", "replacestrikelog")]
-        public async Task EditStrikeLogAsync() {
+        public async Task EditStrikeLogAsync([Remainder] string args = "") {
             if (!ServerData.HasPermissionLevel(BotUtils.GetGUser(Context), ServerData.PermissionLevel.MODERATOR)) return;
 
             if (Context.Message.Attachments.Count != 1) {
