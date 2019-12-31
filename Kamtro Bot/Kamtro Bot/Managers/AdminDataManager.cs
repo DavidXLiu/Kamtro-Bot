@@ -298,6 +298,11 @@ namespace Kamtro_Bot.Managers
 
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
+            if (cells[$"F{GetEntryPos(id)}"].Value == null) {
+                // gen strike if it doesn't exist
+                GenUserStrike(GetEntryPos(id), BotUtils.GetGUser(id), 1);
+            }
+
             if (strike == 1) {
                 cells[$"F{GetEntryPos(id)}"].Value = reason;
             } else if (strike == 2) {
@@ -414,11 +419,14 @@ namespace Kamtro_Bot.Managers
 
             switch(strike) {
                 case 1:
-                    cells[$"D{pos}:F{pos}"].Clear();
+                    cells[$"D{pos}:F{pos}"].Value = cells[$"G{pos}:I{pos}"].Value;
+                    cells[$"G{pos}:I{pos}"].Value = cells[$"J{pos}:L{pos}"].Value;
+                    cells[$"J{pos}:L{pos}"].Clear();
                     break;
 
                 case 2:
-                    cells[$"G{pos}:I{pos}"].Clear();
+                    cells[$"G{pos}:I{pos}"].Value = cells[$"J{pos}:L{pos}"].Value;
+                    cells[$"J{pos}:L{pos}"].Clear();
                     break;
 
                 case 3:
@@ -426,7 +434,7 @@ namespace Kamtro_Bot.Managers
                     break;
             }
 
-            cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) - 1).ToString();
+            cells[$"C:{pos}"].Value = Math.Min(strike-1, Convert.ToInt32(cells[$"C{pos}"].Value) - 1);
             // Set auto fit
             cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
             KLog.Info($"Removed entry for user {id}: {(strike == 3 ? "Ban" : $"Strike {strike}")}");
