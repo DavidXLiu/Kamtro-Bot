@@ -33,8 +33,8 @@ namespace Kamtro_Bot.Managers
             public const int CHARITABLE = 14;
             public const int HUNDRED_REP_GIVEN = 15;
             public const int REPPER_OF_D = 16;
-            public const int RETRO_BUTT = 17;
-            public const int KAMEX_BUTT = 18;
+            public const int KAMEX_BUTT = 17;
+            public const int RETRO_BUTT = 18;
             public const int MLEM = 19;
             public const int FIRST_BUY = 20;
             public const int SHOPPER = 21;
