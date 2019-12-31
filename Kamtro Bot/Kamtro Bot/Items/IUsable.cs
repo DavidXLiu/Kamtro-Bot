@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Kamtro_Bot.Items
 {
     public interface IUsable
     {
-        Task Use(SocketGuildUser user, params object[] args);
+        Task Use(SocketGuildUser user, SocketCommandContext ctx, params object[] args);
     }
 }

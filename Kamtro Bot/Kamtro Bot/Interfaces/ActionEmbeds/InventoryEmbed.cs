@@ -276,7 +276,7 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
         private async Task UseItem(bool use) {
             if (use) {
                 // use the item
-                await (GetItemAtCursor() as IUsable).Use(User);
+                await (GetItemAtCursor() as IUsable).Use(User, Context);
 
                 if(Inventory.ItemCount(GetItemAtCursor()) == 0) {
                     Page = HOME_PAGE;

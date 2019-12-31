@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Kamtro_Bot.Managers;
 using Kamtro_Bot.Util;
@@ -112,8 +113,8 @@ namespace Kamtro_Bot.Items
         /// </summary>
         /// <param name="msg">The message to be sent</param>
         /// <returns></returns>
-        public async Task NotifyChannel(string msg) {
-            await ServerData.BotChannel.SendMessageAsync(BotUtils.KamtroText(msg));
+        public async Task NotifyChannel(SocketCommandContext ctx, string msg) {
+            await ctx.Channel.SendMessageAsync(BotUtils.KamtroText(msg));
         }
 
         public static Color GetColorFromRarity(ItemRarity r) {
