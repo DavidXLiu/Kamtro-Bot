@@ -14,6 +14,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
     {
         private TitleNode Title;
         private SocketGuildUser User;
+        public string Header = "Achievement Get!";
 
         public AchievementNotifyEmbed(SocketGuildUser user, TitleNode title) {
             Title = title;
@@ -23,7 +24,7 @@ namespace Kamtro_Bot.Interfaces.BasicEmbeds
         public override Embed GetEmbed() {
             EmbedBuilder eb = new EmbedBuilder();
 
-            eb.WithTitle("Achievement Get!");
+            eb.WithTitle(Header);
             eb.WithColor(Title.GetColor());
 
             eb.AddField("Title", Title.Name);

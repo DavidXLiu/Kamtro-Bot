@@ -195,13 +195,17 @@ namespace Kamtro_Bot.Managers
             AchievementNotifyEmbed ane = new AchievementNotifyEmbed(user, title);
 
             if((int)title.Difficulty > (int)TitleNode.DifficultyLevel.HARD && !(title.Difficulty == TitleNode.DifficultyLevel.SECRET_EASY || title.Difficulty == TitleNode.DifficultyLevel.SECRET_MEDIUM || title.Difficulty == TitleNode.DifficultyLevel.SECRET_HARD)) {
+                await BotUtils.DMUserAsync(user, ane.GetEmbed());
+                ane.Header = $"{user.GetDisplayName()} got an achievement!";
                 await ane.Display(ServerData.BotChannel);
             } else {
-                bool sent = await BotUtils.DMUserAsync(user, ane.GetEmbed());
+                await BotUtils.DMUserAsync(user, ane.GetEmbed());
+                // Don't notify for smaller achievements
+                /*bool sent = await BotUtils.DMUserAsync(user, ane.GetEmbed());
 
                 if(!sent) {
                     await ane.Display(ServerData.BotChannel); // Notify the user somehow
-                }
+                }*/
             }
         }
 
