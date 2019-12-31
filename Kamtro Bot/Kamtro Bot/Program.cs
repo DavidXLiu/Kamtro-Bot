@@ -181,13 +181,14 @@ namespace Kamtro_Bot
                 file = fieldInfo.GetValue(null) as string;
 
                 if(!File.Exists(file)) {
-                    Console.WriteLine($"Generated {file}");
+                      Console.WriteLine($"Generated {file}");
                     File.CreateText(file).Close();  // This creates the file, then closes the unecessary stream writer
                 }
             }
 
             AchievementManager.LoadNodeMap();
 
+            // RESET DATES
             LastDateNode dates = JsonConvert.DeserializeObject<LastDateNode>(FileManager.ReadFullFile(DataFileNames.LastDateFile));
 
             if(dates == null) {

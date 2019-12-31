@@ -162,6 +162,8 @@ namespace Kamtro_Bot.Interfaces
                 FieldCount = 0;
             }
 
+            if (MenuOptions == null) MenuOptions = new List<MenuOptionNode>();
+
             if(arrows) {
                 // if there is more than one field, add up and down buttons
                 if(!MenuOptions.Contains(ReactionHandler.UP)) {
