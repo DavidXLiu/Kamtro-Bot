@@ -220,7 +220,7 @@ namespace Kamtro_Bot.Modules
                 UserDataManager.EquipTitle(BotUtils.GetGUser(Context), select.Value);
                 await ReplyAsync(BotUtils.KamtroText($"The {AchievementManager.GetTitle(select.Value).Name} title has been set!"));
             } else {
-                await ReplyAsync($"You don't have the {AchievementManager.GetTitle(select.Value).Name} title");
+                await ReplyAsync(BotUtils.KamtroText($"You don't have the {AchievementManager.GetTitle(select.Value).Name} title"));
             }
         }
 
