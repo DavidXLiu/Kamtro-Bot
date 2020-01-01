@@ -52,14 +52,14 @@ namespace Kamtro_Bot.Interfaces.ActionEmbeds
                     txt = "Titles not available. Contact Caron or Arcy.";
                 } else if (AchievementManager.TitleCount() <= MAX_TITLES_DISPLAYED) {
                     for (int i = 0; i < Titles.Count; i++) {
-                        txt += MakeBold($"{(Cursor == i ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{Titles[i].Item2.Name}\n", UserDataManager.HasTitle(User, Titles[i].Item1));
+                        txt += MakeBold($"{(Cursor == i ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{Titles[i].Item2.Name}", UserDataManager.HasTitle(User, Titles[i].Item1)) + "\n";
                     }
                 } else {
                     if (Start != 0) txt += "***[...]***\n";
 
                     for (int i = Start; i <= Math.Min(Titles.Count-1, MAX_TITLES_DISPLAYED + Start); i++) {
                         // display titles starting from Start
-                        txt += MakeBold($"{(Cursor == i ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{Titles[i].Item2.Name}\n", UserDataManager.HasTitle(User, Titles[i].Item1));
+                        txt += MakeBold($"{(Cursor == i ? CustomEmotes.CursorAnimated : CustomEmotes.CursorBlankSpace)}{Titles[i].Item2.Name}", UserDataManager.HasTitle(User, Titles[i].Item1)) + "\n";
                     }
 
                     if (Start < Titles.Count - 1 - MAX_TITLES_DISPLAYED) txt += "***[...]***";
