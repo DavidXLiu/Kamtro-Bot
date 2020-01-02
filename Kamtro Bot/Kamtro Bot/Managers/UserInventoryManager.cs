@@ -15,7 +15,9 @@ namespace Kamtro_Bot.Managers
             Dictionary<ulong, UserInventoryNode> UserInventories = JsonConvert.DeserializeObject<Dictionary<ulong, UserInventoryNode>>(data) ?? new Dictionary<ulong, UserInventoryNode>();
 
             foreach(ulong id in UserInventories.Keys) {
-                if(UserDataManager.UserData.ContainsKey(id)) {
+                if (BotUtils.GetGUser(id) == null) continue;
+
+                if (UserDataManager.UserData.ContainsKey(id)) {
                     // User has a data file, things are all good
                     UserDataManager.GetUserData(BotUtils.GetGUser(id)).Inventory = UserInventories[id];
                 } else {
