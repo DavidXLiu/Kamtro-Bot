@@ -91,43 +91,36 @@ namespace Kamtro_Bot.Managers
         /// <returns>The number of strikes the user has.</returns>
         public static int AddStrike(SocketUser target, StrikeDataNode strike) {
             ulong targetId = target.Id;
-            int pos = 2;
+            int pos = GetEntryPos(targetId);
+
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
-            while (cells["A"+pos].Value != null) {
-                ExcelRange cell = cells["A" + pos];
-                object test = cell.Value;
-                if (test == null) break;
 
-                if (Convert.ToUInt64(test.ToString()) == targetId) {
-                    // Add the srike to this row.
-
-                    // First, check the username. 
-                    if(cells["B" + pos].Text != BotUtils.GetFullUsername(target)) {
-                        // if it doesn't check out, update it.
-                        cells["B" + pos].Value = BotUtils.GetFullUsername(target);
-                    }
-
-                    // now for the strike address. This will be based off of the number of strikes.
-                    // This is in column C
-                    int strikes = cells["C" + pos].GetValue<int>();
-
-                    if (strikes == 2) return 4;  // 4 is the signal
-
-                    // now to get the column. Fun ascii math.
-                    // 68 = ASCII for capital D. 
-                    string range = char.ConvertFromUtf32(68 + strikes*3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
-
-                    cells[range].LoadFromArrays(strike.GetStrikeForExcel());
-
-                    cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) + 1).ToString();
-                    StrikeLog.Save();
-
-                    KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {BotUtils.GetFullUsername(target)} in cell range {range}");
-
-                    return Convert.ToInt32(cells[$"C{pos}"].Text);
+            if (!IsRowNew(pos)) {
+                // Add the srike to this row.
+                // First, check the username. 
+                if (cells["B" + pos].Text != BotUtils.GetFullUsername(target)) {
+                    // if it doesn't check out, update it.
+                    cells["B" + pos].Value = BotUtils.GetFullUsername(target);
                 }
 
-                pos++;
+                // now for the strike address. This will be based off of the number of strikes.
+                // This is in column C
+                int strikes = cells["C" + pos].GetValue<int>();
+
+                if (strikes == 2) return 4;  // 4 is the signal
+
+                // now to get the column. Fun ascii math.
+                // 68 = ASCII for capital D. 
+                string range = char.ConvertFromUtf32(68 + strikes * 3) + pos + ":" + char.ConvertFromUtf32(70 + strikes * 3) + pos;
+
+                cells[range].LoadFromArrays(strike.GetStrikeForExcel());
+
+                cells[$"C:{pos}"].Value = (Convert.ToInt32(cells[$"C{pos}"].Text) + 1).ToString();
+                StrikeLog.Save();
+
+                KLog.Info($"Added strike {cells[$"C:{pos}"].Value.ToString()} for {BotUtils.GetFullUsername(target)} in cell range {range}");
+
+                return Convert.ToInt32(cells[$"C{pos}"].Text);
             }
 
             // The user doesn't have an entry. So make one.
@@ -145,18 +138,12 @@ namespace Kamtro_Bot.Managers
         }
 
         public static void AddBan(SocketUser target, BanDataNode ban) {
-            int pos = 2;
+            int pos = GetEntryPos(target.Id);
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
-            while (cells["A" + pos].Value != null) {
-                if (Convert.ToUInt64(cells["A" + pos].Value.ToString()) == target.Id) {
-                    cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
-                    KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
-                    SaveExcel();
-                    return;
-                }
-                pos++;
-            }
+            cells[$"J{pos}:L{pos}"].LoadFromArrays(ban.GetBanForExcel());
+            KLog.Info($"Banned user {BotUtils.GetFullUsername(target)} by {ban.Moderator} for reason: {ban.Reason}. Ban added in cell range J{pos}:L{pos}.");
+            SaveExcel();
 
             // User doesn't have an entry, so is likely just a troll.
             GenUserStrike(pos, target);
@@ -297,10 +284,11 @@ namespace Kamtro_Bot.Managers
             if (strike < 1 || strike > 3) return;
 
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            int pos = GetEntryPos(id);
 
-            if (cells[$"F{GetEntryPos(id)}"].Value == null) {
+            if (cells[$"F{pos}"].Value == null) {
                 // gen strike if it doesn't exist
-                GenUserStrike(GetEntryPos(id), BotUtils.GetGUser(id), 0);
+                GenUserStrike(pos, BotUtils.GetGUser(id), 0);
             }
 
             if(GetStrikes(id) < strike) {
@@ -310,15 +298,15 @@ namespace Kamtro_Bot.Managers
             }
 
             if (strike == 1) {
-                cells[$"F{GetEntryPos(id)}"].Value = reason;
+                cells[$"F{pos}"].Value = reason;
             } else if (strike == 2) {
-                cells[$"I{GetEntryPos(id)}"].Value = reason;
+                cells[$"I{pos}"].Value = reason;
             } else {
-                cells[$"L{GetEntryPos(id)}"].Value = reason;
+                cells[$"L{pos}"].Value = reason;
             }
 
             // Fix the count
-            cells[$"C{GetEntryPos(id)}"].Value = Math.Max(Convert.ToInt32(cells[$"C{GetEntryPos(id)}"].Value), strike);
+            cells[$"C{pos}"].Value = Math.Max(Convert.ToInt32(cells[$"C{pos}"].Value), strike);
             
             // Set auto fit
             cells[StrikeLog.Workbook.Worksheets[StrikeLogPage].Dimension.Address].AutoFitColumns();
@@ -337,10 +325,11 @@ namespace Kamtro_Bot.Managers
 
         public static int GetStrikes(ulong id) {
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
+            int pos = GetEntryPos(id);
 
-            if (cells["A" + GetEntryPos(id)].Value == null) return 0;
+            if (cells["A" + pos].Value == null) return 0;
 
-            int strikes = Convert.ToInt32(cells["C" + GetEntryPos(id)].Value);
+            int strikes = Convert.ToInt32(cells["C" + pos].Value);
             return strikes;
         }
 
@@ -355,7 +344,14 @@ namespace Kamtro_Bot.Managers
             ExcelRange cells = StrikeLog.Workbook.Worksheets[StrikeLogPage].Cells;
 
             while(cells["A"+i].Value != null) {
-                if(Convert.ToUInt64(cells[$"A{i}"].Value.ToString()) == id) {
+                ulong spot;
+                
+                if(!ulong.TryParse(cells[$"A{i}"].Value.ToString().Replace("'", ""), out spot)) {
+                    KLog.Error($"INVALID ID IN STRIKE LOG {cells[$"A{i}"].Value.ToString().Replace("'", "")}");
+                    throw new Exception("Invalid Number.");
+                }
+                
+                if (spot == id) {
                     return i;
                 }
 

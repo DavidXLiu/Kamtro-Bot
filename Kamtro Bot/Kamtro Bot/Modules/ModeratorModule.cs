@@ -184,6 +184,7 @@ namespace Kamtro_Bot.Modules
 
             WebClient wc = new WebClient();
             wc.DownloadFile(url, AdminDataManager.StrikeLogPath);
+            wc.Dispose();
 
             KLog.Info($"Strike log updated by {BotUtils.GetFullUsername(Context.User)}");
             await ReplyAsync(BotUtils.KamtroText("The strike log has been updated!"));
