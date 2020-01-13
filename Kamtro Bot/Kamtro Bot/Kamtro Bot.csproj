@@ -156,6 +156,7 @@
     <Compile Include="Handlers\ReactionHandler.cs" />
     <Compile Include="Interfaces\ActionEmbeds\AddAdminEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\ChangeLogEmbed.cs" />
+    <Compile Include="Interfaces\MessageEmbeds\ChatFilterEditEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\CoinFlipEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\ConfirmEmbed.cs" />
     <Compile Include="Interfaces\ActionEmbeds\CraftingEmbed.cs" />
