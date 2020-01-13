@@ -89,7 +89,7 @@ namespace Kamtro_Bot.Modules
             }
 
             DiceRollEmbed dre = new DiceRollEmbed(sides, r);
-            await dre.Display();
+            await ReplyAsync(embed: dre.GetEmbed());
         }
     }
 }
