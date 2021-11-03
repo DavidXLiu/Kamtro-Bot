@@ -47,6 +47,10 @@ namespace Kamtro_Bot.Util
         public static List<SocketGuildUser> AdminUsers;
         public static List<SocketGuildUser> RelayUsers;
         public static SocketGuildUser PrimaryContactUser;
+        
+        // Bug Fixing Data
+        public static List<ulong> AdminUserIDs;
+        public static List<ulong> ModRoleIDs;
 
         // Information
         public static SocketUser BannedUser; // Used to track what user to delete messages from for the DeleteBanMessages command
@@ -70,7 +74,7 @@ namespace Kamtro_Bot.Util
         public static void SetupServerData(BotSettings bs) {
             DiscordSocketClient client = Program.Client;
             Server = client.GetGuild(bs.KamtroID);
-
+        
             #region Other Servers
             if (bs.KamexicoID == 0) {
                 Kamexico = null;
@@ -101,12 +105,17 @@ namespace Kamtro_Bot.Util
             ModeratorRoles = new List<SocketRole>();
             TrustedRoles = new List<SocketRole>();
             SilencedRoles = new List<SocketRole>();
-
+            
+            AdminUserIDs = new List<ulong>();
+            ModRoleIDs = new List<ulong>();
+            
             // Loop through each role id and add the SocketRole to the collection it is in. - Arcy
             foreach (SocketRole role in Server.Roles) {
                 // Moderator Roles
                 foreach (ulong roleId in bs.ModeratorRoles) {
                     // When finding a match, add to the collection. - Arcy
+                    ModRoleIDs.add(roleId);
+                    
                     if (role.Id == roleId) {
                         ModeratorRoles.Add(role);
                         break;
@@ -157,6 +166,8 @@ namespace Kamtro_Bot.Util
             // Read in all recorded ids
             foreach (ulong userId in bs.AdminUsers)
             {
+                AdminUserIDs.add(userId);
+                
                 SocketGuildUser user = Server.GetUser(userId);
                 // Check if user is in server
                 if (user != null)
@@ -208,6 +219,8 @@ namespace Kamtro_Bot.Util
         }
 
         public static bool IsAdmin(SocketGuildUser user) {
+            if(AdminUserIDs.Contains(user.Id) return true;
+            
             foreach(SocketGuildUser adminUser in AdminUsers) {
                 if(adminUser.Id == user.Id) {
                     return true;
@@ -215,13 +228,12 @@ namespace Kamtro_Bot.Util
             }
 
             return false;
-
         }
 
         public static bool IsModerator(SocketGuildUser user) {
-            foreach (SocketRole mod_role in ModeratorRoles) {
+            foreach (ulong mod_role_id in ModRoleIDs) {
                 foreach(SocketRole role in user.Roles) {
-                    if(mod_role.Id == role.Id) {
+                    if(mod_role_id.Id == role.Id) {
                         return true;
                     }
                 }
